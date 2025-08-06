@@ -1,0 +1,121 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.5.4'
+    id 'io.spring.dependency-management' version '1.1.7'
+
+    // RestDocs 용
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+group = 'com.metacoding'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // Mustache 템플릿 엔진을 사용하여 동적인 HTML 페이지를 렌더링하기 위한 의존성입니다.
+    implementation 'org.springframework.boot:spring-boot-starter-mustache'
+
+    // 실시간 양방향 통신을 위한 웹소켓(WebSocket) 기능을 제공하는 의존성입니다.
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+    // --- Spring Boot Starters ---
+    // 웹 애플리케이션, 데이터베이스 연동(JPA), 유효성 검사를 위한 기본 라이브러리 묶음
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // --- Lombok ---
+    // @Getter, @Builder 등 어노테이션으로 보일러플레이트 코드를 줄여주는 라이브러리
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // --- Security & Utilities (추가된 라이브러리) ---
+    // JWT (JSON Web Token) 라이브러리 - 토큰 생성 및 검증[2]
+    implementation group: 'com.auth0', name: 'java-jwt', version: '4.3.0'
+
+    // jBCrypt - 비밀번호 암호화를 위한 라이브러리
+    implementation group: 'org.mindrot', name: 'jbcrypt', version: '0.4'
+
+    // QLRM (Query to List Result Mapper) - 네이티브 쿼리 결과를 DTO에 매핑
+    implementation group: 'org.qlrm', name: 'qlrm', version: '4.0.1'
+
+    // Apache Commons Lang3 - 문자열 처리 등 자바 기본 기능을 확장하는 유틸리티 라이브러리[3]
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
+
+    // --- 데이터베이스 ---
+    // H2 (인메모리 DB), MySQL, MariaDB 데이터베이스 드라이버
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+    // --- 테스트 ---
+    // 스프링 부트 테스트, 시큐리티 테스트, REST Docs 테스트를 위한 라이브러리
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // JWT (JSON Web Token) 및 JOSE (JSON Object Signing and Encryption) 관련 기능을 제공하는 Java 라이브러리
+    implementation 'com.nimbusds:nimbus-jose-jwt:9.31'
+
+    // Firebase Admin SDK는 내부적으로 JSON 파일을 파싱하기 위해 Gson 라이브러리를 사용합니다.
+    // NoClassDefFoundError: com/google/gson/stream/JsonReader 오류는
+    // 이 라이브러리가 없어서 발생하는 것이므로, 명시적으로 추가하여 문제를 해결합니다.
+    implementation 'com.google.code.gson:gson:2.10.1'
+    // fcm 라이브러리
+    implementation 'com.google.firebase:firebase-admin:9.5.0'
+}
+
+// plain.jar 생성 금지
+jar {
+    enabled = false
+}
+
+test {
+    systemProperty "file.encoding", "UTF-8"
+    // JVM에서 테스트를 실행할 때 사용할 기본 시간대를 'Asia/Seoul'로 설정합니다.
+    systemProperty 'user.timezone', 'Asia/Seoul'
+}
+
+tasks.named('test') {
+    outputs.dir snippetsDir
+    useJUnitPlatform()
+}
+
+tasks.named('asciidoctor') {
+    inputs.dir snippetsDir
+    dependsOn test
+}
+
+tasks.register('copyRestDocs', Copy) {
+    dependsOn tasks.named('asciidoctor')
+    from "${asciidoctor.outputDir}"
+    into "src/main/resources/static/docs"
+}
+
+tasks.named('bootJar') {
+    dependsOn tasks.named('copyRestDocs')
+}

@@ -1,0 +1,15 @@
+ifndef::snippets[]
+:snippets: ./build/generated-snippets
+endif::[]
+
+:user: user-controller-test
+
+= REST API 문서
+:toc: left
+:toclevels: 2
+:source-highlighter: highlightjs
+
+== 유저 (User)
+=== 1. 카카오 로그인
+===== Request Example
+include::{snippets}/{user}/kakao_login_test/http-request.adoc[]
