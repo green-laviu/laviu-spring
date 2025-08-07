@@ -7,7 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 class LaviuApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void save_test() {
+        //given
+
     }
 
 }

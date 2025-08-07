@@ -8,4 +8,8 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class StreamsRepository {
     private final EntityManager em;
+
+    public void save(Streams stream) {
+        em.persist(stream);
+    }
 }
