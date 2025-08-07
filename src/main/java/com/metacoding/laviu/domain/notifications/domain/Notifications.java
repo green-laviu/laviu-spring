@@ -14,10 +14,11 @@ public class Notifications {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column(nullable = false)
     private Integer relatedEntityId;
     private String content;
-    @Column(columnDefinition = "boolean default false")
-    private Boolean isRead;
+    @Column(nullable = false)
+    private Boolean isRead = false;
 
     //Enum part
     @Enumerated(EnumType.STRING)

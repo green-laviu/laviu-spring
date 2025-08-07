@@ -19,7 +19,8 @@ public class Streams {
     private String streamkey;
     private String title;
     private String thumbnailUrl;
-    private Integer viewerCount;
+    @Column(nullable = false)
+    private Integer viewerCount = 0;
 
     //Enum part
     @Enumerated(EnumType.STRING)
@@ -34,7 +35,7 @@ public class Streams {
 
     //FK(Foreign Key) part
     @ManyToOne
-    private Users user;
+    private Users streamer;
 
     // 기본생성자 사용금지
     protected Streams() {

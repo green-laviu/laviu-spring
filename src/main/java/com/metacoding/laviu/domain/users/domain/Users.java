@@ -17,6 +17,7 @@ public class Users {
     private String nickname;
     @Column(unique = true)
     private String email;
+    @Column(nullable = false)
     private String password;
     private String profileImageUrl;
     private String bio;

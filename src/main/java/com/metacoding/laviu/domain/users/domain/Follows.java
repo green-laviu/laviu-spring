@@ -13,7 +13,8 @@ public class Follows {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Boolean notify;
+    @Column(nullable = false)
+    private Boolean notify = false;
 
     //Date part
     @CreationTimestamp
