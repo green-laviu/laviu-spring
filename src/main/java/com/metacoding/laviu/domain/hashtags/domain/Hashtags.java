@@ -10,6 +10,7 @@ public class Hashtags {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    private String name;
 
     // 기본생성자 사용금지
     protected Hashtags() {
