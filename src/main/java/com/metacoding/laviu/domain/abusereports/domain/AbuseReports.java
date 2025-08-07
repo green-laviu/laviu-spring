@@ -1,4 +1,4 @@
-package com.metacoding.laviu.domain.reports.domain;
+package com.metacoding.laviu.domain.abusereports.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -9,9 +9,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Getter
-@Table(name = "reports_tb")
+@Table(name = "abuse_reports_tb")
 @Entity
-public class Reports {
+public class AbuseReports {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -21,9 +21,9 @@ public class Reports {
 
     //Enum part
     @Enumerated(EnumType.STRING)
-    private ReportsCategory category;
+    private AbuseReportsCategory category;
     @Enumerated(EnumType.STRING)
-    private ReportsStatus status;
+    private AbuseReportsStatus status;
 
     //Date part
     @CreationTimestamp
@@ -32,13 +32,13 @@ public class Reports {
 
     //FK(Foreign Key) part
     @ManyToOne
-    private Users reporter;
+    private Users abuseReporter;
     @ManyToOne
-    private Streams reportedStream;
+    private Streams abuseReportedStream;
     @ManyToOne
-    private Users reportedStreamer;
+    private Users abuseReportedStreamer;
 
     // 기본생성자 사용금지
-    protected Reports() {
+    protected AbuseReports() {
     }
 }
