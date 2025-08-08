@@ -17,9 +17,14 @@ public class StreamsRepository {
 
     //조회 (1개)
     public Streams findById(int id) {
-        Query query = em.createQuery("select s from Streams s where s.id = :id");
-        query.setParameter("id",id);
-        return (Streams) query.getSingleResult();
-
+        try {
+            Query query = em.createQuery("select s from Streams s where s.id = :id", Streams.class);
+            query.setParameter("id", id);
+            return (Streams) query.getSingleResult();
+        } catch (RuntimeException e) {
+            System.out.println("조회된 스트리밍이 없습니다 : " + id);
+            return null;
+        }
     }
 }
+

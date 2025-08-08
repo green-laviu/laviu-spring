@@ -20,13 +20,13 @@ public class StreamsController {
 
     //방송시작(준비) stream save
     @PostMapping("/start")
-    public ResponseEntity<?>  start(StreamsRequest.SaveDto reqDTO) {
+    public ResponseEntity<?> save(StreamsRequest.SaveDto reqDTO) {
 
         //1.세션에서  id 꺼내기
         int id =2;
 
         //2. UUID로 스트림 키 생성 및 저장
-        String streamKey = streamsService.createAndSaveStreamKey(reqDTO,id);
+        String streamKey = streamsService.save(reqDTO,id);
         return Resp.ok(streamKey);
 
     }

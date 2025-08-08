@@ -19,7 +19,7 @@ public class Streams {
     private Integer id;
 
     @Column(unique = true)
-    private String streamkey;
+    private String streamKey;
     private String title;
     private String thumbnailUrl;
     @Column(nullable = false)
@@ -44,10 +44,11 @@ public class Streams {
     protected Streams() {
     }
 
+    //save 빌더
     @Builder
-    public Streams(String streamkey, String title, String thumbnailUrl,
+    public Streams(String streamKey, String title, String thumbnailUrl,
                    StreamsStatus status, Integer viewerCount, Users streamer) {
-        this.streamkey = streamkey;
+        this.streamKey = streamKey;
         this.title = title;
         this.thumbnailUrl = thumbnailUrl;
         this.status = status;

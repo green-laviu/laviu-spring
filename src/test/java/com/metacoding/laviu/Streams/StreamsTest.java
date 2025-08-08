@@ -25,12 +25,12 @@ public class StreamsTest {
         StreamsRequest.SaveDto reqDTO = new StreamsRequest.SaveDto("제목", "https://picsum.photos/seed/stream1/320/180");
 
         //when
-        streamsService.createAndSaveStreamKey(reqDTO,2);
+        streamsService.save(reqDTO,2);
         Streams streams = streamsRepository.findById(1);
         System.out.println("id : " + streams.getId());
         System.out.println("스트리머 : " + streams.getStreamer());
         System.out.println("제목 : " + streams.getTitle());
-        System.out.println("스트리머키 : " +streams.getStreamkey());
+        System.out.println("스트리머키 : " +streams.getStreamKey());
 
 
 
