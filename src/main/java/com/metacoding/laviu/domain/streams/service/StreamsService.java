@@ -2,7 +2,7 @@ package com.metacoding.laviu.domain.streams.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi400;
-import com.metacoding.laviu._core.error.ex.ExceptionApi401;
+import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
@@ -33,12 +33,13 @@ public class StreamsService {
         if (streamKey == null || token == null) new ExceptionApi400(ErrorEnum.INVALID_TOKEN_FORMAT);
 
         Integer userId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
-        Users user = usersRepository.findById(userId).orElse(null);
-        if (user == null) throw new ExceptionApi401(ErrorEnum.INTERNAL_SERVER_ERROR);
-        Streams findStream = streamsRepository.findByStreamKey(streamKey).orElse(null);
-        if (findStream == null) throw new ExceptionApi401(ErrorEnum.INTERNAL_SERVER_ERROR);
+        Users user = usersRepository.findById(userId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_USER));
+        Streams findStream = streamsRepository.findByStreamKey(streamKey)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
 
-        if (!findStream.getStreamer().getId().equals(userId)) throw new ExceptionApi404(ErrorEnum.NOT_MY_FRIEND);
+        if (!findStream.getStreamer().getId().equals(userId))
+            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
         streamsRepository.save(
                 Streams.builder()
                         .streamKey(streamKey)
