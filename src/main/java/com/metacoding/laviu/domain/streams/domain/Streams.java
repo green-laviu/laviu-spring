@@ -16,7 +16,7 @@ public class Streams {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(unique = true)
-    private String streamkey;
+    private String streamKey;
     private String title;
     private String thumbnailUrl;
     @Column(nullable = false)
