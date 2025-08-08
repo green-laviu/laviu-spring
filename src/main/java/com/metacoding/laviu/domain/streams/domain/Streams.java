@@ -53,6 +53,10 @@ public class Streams {
         this.streamer = streamer;
     }
 
+    public void updateStatus(StreamsStatus status) {
+        this.status = status;
+    }
+
     protected Streams() {
     }
 }
