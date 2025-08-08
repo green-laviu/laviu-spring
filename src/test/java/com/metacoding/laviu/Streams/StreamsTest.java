@@ -29,7 +29,10 @@ public class StreamsTest {
 
         //when
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
-
+        System.out.println("스트림키 : " + respDTO.getStreamKey());
+        System.out.println("id : " + respDTO.getId());
+        System.out.println("상태 : " +  respDTO.getStatus());
+        System.out.println("해시 : " + respDTO.getHashtags());
 
     }
 
