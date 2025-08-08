@@ -11,8 +11,9 @@ public class StreamsRepository {
     private final EntityManager em;
 
     //저장
-    public void save(Streams stream) {
+    public Streams save(Streams stream) {
         em.persist(stream);
+        return stream;
     }
 
     //조회 (1개)
@@ -26,5 +27,6 @@ public class StreamsRepository {
             return null;
         }
     }
+
 }
 

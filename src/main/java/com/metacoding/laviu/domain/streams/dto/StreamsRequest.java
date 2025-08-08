@@ -1,19 +1,35 @@
 package com.metacoding.laviu.domain.streams.dto;
 
+import com.metacoding.laviu.domain.streams.domain.Streams;
+import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.Data;
+
+import java.util.List;
 
 public class StreamsRequest {
 
     //저장용으로 처음 요청받는 용도
     @Data
-    public static class SaveDto{
+    public static class SaveDTO {
         private String title;
-        private String thumbnailUrl;
+        private List<String> hashtags;
 
-        public SaveDto(String title, String thumbnailUrl) {
+        public SaveDTO(String title, List<String> hashtags) {
             this.title = title;
-            this.thumbnailUrl = thumbnailUrl;
+            this.hashtags = hashtags;
         }
+
+        public Streams toEntity(Users user, String streamKey) {
+            return Streams.builder()
+                    .streamKey(streamKey)
+                    .title(title)
+                    .status(StreamsStatus.PENDING) // 기본값
+                    .viewerCount(0)
+                    .streamer(user)
+                    .build();
+        }
+
     }
 
 }
