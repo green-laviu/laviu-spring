@@ -44,4 +44,26 @@ public class RtmpControllerTest extends MyRestDoc {
         String str = actions.andReturn().getResponse().getContentAsString();
         System.out.println("result : " + str);
     }
+
+    @Test
+    public void change_thumbnails_test() throws Exception {
+        //given
+        String thumbnailsUrl = "testUrl";
+        String streamKey = "abc123";
+        StreamsRequest.ThumbnailUpdateDTO reqDTO = new StreamsRequest.ThumbnailUpdateDTO();
+        reqDTO.setThumbnailUrl(thumbnailsUrl);
+
+        String requestBody = om.writeValueAsString(reqDTO);
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/rtmp/" + streamKey + "/thumbnails")
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //eye
+        String str = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("result : " + str);
+    }
 }

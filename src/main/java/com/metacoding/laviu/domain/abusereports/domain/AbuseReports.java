@@ -21,8 +21,6 @@ public class AbuseReports {
 
     //Enum part
     @Enumerated(EnumType.STRING)
-    private AbuseReportsCategory category;
-    @Enumerated(EnumType.STRING)
     private AbuseReportsStatus status;
 
     //Date part
@@ -37,6 +35,8 @@ public class AbuseReports {
     private Streams abuseReportedStream;
     @ManyToOne
     private Users abuseReportedStreamer;
+    @ManyToOne
+    private AbuseReportsCategorys category;
 
     // 기본생성자 사용금지
     protected AbuseReports() {
