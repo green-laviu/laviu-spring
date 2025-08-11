@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.hashtags.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -14,15 +15,17 @@ public class StreamHashtags {
 
     //FK(Foreign Key) part
     @ManyToOne
+    @JoinColumn(name = "stream_id")
     private Streams stream;
     @ManyToOne
+    @JoinColumn(name = "hashtag_id")
     private Hashtags hashtag;
 
     // 기본생성자 사용금지
     protected StreamHashtags() {
     }
 
-    //해시태그 인서트 로직 생성시 삭제필요 -더미용 TODO
+    @Builder
     public StreamHashtags(Streams stream, Hashtags hashtag) {
         this.stream = stream;
         this.hashtag = hashtag;

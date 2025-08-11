@@ -1,7 +1,11 @@
 package com.metacoding.laviu.domain.hashtags.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Table(name = "hashtags_tb")
@@ -12,11 +16,14 @@ public class Hashtags {
     private Integer id;
     private String name; // 유니크
 
+    @OneToMany(mappedBy = "hashtag")
+    private List<StreamHashtags> streamHashtags = new ArrayList<>();
+
     // 기본생성자 사용금지
     protected Hashtags() {
     }
 
-    //해시태그 인서트 로직 생성시 삭제필요 -더미용 TODO
+    @Builder
     public Hashtags(String name) {
         this.name = name;
     }
