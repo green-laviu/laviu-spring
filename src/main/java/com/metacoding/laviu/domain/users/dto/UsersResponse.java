@@ -12,14 +12,14 @@ public class UsersResponse {
         private Integer id;                 // ch_daju
         private String nickname;               // 채널명
         private String profileImageUrl;    // 프로필 이미지
-        private int followerCount;         // 팔로워 수
+        private Long followerCount;         // 팔로워 수
         private boolean isFollowing;       // 팔로우 여부
 
 
-        public LiveDetailDTO(Users user, int followerCount, boolean isFollowing) {
+        public LiveDetailDTO(Users user, Long followerCount, boolean isFollowing) {
             this.id = user.getId();
             this.nickname = user.getNickname();
-            this.profileImageUrl = profileImageUrl;
+            this.profileImageUrl = user.getProfileImageUrl();
             this.followerCount = followerCount;
             this.isFollowing = isFollowing;
         }

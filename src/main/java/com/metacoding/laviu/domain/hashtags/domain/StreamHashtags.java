@@ -2,7 +2,10 @@ package com.metacoding.laviu.domain.hashtags.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+
+import java.util.List;
 
 @Getter
 @Table(name = "stream_hashtags_tb")
@@ -22,9 +25,10 @@ public class StreamHashtags {
     protected StreamHashtags() {
     }
 
-    //해시태그 인서트 로직 생성시 삭제필요 -더미용 TODO
-    public StreamHashtags(Streams stream, Hashtags hashtag) {
+    @Builder
+    private StreamHashtags(Streams stream, Hashtags hashtag) {
         this.stream = stream;
         this.hashtag = hashtag;
     }
+
 }

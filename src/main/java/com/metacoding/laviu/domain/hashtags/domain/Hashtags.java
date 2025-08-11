@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.hashtags.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -16,8 +17,8 @@ public class Hashtags {
     protected Hashtags() {
     }
 
-    //해시태그 인서트 로직 생성시 삭제필요 -더미용 TODO
-    public Hashtags(String name) {
+    @Builder
+    private Hashtags(String name) {
         this.name = name;
     }
 }

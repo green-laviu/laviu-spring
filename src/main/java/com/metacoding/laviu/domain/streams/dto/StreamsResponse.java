@@ -4,6 +4,7 @@ import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
+import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
 
 import java.util.List;
@@ -34,6 +35,7 @@ public class StreamsResponse {
     public static class DetailDTO {
         private LiveDetailDTO live;
         private List<ChatMessagesResponse.ChatDetailDTO> chatList;
+        private List<Viewers> viewList;
 
 
         public DetailDTO(List<ChatMessagesResponse.ChatDetailDTO> chatList, LiveDetailDTO live) {

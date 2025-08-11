@@ -20,7 +20,7 @@ public class StreamsRepository {
     }
 
     // live 중인 방송이 있는 지 조회 (userId로)
-    public Optional<Streams> findBYuserId(Users user) {
+    public Optional<Streams> findByuserId(Users user) {
 
         String jpql = """
                 SELECT s
@@ -40,7 +40,7 @@ public class StreamsRepository {
 
 
     }
-
+/*
     public Optional<Streams> findByIdJoinUser(int id) {
 
         String jpql = """
@@ -61,6 +61,11 @@ public class StreamsRepository {
         }
 
     }
+   */
+public Optional<Streams> findByIdJoinUser(int id) {
+    Streams stream = em.find(Streams.class, id);
+    return Optional.ofNullable(stream);
+}
 
 
 }
