@@ -23,14 +23,14 @@ public class StreamsRepository {
     public Optional<Streams> findBYuserId(Users user) {
 
         String jpql = """
-            SELECT s
-            FROM Streams s
-            WHERE s.streamer.id = :userId
-              AND s.status = :status
-            """;
+                SELECT s
+                FROM Streams s
+                WHERE s.streamer.id = :userId
+                  AND s.status = :status
+                """;
 
-        Query query =  em.createQuery(jpql, Streams.class);
-           query.setParameter("userId", user.getId())
+        Query query = em.createQuery(jpql, Streams.class);
+        query.setParameter("userId", user.getId())
                 .setParameter("status", StreamsStatus.LIVE);
         try {
             return Optional.of((Streams) query.getSingleResult());
@@ -40,5 +40,28 @@ public class StreamsRepository {
 
 
     }
+
+    public Optional<Streams> findByIdJoinUser(int id) {
+
+        String jpql = """
+                    SELECT s
+                    FROM Streams s
+                    JOIN FETCH s.streamer u
+                    WHERE s.id = :id
+                      AND s.status = :status
+                """;
+
+        Query query = em.createQuery(jpql, Streams.class);
+        query.setParameter("id", id)
+                .setParameter("status", StreamsStatus.LIVE);
+        try {
+            return Optional.of((Streams) query.getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+
+    }
+
+
 }
 

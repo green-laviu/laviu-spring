@@ -7,10 +7,7 @@ import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,5 +26,17 @@ public class StreamsController {
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         return Resp.ok(respDTO);
 
+    }
+
+    //방송보기(datail화면 조회)
+    @GetMapping("/{id}")
+    public ResponseEntity<?> get(@PathVariable int id) {
+        //1.뷰어의 id 꺼내기
+
+        Users user = new Users(2);
+
+        //조회
+        streamsService.getLiveStreamDetails(id, user);
+        return Resp.ok(null);
     }
 }

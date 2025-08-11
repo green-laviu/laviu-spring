@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.streams.dto;
 
+import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
@@ -28,4 +29,18 @@ public class StreamsResponse {
             this.status = stream.getStatus();
         }
     }
+
+    @Data
+    public static class DetailDTO {
+        private LiveDetailDTO live;
+        private List<ChatMessagesResponse.ChatDetailDTO> chatList;
+
+
+        public DetailDTO(List<ChatMessagesResponse.ChatDetailDTO> chatList, LiveDetailDTO live) {
+            this.chatList = chatList;
+            this.live = live;
+        }
+    }
+
+
 }

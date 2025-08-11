@@ -8,4 +8,10 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class ViewersRepository {
     private final EntityManager em;
+
+    public Viewers save(Viewers viewers) {
+        em.persist(viewers);
+        return viewers;
+    }
+
 }

@@ -3,6 +3,7 @@ package com.metacoding.laviu.domain.viewers.domain;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -29,4 +30,11 @@ public class Viewers {
     // 기본생성자 사용금지
     protected Viewers() {
     }
+
+    @Builder // 🔹 빌더 추가
+    public Viewers(Streams stream, Users user) {
+        this.stream = stream;
+        this.user = user;
+    }
+
 }
