@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
+
 @Getter
 @Table(name = "streams_tb")
 @Entity
@@ -16,6 +17,7 @@ public class Streams {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
     @Column(unique = true)
     private String streamKey;
     private String title;
@@ -58,5 +60,17 @@ public class Streams {
     }
 
     protected Streams() {
+    }
+
+    //save 빌더
+    @Builder
+    public Streams(String streamKey, String title, String thumbnailUrl,
+                   StreamsStatus status, Integer viewerCount, Users streamer) {
+        this.streamKey = streamKey;
+        this.title = title;
+        this.thumbnailUrl = thumbnailUrl;
+        this.status = status;
+        this.viewerCount = viewerCount;
+        this.streamer = streamer;
     }
 }
