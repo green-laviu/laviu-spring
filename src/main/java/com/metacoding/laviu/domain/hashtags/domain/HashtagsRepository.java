@@ -16,7 +16,7 @@ public class HashtagsRepository {
     public Optional<Hashtags> findByName(String name) {
         try {
             Hashtags hashtag = em.createQuery(
-                            "SELECT h FROM Hashtags h WHERE h.name = :name", Hashtags.class)
+                            "select h from Hashtags h where h.name = :name", Hashtags.class)
                     .setParameter("name", name)
                     .getSingleResult();
             return Optional.of(hashtag);
