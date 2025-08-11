@@ -48,6 +48,24 @@ public class Streams {
     private List<StreamHashtags> streamHashtags = new ArrayList<>();
 
     // 기본생성자 사용금지
+    @Builder
+    public Streams(Integer id, String streamKey, String title, String thumbnailUrl, Integer viewerCount, StreamsStatus status, LocalDateTime startedAt, LocalDateTime updatedAt, LocalDateTime endedAt, Users streamer) {
+        this.id = id;
+        this.streamKey = streamKey;
+        this.title = title;
+        this.thumbnailUrl = thumbnailUrl;
+        this.viewerCount = viewerCount;
+        this.status = status;
+        this.startedAt = startedAt;
+        this.updatedAt = updatedAt;
+        this.endedAt = endedAt;
+        this.streamer = streamer;
+    }
+
+    public void updateStatus(StreamsStatus status) {
+        this.status = status;
+    }
+
     protected Streams() {
     }
 

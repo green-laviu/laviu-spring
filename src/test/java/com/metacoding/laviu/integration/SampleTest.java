@@ -102,5 +102,4 @@ class SampleTest extends MyRestDoc {
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
 
     }
-
 }
