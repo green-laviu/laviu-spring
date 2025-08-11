@@ -39,4 +39,9 @@ public class Users {
     // 기본생성자 사용금지
     protected Users() {
     }
+
+    //  id만 받는 생성자 (연관관계 전용)
+    public Users(Integer id) {
+        this.id = id;
+    }
 }

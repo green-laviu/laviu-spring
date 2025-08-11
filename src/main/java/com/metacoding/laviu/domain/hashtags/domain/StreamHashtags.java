@@ -21,4 +21,10 @@ public class StreamHashtags {
     // 기본생성자 사용금지
     protected StreamHashtags() {
     }
+
+    //해시태그 인서트 로직 생성시 삭제필요 -더미용 TODO
+    public StreamHashtags(Streams stream, Hashtags hashtag) {
+        this.stream = stream;
+        this.hashtag = hashtag;
+    }
 }
