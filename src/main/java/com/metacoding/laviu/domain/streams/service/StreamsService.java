@@ -92,7 +92,7 @@ public class StreamsService {
     public StreamsResponse.SaveDTO save(StreamsRequest.SaveDTO reqDTO, Users user) {
 
         // 1.streams 테이블에 user 아이디로 live 인 row가 있는지 확인 없으면 정상 있으면 예외
-        Optional<Streams> streamOP = streamsRepository.findBYuserId(user);
+        Optional<Streams> streamOP = streamsRepository.findByUserId(user);
         if (streamOP.isPresent()) throw new ExceptionApi400(ALREADY_LIVE_STREAMING);
 
         //2. streamkey 생성
