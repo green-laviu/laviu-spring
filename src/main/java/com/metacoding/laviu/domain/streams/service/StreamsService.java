@@ -139,6 +139,7 @@ public class StreamsService {
         Streams streamsPS =
                 streamsRepository.findByStreamKey(streamKey)
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
-        streamsPS.updateThumbnailUrl(reqDTO.getThumbnailUrl());
+        streamsPS.updateThumbnailUrl(
+                reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
     }
 }
