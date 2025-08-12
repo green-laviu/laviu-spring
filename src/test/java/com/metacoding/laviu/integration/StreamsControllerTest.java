@@ -34,7 +34,6 @@ public class StreamsControllerTest extends MyRestDoc {
         System.out.println("result : " + str);
     }
 
-
     @Test
     public void get_streams_list_test() throws Exception {
         //given
