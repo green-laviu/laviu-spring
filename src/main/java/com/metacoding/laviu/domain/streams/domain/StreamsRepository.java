@@ -50,5 +50,16 @@ public class StreamsRepository {
 
 
     }
+
+    public Optional<Streams> findById(Integer streamId) {
+        try {
+            Query query =
+                    em.createQuery("select s from Streams s where s.id = :streamId")
+                            .setParameter("streamId", streamId);
+            return Optional.of((Streams) query.getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
 }
 

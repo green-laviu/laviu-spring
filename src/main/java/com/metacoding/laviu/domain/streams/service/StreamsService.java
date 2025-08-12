@@ -21,11 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.metacoding.laviu._core.error.ErrorEnum.ALREADY_LIVE_STREAMING;
@@ -51,18 +47,21 @@ public class StreamsService {
         String args = reqDTO.getArgs();
         Map<String, String> queryMap = parseQueryString(args);
         String token = queryMap.get("token");
-        if (streamKey == null || token == null) new ExceptionApi400(ErrorEnum.INVALID_TOKEN_FORMAT);
+        // 키와 토큰 조회
+        if (streamKey == null || token == null)
+            throw new ExceptionApi400(ErrorEnum.INVALID_TOKEN_FORMAT);
 
-        Integer userId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
-        Users user = usersRepository.findById(userId)
+        Integer usersId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
+        // Entity 확인
+        usersRepository.findById(usersId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_USER));
-        Streams findStream = streamsRepository.findByStreamKey(streamKey)
+        Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
-
-        if (!findStream.getStreamer().getId().equals(userId))
+        // 유저 정보와 조회
+        if (!streamsPS.getStreamer().getId().equals(usersId))
             throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
 
-        findStream.updateStatus(StreamsStatus.LIVE);
+        streamsPS.updateStatus(StreamsStatus.LIVE);
     }
 
     private Map<String, String> parseQueryString(String query) {
@@ -144,5 +143,31 @@ public class StreamsService {
 
         return new StreamsResponse.SaveDTO(stream, streamHashtags);
     }
-}
 
+    /**
+     * 방송 종료하는 서비스
+     */
+    @Transactional
+    public void delete(Integer streamsId, Integer usersId) {
+        // 방송 없으면 터짐
+        Streams streamsPS = streamsRepository.findById(streamsId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+        // 권한 없음
+        if (!streamsPS.getStreamer().getId().equals(usersId))
+            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
+        // 이미 종료된 방송
+        if (streamsPS.getStatus() == StreamsStatus.ENDED)
+            throw new ExceptionApi400(ErrorEnum.STREAM_ENDED_STATE);
+        // 방송 종료
+        streamsPS.off(StreamsStatus.ENDED);
+    }
+
+    @Transactional
+    public void updateThumbnail(String streamKey, StreamsRequest.ThumbnailUpdateDTO reqDTO) {
+        Streams streamsPS =
+                streamsRepository.findByStreamKey(streamKey)
+                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+        streamsPS.updateThumbnailUrl(
+                reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
+    }
+}

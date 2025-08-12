@@ -5,10 +5,7 @@ import com.metacoding.laviu.domain.streams.dto.StreamsRequest;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -21,6 +18,12 @@ public class RtmpController {
     @PostMapping("/on-publish")
     public ResponseEntity<?> onPublish(@RequestBody StreamsRequest.StreamsVerifyDTO reqDTO) {
         streamsService.verify(reqDTO);
+        return Resp.ok(null);
+    }
+
+    @PutMapping("/{streamKey}/thumbnails")
+    public ResponseEntity<?> changeThumbnails(@PathVariable String streamKey, @RequestBody StreamsRequest.ThumbnailUpdateDTO reqDTO) {
+        streamsService.updateThumbnail(streamKey, reqDTO);
         return Resp.ok(null);
     }
 }
