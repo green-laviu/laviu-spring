@@ -33,4 +33,19 @@ public class StreamsControllerTest extends MyRestDoc {
         String str = actions.andReturn().getResponse().getContentAsString();
         System.out.println("result : " + str);
     }
+
+
+    @Test
+    public void get_streams_list_test() throws Exception {
+        //given
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/s/api/v1/streams")
+        );
+
+        //eye
+        String str = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("result : " + str);
+    }
 }

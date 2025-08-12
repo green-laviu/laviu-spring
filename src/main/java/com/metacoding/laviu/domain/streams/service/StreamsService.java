@@ -170,4 +170,20 @@ public class StreamsService {
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
     }
+
+    public StreamsResponse.StreamListDTO findAll() {
+        List<StreamsResponse.StreamDTO> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
+        if (liveStreamsList.isEmpty()) return null;
+        int liveStreamsListSize = liveStreamsList.size();
+        int carouselMaxSize = 3;
+        List<StreamsResponse.StreamDTO> carouselList = liveStreamsList.subList(0, Math.min(liveStreamsListSize, carouselMaxSize));
+        List<StreamsResponse.StreamDTO> recommendedList = new ArrayList<>();
+        if (liveStreamsListSize <= carouselMaxSize) {
+            recommendedList = liveStreamsList.subList(0, liveStreamsListSize);
+        } else {
+            recommendedList = liveStreamsList.subList(carouselMaxSize, liveStreamsListSize);
+        }
+
+        return new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+    }
 }

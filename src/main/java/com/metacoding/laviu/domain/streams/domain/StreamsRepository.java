@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.streams.domain;
 
+import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -7,6 +8,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -60,6 +62,22 @@ public class StreamsRepository {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public List<StreamsResponse.StreamDTO> findByStatusOrderByViewerCountDesc(StreamsStatus status) {
+        Query query = em.createQuery(
+                "select new com.metacoding.laviu.domain.streams.dto.StreamsResponse$StreamDTO(" +
+                        "  s.id, s.streamKey, u.id, u.nickname, u.profileImageUrl, " +
+                        "  s.title, s.viewerCount, s.thumbnailUrl, s.status" +
+                        ") " +
+                        "from Streams s " +
+                        "left join com.metacoding.laviu.domain.users.domain.Users u " +
+                        "  on u.id = s.streamer.id " +
+                        "where s.status = :status " +
+                        "order by s.viewerCount desc"
+                , StreamsResponse.StreamDTO.class);
+        query.setParameter("status", status);
+        return query.getResultList();
     }
 }
 

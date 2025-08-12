@@ -1,10 +1,12 @@
 package com.metacoding.laviu.domain.streams.dto;
 
+import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StreamsResponse {
@@ -26,6 +28,44 @@ public class StreamsResponse {
                     .map(sh -> sh.getHashtag().getName())
                     .toList();
             this.status = stream.getStatus();
+        }
+
+    }
+
+    @Data
+    public static class StreamListDTO {
+        private List<StreamDTO> carousel;
+        private List<StreamDTO> recommended;
+
+        public StreamListDTO(List<StreamDTO> carousel, List<StreamDTO> recommended) {
+            this.carousel = carousel;
+            this.recommended = recommended;
+        }
+    }
+
+    @Data
+    public static class StreamDTO {
+        private Integer streamId;
+        private String streamKey;
+        private Integer streamerId;
+        private String streamerName;
+        private String streamerProfileImageUrl;
+        private String title;
+        private Integer viewerCount;
+        private String thumbnailUrl;
+        private StreamsStatus status;
+        private List<Hashtags> hashtags = new ArrayList<>();
+
+        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamerName, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status) {
+            this.streamId = streamId;
+            this.streamKey = streamKey;
+            this.streamerId = streamerId;
+            this.streamerName = streamerName;
+            this.streamerProfileImageUrl = streamerProfileImageUrl;
+            this.title = title;
+            this.viewerCount = viewerCount;
+            this.thumbnailUrl = thumbnailUrl;
+            this.status = status;
         }
     }
 }
