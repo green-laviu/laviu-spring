@@ -66,6 +66,19 @@ public class Streams {
         this.status = status;
     }
 
+    public void downViewerCount() {
+        this.viewerCount--;
+    }
+
+    public void off(StreamsStatus status) {
+        this.endedAt = LocalDateTime.now();
+        this.status = status;
+    }
+
+    public void updateThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
     protected Streams() {
     }
 

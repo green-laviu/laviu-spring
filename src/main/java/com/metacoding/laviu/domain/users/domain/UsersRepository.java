@@ -14,7 +14,7 @@ public class UsersRepository {
 
     public Optional<Users> findById(Integer userId) {
         try {
-            Query query = em.createQuery("SELECT u FROM Users u WHERE u.id = :userId");
+            Query query = em.createQuery("select u from Users u where u.id = :userId");
             query.setParameter("userId", userId);
             return Optional.of((Users) query.getSingleResult());
         } catch (Exception e) {
