@@ -6,7 +6,6 @@ import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class StreamsResponse {
@@ -54,9 +53,9 @@ public class StreamsResponse {
         private Integer viewerCount;
         private String thumbnailUrl;
         private StreamsStatus status;
-        private List<Hashtags> hashtags = new ArrayList<>();
+        private List<Hashtags> hashtags;
 
-        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamerName, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status) {
+        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamerName, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status, List<Hashtags> hashtags) {
             this.streamId = streamId;
             this.streamKey = streamKey;
             this.streamerId = streamerId;
@@ -66,6 +65,7 @@ public class StreamsResponse {
             this.viewerCount = viewerCount;
             this.thumbnailUrl = thumbnailUrl;
             this.status = status;
+            this.hashtags = hashtags;
         }
     }
 }
