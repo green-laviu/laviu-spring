@@ -1,6 +1,5 @@
 package com.metacoding.laviu.domain.streams.domain;
 
-import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
@@ -30,7 +29,7 @@ public class StreamsRepository {
     }
 
     // live 중인 방송이 있는 지 조회 (userId로)
-    public Optional<Streams> findByUserId(Users user) {
+    public Optional<Streams> findByuserId(int userId) {
 
         String jpql = """
                 SELECT s
@@ -40,16 +39,22 @@ public class StreamsRepository {
                 """;
 
         Query query = em.createQuery(jpql, Streams.class);
-        query.setParameter("userId", user.getId())
+        query.setParameter("userId", userId)
                 .setParameter("status", StreamsStatus.LIVE);
         try {
             return Optional.of((Streams) query.getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
-
-
+        
     }
+
+
+    public Optional<Streams> findByIdJoinUser(int id) {
+        Streams stream = em.find(Streams.class, id);
+        return Optional.ofNullable(stream);
+    }
+
 
     public Optional<Streams> findById(Integer streamId) {
         try {
@@ -61,5 +66,6 @@ public class StreamsRepository {
             return Optional.empty();
         }
     }
+
 }
 
