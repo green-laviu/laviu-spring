@@ -7,7 +7,7 @@ public class UsersResponse {
 
 
     @Data
-    public static class LiveDetailDTO {
+    public static class ChannelInfoDTO {
 
         private Integer id;                 // ch_daju
         private String nickname;               // 채널명
@@ -16,7 +16,7 @@ public class UsersResponse {
         private boolean isFollowing;       // 팔로우 여부
 
 
-        public LiveDetailDTO(Users user, Long followerCount, boolean isFollowing) {
+        public ChannelInfoDTO(Users user, Long followerCount, boolean isFollowing) {
             this.id = user.getId();
             this.nickname = user.getNickname();
             this.profileImageUrl = user.getProfileImageUrl();

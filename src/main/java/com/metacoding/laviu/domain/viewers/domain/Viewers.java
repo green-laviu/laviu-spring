@@ -31,7 +31,8 @@ public class Viewers {
     protected Viewers() {
     }
 
-    @Builder // 🔹 빌더 추가
+    // 빌더 추가
+    @Builder
     public Viewers(Streams stream, Users user) {
         this.stream = stream;
         this.user = user;

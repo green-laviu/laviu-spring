@@ -12,7 +12,7 @@ import java.util.List;
 public class LiveDetailDTO {
     private Integer id;                // stream id
     private String title;             // 방송 제목
-    private UsersResponse.LiveDetailDTO channel;       // 유저 + 팔로어
+    private UsersResponse.ChannelInfoDTO channel;       // 유저 + 팔로어
     private String hlsUrl;            // HLS 주소
     private int viewers;               // 시청자 수
     private List<StreamHashtags> tags;         // 태그
@@ -21,13 +21,13 @@ public class LiveDetailDTO {
     //private boolean isStreaming;
 
 
-    public LiveDetailDTO(Streams stream, UsersResponse.LiveDetailDTO channel, String hlsUrl, List<StreamHashtags> tags) {
+    public LiveDetailDTO(Streams stream, UsersResponse.ChannelInfoDTO channel, String hlsUrl, List<StreamHashtags> streamHashtagList) {
         this.id = stream.getId();
         this.title = stream.getTitle();
         this.channel = channel;
         this.hlsUrl = hlsUrl;
         this.viewers = stream.getViewerCount();
-        this.tags = tags;
+        this.tags = streamHashtagList;
         this.startedAt = stream.getStartedAt();
 
     }

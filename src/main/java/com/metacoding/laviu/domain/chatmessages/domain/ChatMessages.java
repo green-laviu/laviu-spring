@@ -32,12 +32,13 @@ public class ChatMessages {
     protected ChatMessages() {
 
     }
+
     @Builder
     public ChatMessages(Integer id, Streams stream, Users user, String content) {
-        this.id = id; // 보통은 null로 두고 DB가 생성. 테스트 더미면 세팅 가능.
+        this.id = id;
         this.stream = stream;
-        this.user   = user;
+        this.user = user;
         this.content = content;
-        // createdAt은 @CreationTimestamp가 저장 시점에 자동 세팅
+
     }
 }
