@@ -10,7 +10,8 @@ public class StreamHashtagsRepository {
     private final EntityManager em;
 
     // 저장
-    public void save(StreamHashtags streamHashtag) {
+    public StreamHashtags save(StreamHashtags streamHashtag) {
         em.persist(streamHashtag);
+        return streamHashtag;
     }
 }

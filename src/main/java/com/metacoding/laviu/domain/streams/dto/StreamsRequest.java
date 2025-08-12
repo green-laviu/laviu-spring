@@ -14,8 +14,8 @@ public class StreamsRequest {
         private String name;
         private String args;
         private String addr;
-        private String clientId;
-        private String tcUrl;
+        private String clientid;
+        private String tcurl;
     }
 
     @Data
@@ -35,6 +35,7 @@ public class StreamsRequest {
                     .title(title)
                     .status(StreamsStatus.PENDING) // 기본값
                     .streamer(user)
+                    .viewerCount(0)
                     .build();
         }
 

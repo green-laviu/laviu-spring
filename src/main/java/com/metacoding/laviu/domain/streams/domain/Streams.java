@@ -24,7 +24,7 @@ public class Streams {
     private String title;
     private String thumbnailUrl;
     @Column(nullable = false)
-    private Integer viewerCount = 0;
+    private Integer viewerCount;
 
     //Enum part
     @Enumerated(EnumType.STRING)

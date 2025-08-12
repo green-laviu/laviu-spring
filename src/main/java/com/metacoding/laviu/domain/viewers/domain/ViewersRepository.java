@@ -21,7 +21,7 @@ public class ViewersRepository {
         return viewer;
     }
 
-    public List<Viewers> findAllByStreamId(int streamId) {
+    public List<Viewers> findAllByStreamId(Integer streamId) {
         Query query = em.createQuery("select v from Viewers v where v.stream.id = :streamId", Viewers.class);
         query.setParameter("streamId", streamId);
         return query.getResultList();
@@ -31,7 +31,18 @@ public class ViewersRepository {
         em.remove(viewer);
     }
 
-    public Optional<Viewers> findById(String viewerId) {
+    public Optional<Viewers> findById(Integer viewerId) {
         return Optional.ofNullable(em.find(Viewers.class, viewerId));
+    }
+
+    public Optional<Viewers> findByStreamIdAndUserId(Integer streamId, Integer userId) {
+        Query query = em.createQuery("select v from Viewers v where v.stream.id = :streamId and v.user.id = :userId", Viewers.class);
+        query.setParameter("streamId", streamId);
+        query.setParameter("userId", userId);
+        try {
+            return Optional.ofNullable((Viewers) query.getSingleResult());
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 }

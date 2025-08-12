@@ -1,6 +1,7 @@
 package com.metacoding.laviu.Streams;
 
-import com.metacoding.laviu._core.error.ex.ExceptionApi400;
+import com.metacoding.laviu._core.error.ErrorEnum;
+import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
@@ -24,9 +25,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-
-import static com.metacoding.laviu._core.error.ErrorEnum.NO_LIVE_STREAMING;
-
 
 @SpringBootTest
 public class StreamsTest {
@@ -72,7 +70,7 @@ public class StreamsTest {
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
         Streams stream = streamsRepository.findByIdJoinStreamer(1)
-                .orElseThrow(() -> new ExceptionApi400(NO_LIVE_STREAMING));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         //2.viewer save
         viewersService.save(stream, user);
@@ -91,7 +89,7 @@ public class StreamsTest {
 
         System.out.println("----------2차---------");
         System.out.println(" 팔로워수 : " + channel.getFollowerCount());
-        System.out.println("팔로워 여부" + channel.isFollowing());
+        System.out.println("팔로워 여부" + channel.getIsFollowing());
         System.out.println("스트리머" + channel.getNickname());
 
         //5.채팅

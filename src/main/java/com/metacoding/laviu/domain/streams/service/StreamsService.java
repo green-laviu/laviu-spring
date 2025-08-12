@@ -34,9 +34,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.metacoding.laviu._core.error.ErrorEnum.ALREADY_LIVE_STREAMING;
-import static com.metacoding.laviu._core.error.ErrorEnum.NO_LIVE_STREAMING;
-
 
 @RequiredArgsConstructor
 @Service
@@ -59,6 +56,7 @@ public class StreamsService {
             System.out.println(key + " : " + params.get(key));
         }
         */
+
         String streamKey = reqDTO.getName();
         String args = reqDTO.getArgs();
         Map<String, String> queryMap = parseQueryString(args);
@@ -70,12 +68,12 @@ public class StreamsService {
         Integer usersId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
         // Entity 확인
         usersRepository.findById(usersId)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_USER));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 유저 정보와 조회
         if (!streamsPS.getStreamer().getId().equals(usersId))
-            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
         streamsPS.startLive();
     }
@@ -116,7 +114,7 @@ public class StreamsService {
         Optional<Streams> streamOP = streamsRepository.findByUserIdAndLive(user.getId());
 
         // 2. live 데이터가 존재하면 예외
-        if (streamOP.isPresent()) throw new ExceptionApi400(ALREADY_LIVE_STREAMING);
+        if (streamOP.isPresent()) throw new ExceptionApi400(ErrorEnum.STREAM_IS_ALREADY_LIVE);
 
         // 3. streamKey 생성
         String streamKey = CommonUtils.generateStreamKey();
@@ -163,13 +161,13 @@ public class StreamsService {
      * 방송 보기 (시청자)
      */
     @Transactional
-    public StreamsResponse.DetailDTO getLiveStreamDetails(int streamId, Users user) {
+    public StreamsResponse.DetailDTO getLiveStreamDetails(Integer streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
 
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
         Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)
-                .orElseThrow(() -> new ExceptionApi400(NO_LIVE_STREAMING));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2.viewer 테이블 추가
         viewersService.save(streamPS, user);
@@ -221,13 +219,13 @@ public class StreamsService {
     public void delete(Integer streamsId, Integer usersId) {
         // 방송 없으면 터짐
         Streams streamsPS = streamsRepository.findById(streamsId)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 권한 없음
         if (!streamsPS.getStreamer().getId().equals(usersId))
-            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
         // 이미 종료된 방송
         if (streamsPS.getStatus() == StreamsStatus.ENDED)
-            throw new ExceptionApi400(ErrorEnum.STREAM_ENDED_STATE);
+            throw new ExceptionApi400(ErrorEnum.STREAM_ALREADY_ENDED);
         // 방송 종료
         streamsPS.off();
     }
@@ -236,7 +234,7 @@ public class StreamsService {
     public void updateThumbnail(String streamKey, StreamsRequest.ThumbnailUpdateDTO reqDTO) {
         Streams streamsPS =
                 streamsRepository.findByStreamKey(streamKey)
-                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
     }

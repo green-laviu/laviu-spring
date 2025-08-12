@@ -30,21 +30,21 @@ public class StreamsController {
     }
 
     //방송보기(datail화면 조회)
-    @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable int id) {
+    @GetMapping("/{streamId}")
+    public ResponseEntity<?> get(@PathVariable Integer streamId) {
         //1.뷰어의 id 꺼내기
 
         Users user = new Users(2);
 
         //조회
-        streamsService.getLiveStreamDetails(id, user);
+        streamsService.getLiveStreamDetails(streamId, user);
         return Resp.ok(null);
     }
 
 
     @PutMapping("/{streamId}/end")
     public ResponseEntity<?> end(@PathVariable Integer streamId) {
-        Integer userId = 2; // token으로 조회 후 사용
+        Integer userId = 1; // token으로 조회 후 사용
         streamsService.delete(streamId, userId);
         return Resp.ok(null);
     }

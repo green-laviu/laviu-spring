@@ -16,7 +16,7 @@ public class ViewersController {
     private final ViewersService viewersService;
 
     @DeleteMapping("/{viewerId}")
-    public ResponseEntity<?> delete(@PathVariable String viewerId) {
+    public ResponseEntity<?> delete(@PathVariable Integer viewerId) {
         viewersService.delete(viewerId);
         return Resp.ok(null);
     }
