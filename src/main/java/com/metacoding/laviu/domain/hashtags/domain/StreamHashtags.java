@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @Table(name = "stream_hashtags_tb")
 @Entity
@@ -26,9 +24,8 @@ public class StreamHashtags {
     }
 
     @Builder
-    private StreamHashtags(Streams stream, Hashtags hashtag) {
+    public StreamHashtags(Streams stream, Hashtags hashtag) {
         this.stream = stream;
         this.hashtag = hashtag;
     }
-
 }

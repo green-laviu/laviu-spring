@@ -14,8 +14,8 @@ public class LiveDetailDTO {
     private String title;             // 방송 제목
     private UsersResponse.ChannelInfoDTO channel;       // 유저 + 팔로어
     private String hlsUrl;            // HLS 주소
-    private int viewers;               // 시청자 수
-    private List<StreamHashtags> tags;         // 태그
+    private Integer viewers;               // 시청자 수
+    private List<StreamHashtags> hashtagList;         // 태그
     private LocalDateTime startedAt;          // 방송 시작 시각 (ISO8601)
     private List<QualityOptionDTO> qualityOptions = QualityOptionDTO.getAllOptions(); // 화질 옵션
     //private boolean isStreaming;
@@ -27,8 +27,7 @@ public class LiveDetailDTO {
         this.channel = channel;
         this.hlsUrl = hlsUrl;
         this.viewers = stream.getViewerCount();
-        this.tags = streamHashtagList;
+        this.hashtagList = streamHashtagList;
         this.startedAt = stream.getStartedAt();
-
     }
 }

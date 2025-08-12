@@ -13,24 +13,23 @@ import java.util.Optional;
 public class ChatMessagesRepository {
     private final EntityManager em;
 
-    public Optional<Streams> findByStreamId(int id) {
+    public Optional<Streams> findByStreamId(Integer id) {
         Streams stream = em.find(Streams.class, id);
         return Optional.ofNullable(stream);
     }
 
-
-    public List<ChatMessages> findAllByStreamIdJoinUser(int id) {
+    public List<ChatMessages> findAllByStreamIdJoinUser(Integer streamId) {
 
         String jpql = """
                     select c
                     from ChatMessages c
                     join fetch c.user u
                     where c.stream.id = :streamId
-                    order by c.createdAt desc, c.id desc
+                    order by c.createdAt desc
                 """;
 
         List<ChatMessages> list = em.createQuery(jpql, ChatMessages.class)
-                .setParameter("streamId", id)
+                .setParameter("streamId", streamId)
                 .setMaxResults(30) //30개만 받아오기
                 .getResultList();
 

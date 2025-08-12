@@ -21,18 +21,17 @@ public class ViewersRepository {
         return viewer;
     }
 
-    public List<Viewers> findAllByStreamId(int id) {
-        Query query = em.createQuery("select v from Viewers v where v.stream.id = :id", Viewers.class);
-        query.setParameter("id", id);
+    public List<Viewers> findAllByStreamId(int streamId) {
+        Query query = em.createQuery("select v from Viewers v where v.stream.id = :streamId", Viewers.class);
+        query.setParameter("streamId", streamId);
         return query.getResultList();
     }
 
-    public void deleteById(Viewers viewer) {
+    public void delete(Viewers viewer) {
         em.remove(viewer);
     }
 
     public Optional<Viewers> findById(String viewerId) {
         return Optional.ofNullable(em.find(Viewers.class, viewerId));
-
     }
 }

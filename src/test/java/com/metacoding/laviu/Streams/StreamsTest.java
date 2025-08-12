@@ -49,7 +49,9 @@ public class StreamsTest {
 
         //given
         Users user = new Users(1);
-        StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO("제목", List.of("소통", "게임"));
+        StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO();
+        reqDTO.setTitle("제목");
+        reqDTO.setHashtags(List.of("소통", "게임"));
 
         //when
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
@@ -69,14 +71,14 @@ public class StreamsTest {
         // 제재상태면 못봄 - 강퇴
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
-        Streams stream = streamsRepository.findByIdJoinUser(1)
+        Streams stream = streamsRepository.findByIdJoinStreamer(1)
                 .orElseThrow(() -> new ExceptionApi400(NO_LIVE_STREAMING));
 
         //2.viewer save
         viewersService.save(stream, user);
 
         //3. 스트림 테이블 뷰업테이트
-        stream.updateViewerCount();
+        stream.upViewerCount();
 
         System.out.println("---------1차--------");
         System.out.println(" 뷰어 수 : " + stream.getViewerCount());

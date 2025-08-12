@@ -26,7 +26,8 @@ public class HashtagsRepository {
     }
 
     // 저장
-    public void save(Hashtags hashtag) {
+    public Hashtags save(Hashtags hashtag) {
         em.persist(hashtag);
+        return hashtag;
     }
 }

@@ -40,15 +40,15 @@ public class ViewersService {
     @Transactional
     public void delete(String viewerId) {
         // 시청자 존재 여부 확인
-        Viewers viewer =
+        Viewers viewerPS =
                 viewersRepository.findById(viewerId)
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_VIEWER));
         // 방송 존재 여부 확인
         Streams streamsPS =
-                streamsRepository.findById(viewer.getStream().getId())
+                streamsRepository.findById(viewerPS.getStream().getId())
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
         streamsPS.downViewerCount();
-        viewersRepository.deleteById(viewer);
+        viewersRepository.delete(viewerPS);
     }
 
 }

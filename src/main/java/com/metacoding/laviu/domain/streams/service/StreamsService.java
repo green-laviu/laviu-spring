@@ -77,7 +77,7 @@ public class StreamsService {
         if (!streamsPS.getStreamer().getId().equals(usersId))
             throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
 
-        streamsPS.updateStatus(StreamsStatus.LIVE);
+        streamsPS.startLive();
     }
 
     private Map<String, String> parseQueryString(String query) {
@@ -112,23 +112,22 @@ public class StreamsService {
     @Transactional
     public StreamsResponse.SaveDTO save(StreamsRequest.SaveDTO reqDTO, Users user) {
 
-        // 1.streams 테이블에 user 아이디로 live 인 row가 있는지 확인 없으면 정상 있으면 예외
-        Optional<Streams> streamOP = streamsRepository.findByuserId(user.getId());
+        // 1.streams 테이블에 user 아이디로 live 가 존재하는지 확인
+        Optional<Streams> streamOP = streamsRepository.findByUserIdAndLive(user.getId());
 
+        // 2. live 데이터가 존재하면 예외
         if (streamOP.isPresent()) throw new ExceptionApi400(ALREADY_LIVE_STREAMING);
 
-        //2. streamkey 생성
+        // 3. streamKey 생성
         String streamKey = CommonUtils.generateStreamKey();
 
-        //3. 스트림 저장(엔티티 반환 후 저장)
+        // 4. 스트림 저장(엔티티 반환 후 저장)
         Streams stream = reqDTO.toEntity(user, streamKey);
-        streamsRepository.save(stream);
+        Streams streamPS = streamsRepository.save(stream);
 
-        //4.hashtags save TODO
-        // HashTagsService 에게 reqDTO.hashtags 를 넘겨서
-        // 서비스 에서 db 조회 해서 있으면 조회된 엔티티 들을 리스트로 반환, 없으면 insert
-        // 받아온 엔티티로 스트림해시태그 db 에 insert 하기
-        List<String> normalized = Optional.ofNullable(reqDTO.getHashtags())
+        // 5. 해시태그 저장
+        // 5-1 해시태그에서 앞뒤 공백 제거 및 내부 공백 1개로 변경
+        List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtags())
                 .orElseGet(List::of)
                 .stream()
                 .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
@@ -136,13 +135,13 @@ public class StreamsService {
                 .distinct()                                   // 중복 제거
                 .toList();
 
-        // 2) 해시태그 저장/조회 + 매핑 저장
+        // 5-2 해시태그 저장/조회 + 매핑 저장
         List<StreamHashtags> streamHashtags = new ArrayList<>(); // 응답/DTO에 내려줄 매핑 목록 버퍼
-        for (String tagName : normalized) { // 정규화·중복제거된 태그명 순회
-            Hashtags hashtag = hashtagsRepository.findByName(tagName) // 태그 존재 여부 조회
+        for (String hashtagName : normalizedHashtags) { // 정규화·중복제거된 태그명 순회
+            Hashtags hashtag = hashtagsRepository.findByName(hashtagName) // 태그 존재 여부 조회
                     .orElseGet(() -> { // 없으면 생성로직 수행 (upsert)
                         Hashtags h = Hashtags.builder()
-                                .name(tagName) // 태그명 세팅
+                                .name(hashtagName) // 태그명 세팅
                                 .build();
                         hashtagsRepository.save(h); // 신규 해시태그 영속화
                         return h; // 생성한 엔티티 반환
@@ -164,54 +163,53 @@ public class StreamsService {
      * 방송 보기 (시청자)
      */
     @Transactional
-    public void getLiveStreamDetails(int streamId, Users user) {
+    public StreamsResponse.DetailDTO getLiveStreamDetails(int streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
 
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
-        Streams stream = streamsRepository.findByIdJoinUser(streamId)
+        Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)
                 .orElseThrow(() -> new ExceptionApi400(NO_LIVE_STREAMING));
 
-        //2.viewer
-        //viewersService에게 save를 넘김
-        viewersService.save(stream, user);
+        // 2.viewer 테이블 추가
+        viewersService.save(streamPS, user);
 
         //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
-        stream.updateViewerCount();
+        streamPS.upViewerCount();
 
         //4.팔로워수 팔로워 여부 , 채널dto 생성
-        Long followerCount = followsRepository.countByFollowingId(stream.getStreamer().getId());
-        Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(stream.getStreamer().getId(), user.getId());
-        UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(stream.getStreamer(), followerCount, isFollowing);
+        Long followerCount = followsRepository.countByFollowingId(streamPS.getStreamer().getId());
+        Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(streamPS.getStreamer().getId(), user.getId());
+        UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
         //5.채팅 테이블 목록
-        List<ChatMessages> chatList = chatMessagesRepository.findAllByStreamIdJoinUser(stream.getId());
+        List<ChatMessages> chatList = chatMessagesRepository.findAllByStreamIdJoinUser(streamPS.getId());
         List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatList);
 
         //6.hlsUrl
-        String hlsUrl = "http://host/hls/" + stream.getStreamKey() + ".m3u8";
+        String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
 
         //7.HASHTAGE  TODO(삭제/임의데이터) - 로직 변경
         List<StreamHashtags> streamHashtagList = List.of(
                 StreamHashtags.builder()
-                        .stream(stream)
+                        .stream(streamPS)
                         .hashtag(Hashtags.builder().name("소통").build())
                         .build(),
                 StreamHashtags.builder()
-                        .stream(stream)
+                        .stream(streamPS)
                         .hashtag(Hashtags.builder().name("게임").build())
                         .build()
         );
 
         //8.viewer 목록
-        List<Viewers> viewerList = viewersRepository.findAllByStreamId(stream.getId());
+        List<Viewers> viewerList = viewersRepository.findAllByStreamId(streamPS.getId());
         List<ViewersResponse.ViewersDetailDTO> viewerResultList = ViewersResponse.ViewersDetailDTO.fromList(viewerList);
 
         //9.라이브정보 합치기
-        LiveDetailDTO live = new LiveDetailDTO(stream, channel, hlsUrl, streamHashtagList);
+        LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl, streamHashtagList);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        StreamsResponse.DetailDTO resDTO = new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
+        return new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
 
     }
 
@@ -231,7 +229,7 @@ public class StreamsService {
         if (streamsPS.getStatus() == StreamsStatus.ENDED)
             throw new ExceptionApi400(ErrorEnum.STREAM_ENDED_STATE);
         // 방송 종료
-        streamsPS.off(StreamsStatus.ENDED);
+        streamsPS.off();
     }
 
     @Transactional
