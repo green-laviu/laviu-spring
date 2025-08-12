@@ -8,4 +8,9 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class StreamHashtagsRepository {
     private final EntityManager em;
+
+    // 저장
+    public void save(StreamHashtags streamHashtag) {
+        em.persist(streamHashtag);
+    }
 }

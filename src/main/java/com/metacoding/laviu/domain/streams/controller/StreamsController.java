@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/s/api/v1/streams")
 public class StreamsController {
+
     private final StreamsService streamsService;
 
     //방송시작(준비) stream save
@@ -37,6 +38,14 @@ public class StreamsController {
 
         //조회
         streamsService.getLiveStreamDetails(id, user);
+        return Resp.ok(null);
+    }
+
+
+    @PutMapping("/{streamId}/end")
+    public ResponseEntity<?> end(@PathVariable Integer streamId) {
+        Integer userId = 2; // token으로 조회 후 사용
+        streamsService.delete(streamId, userId);
         return Resp.ok(null);
     }
 }

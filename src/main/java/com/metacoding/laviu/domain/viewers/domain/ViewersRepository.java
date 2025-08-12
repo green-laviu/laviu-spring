@@ -7,11 +7,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class ViewersRepository {
     private final EntityManager em;
+
 
     @Transactional
     public Viewers save(Viewers viewer) {
@@ -23,5 +25,14 @@ public class ViewersRepository {
         Query query = em.createQuery("select v from Viewers v where v.stream.id = :id", Viewers.class);
         query.setParameter("id", id);
         return query.getResultList();
+    }
+
+    public void deleteById(Viewers viewer) {
+        em.remove(viewer);
+    }
+
+    public Optional<Viewers> findById(String viewerId) {
+        return Optional.ofNullable(em.find(Viewers.class, viewerId));
+
     }
 }

@@ -11,6 +11,8 @@ public class Hashtags {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @Column(unique = true)
     private String name; // 유니크
 
     // 기본생성자 사용금지
@@ -18,7 +20,9 @@ public class Hashtags {
     }
 
     @Builder
-    private Hashtags(String name) {
+
+    public Hashtags(String name) {
+
         this.name = name;
     }
 }
