@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @Table(name = "stream_hashtags_tb")
 @Entity
@@ -15,10 +17,8 @@ public class StreamHashtags {
 
     //FK(Foreign Key) part
     @ManyToOne
-    @JoinColumn(name = "stream_id")
     private Streams stream;
     @ManyToOne
-    @JoinColumn(name = "hashtag_id")
     private Hashtags hashtag;
 
     // 기본생성자 사용금지
@@ -26,8 +26,9 @@ public class StreamHashtags {
     }
 
     @Builder
-    public StreamHashtags(Streams stream, Hashtags hashtag) {
+    private StreamHashtags(Streams stream, Hashtags hashtag) {
         this.stream = stream;
         this.hashtag = hashtag;
     }
+
 }

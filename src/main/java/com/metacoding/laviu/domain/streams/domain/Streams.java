@@ -93,4 +93,8 @@ public class Streams {
         this.viewerCount = viewerCount;
         this.streamer = streamer;
     }
+
+    public void updateViewerCount() {
+        this.viewerCount = this.viewerCount + 1;
+    }
 }

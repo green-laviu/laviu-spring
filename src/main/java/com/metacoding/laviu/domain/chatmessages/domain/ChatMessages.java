@@ -1,4 +1,4 @@
-package com.metacoding.laviu.domain.viewers.domain;
+package com.metacoding.laviu.domain.chatmessages.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -9,33 +9,36 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
+
 @Getter
-@Table(name = "viewers_tb")
+@Table(name = "chat_messages_tb")
 @Entity
-public class Viewers {
+public class ChatMessages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    //Date part
-    @CreationTimestamp
-    private LocalDateTime connectedAt;
-
-    //FK(Foreign Key) part
     @ManyToOne
     private Streams stream;
     @ManyToOne
     private Users user;
 
-    // 기본생성자 사용금지
-    protected Viewers() {
+    private String content;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+
+    protected ChatMessages() {
+
     }
 
-    // 빌더 추가
     @Builder
-    public Viewers(Streams stream, Users user) {
+    public ChatMessages(Integer id, Streams stream, Users user, String content) {
+        this.id = id;
         this.stream = stream;
         this.user = user;
-    }
+        this.content = content;
 
+    }
 }
