@@ -54,10 +54,25 @@ public enum ErrorEnum {
     ACCESS_DENIED(403, "접근 권한이 없습니다."),
 
     /**
+     * 404 Not Found - 해당 방송이 존재하지 않습니다.
+     */
+    NO_MATCH_STREAMER_ID_AND_USER_ID(403, "해당 방송을 하는 방송인이 아닙니다."),
+
+    /**
      * 404 Not Found - 관리자가 존재하지 않습니다.
      */
     NOT_MY_FRIEND(404, "서로 친구가 아닙니다"),
 
+    /**
+     * 404 Not Found - 해당 유저가 존재하지 않습니다.
+     */
+    NOT_FOUND_USER(404, "해당 유저를 찾을 수 없습니다."),
+
+    /**
+     * 404 Not Found - 해당 방송이 존재하지 않습니다.
+     */
+    NOT_FOUND_STREAM(404, "해당 방송을 찾을 수 없습니다."),
+    
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
      */

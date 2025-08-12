@@ -8,6 +8,15 @@ import lombok.Data;
 import java.util.List;
 
 public class StreamsRequest {
+    @Data
+    public static class StreamsVerifyDTO {
+        private String app;
+        private String name;
+        private String args;
+        private String addr;
+        private String clientId;
+        private String tcUrl;
+    }
 
     //저장용으로 처음 요청받는 용도
     @Data
