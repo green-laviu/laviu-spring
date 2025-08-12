@@ -7,10 +7,7 @@ import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -30,5 +27,12 @@ public class StreamsController {
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         return Resp.ok(respDTO);
 
+    }
+
+    @PutMapping("/{streamId}/end")
+    public ResponseEntity<?> end(@PathVariable Integer streamId) {
+        Integer userId = 2; // token으로 조회 후 사용
+        streamsService.delete(streamId, userId);
+        return Resp.ok(null);
     }
 }

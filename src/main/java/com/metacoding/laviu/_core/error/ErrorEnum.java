@@ -9,6 +9,11 @@ public enum ErrorEnum {
     INVALID_INVITE_RESPONSE_STATE(400, "이미 응답된 요청입니다"),
 
     /**
+     * 400 Bad Request - 이미 종료된 방송입니다.
+     */
+    STREAM_ENDED_STATE(400, "이미 종료된 방송입니다"),
+
+    /**
      * 400 Bad Request - 잘못된 형식의 토큰으로 요청이 들어왔습니다.
      */
     INVALID_TOKEN_FORMAT(400, "잘못된 형식의 토큰으로 요청이 들어왔습니다"),
@@ -69,10 +74,15 @@ public enum ErrorEnum {
     NOT_FOUND_USER(404, "해당 유저를 찾을 수 없습니다."),
 
     /**
+     * 404 Not Found - 해당 시청자가 존재하지 않습니다.
+     */
+    NOT_FOUND_VIEWER(404, "해당 시청자를 찾을 수 없습니다."),
+
+    /**
      * 404 Not Found - 해당 방송이 존재하지 않습니다.
      */
     NOT_FOUND_STREAM(404, "해당 방송을 찾을 수 없습니다."),
-    
+
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
      */
