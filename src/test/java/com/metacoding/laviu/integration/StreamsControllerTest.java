@@ -45,7 +45,7 @@ public class StreamsControllerTest extends MyRestDoc {
         //given
         StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO();
         reqDTO.setTitle("방송타이틀");
-        reqDTO.setHashtags(List.of("게임", "방송"));
+        reqDTO.setHashtagList(List.of("게임", "방송"));
 
         String requestBody = om.writeValueAsString(reqDTO);
         System.out.println(requestBody);
@@ -81,5 +81,19 @@ public class StreamsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+    }
+
+    @Test
+    public void get_streams_list_test() throws Exception {
+        //given
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/s/api/v1/streams")
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
     }
 }

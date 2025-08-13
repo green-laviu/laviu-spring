@@ -47,4 +47,10 @@ public class StreamsController {
         streamsService.delete(streamId, userId);
         return Resp.ok(null);
     }
+
+    @GetMapping
+    public ResponseEntity<?> getStreamsList() {
+        StreamsResponse.StreamListDTO respDTO = streamsService.findAll();
+        return Resp.ok(respDTO);
+    }
 }

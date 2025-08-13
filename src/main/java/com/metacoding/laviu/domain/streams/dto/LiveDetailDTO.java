@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 public class LiveDetailDTO {
-    private Integer id;                // stream id
+    private Integer streamId;                // stream id
     private String title;             // 방송 제목
     private UsersResponse.ChannelInfoDTO channel;       // 유저 + 팔로어
     private String hlsUrl;            // HLS 주소
@@ -20,7 +20,7 @@ public class LiveDetailDTO {
 
 
     public LiveDetailDTO(Streams stream, UsersResponse.ChannelInfoDTO channel, String hlsUrl) {
-        this.id = stream.getId();
+        this.streamId = stream.getId();
         this.title = stream.getTitle();
         this.channel = channel;
         this.hlsUrl = hlsUrl;
