@@ -1,11 +1,11 @@
 package com.metacoding.laviu.domain.streams.dto;
 
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
-import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
+import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
 
@@ -49,27 +49,23 @@ public class StreamsResponse {
     public static class StreamDTO {
         private Integer streamId;
         private String streamKey;
-        private Integer streamerId;
-        private String streamer;
-        private String streamerProfileImageUrl;
+        private UsersResponse.DTO streamer;
         private String title;
         private Integer viewerCount;
         private String thumbnailUrl;
         private StreamsStatus status;
-        private List<HashtagsResponse.DTO> hashtags;
+        private List<HashtagsResponse.DTO> hashtagList;
 
-        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamer, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status, List<Hashtags> hashtagList) {
-            this.streamId = streamId;
-            this.streamKey = streamKey;
-            this.streamerId = streamerId;
-            this.streamer = streamer;
-            this.streamerProfileImageUrl = streamerProfileImageUrl;
-            this.title = title;
-            this.viewerCount = viewerCount;
-            this.thumbnailUrl = thumbnailUrl;
-            this.status = status;
-            this.hashtags = hashtagList.stream()
-                    .map(ht -> new HashtagsResponse.DTO(ht))
+        public StreamDTO(Streams stream) {
+            this.streamId = stream.getId();
+            this.streamKey = stream.getStreamKey();
+            this.streamer = new UsersResponse.DTO(stream.getStreamer());
+            this.title = stream.getTitle();
+            this.viewerCount = stream.getViewerCount();
+            this.thumbnailUrl = stream.getThumbnailUrl();
+            this.status = stream.getStatus();
+            this.hashtagList = stream.getStreamHashtagList().stream()
+                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
                     .toList();
         }
     }
