@@ -27,7 +27,7 @@ public class ViewersService {
      *  시청자 저장
      */
     @Transactional
-    public void save(Streams stream, Users user) {
+    public Viewers save(Streams stream, Users user) {
         //1. viewers 테이블 확인
         Optional<Viewers> viewerOP = viewersRepository.findByStreamIdAndUserId(stream.getId(), user.getId());
 
@@ -39,7 +39,7 @@ public class ViewersService {
                 .stream(stream)
                 .build();
         //save
-        Viewers viewersPS = viewersRepository.save(viewer);
+        return viewersRepository.save(viewer);
     }
 
     /*

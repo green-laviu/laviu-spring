@@ -21,6 +21,7 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
+import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
@@ -121,7 +122,7 @@ public class StreamsService {
 
         // 5. 해시태그 저장
         // 5-1 해시태그에서 앞뒤 공백 제거 및 내부 공백 1개로 변경
-        List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtags())
+        List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtagList())
                 .orElseGet(List::of)
                 .stream()
                 .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
@@ -166,7 +167,7 @@ public class StreamsService {
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2.viewer 테이블 추가
-        viewersService.save(streamPS, user);
+        Viewers viewerPS = viewersService.save(streamPS, user);
 
         //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
         streamPS.upViewerCount();
@@ -187,7 +188,7 @@ public class StreamsService {
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(live);
+        return new StreamsResponse.DetailDTO(live, viewerPS);
 
     }
 
@@ -217,5 +218,51 @@ public class StreamsService {
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
+    }
+
+    public StreamsResponse.StreamListDTO findAll() {
+        List<Streams> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
+
+        int liveStreamsListSize = liveStreamsList.size();
+        int carouselMaxSize = 3;
+        int twinMinSize = Math.min(liveStreamsListSize, carouselMaxSize);
+
+        List<Streams> carouselStreamsList = liveStreamsList.subList(0, twinMinSize);
+        List<StreamsResponse.StreamDTO> carouselList = new ArrayList<>();
+        for (Streams stream : carouselStreamsList) {
+            carouselList.add(mappingStreamDTO(stream));
+        }
+
+        List<StreamsResponse.StreamDTO> recommendedList = new ArrayList<>();
+        if (twinMinSize != liveStreamsListSize) {
+            List<Streams> recommendedStreamsList = liveStreamsList.subList(carouselMaxSize, liveStreamsListSize);
+
+            for (Streams stream : recommendedStreamsList) {
+                recommendedList.add(mappingStreamDTO(stream));
+            }
+        } else {
+            recommendedList = carouselList;
+        }
+
+        return new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+    }
+
+    private StreamsResponse.StreamDTO mappingStreamDTO(Streams stream) {
+        List<Hashtags> hashtagsList = new ArrayList<>();
+        for (StreamHashtags sh : stream.getStreamHashtagList()) {
+            hashtagsList.add(sh.getHashtag());
+        }
+        return new StreamsResponse.StreamDTO(
+                stream.getId(),
+                stream.getStreamKey(),
+                stream.getStreamer().getId(),
+                stream.getStreamer().getNickname(),
+                stream.getStreamer().getProfileImageUrl(),
+                stream.getTitle(),
+                stream.getViewerCount(),
+                stream.getThumbnailUrl(),
+                stream.getStatus(),
+                hashtagsList
+        );
     }
 }
