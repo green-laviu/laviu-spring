@@ -280,4 +280,16 @@ public class StreamsService {
         if (!streams.getStreamer().getId().equals(streamerId))
             throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
     }
+
+    //스트림 검색
+    public List<StreamsResponse.StreamDTO> getSearchStreams(String query) {
+
+        List <Streams> streamList = streamsRepository.findByQuery(query);
+
+        List<StreamsResponse.StreamDTO> resDTO = streamList.stream()
+                .map(StreamsResponse.StreamDTO::new) // 생성자에 Streams 넣어서 DTO 변환
+                .toList();
+
+        return resDTO;
+    }
 }

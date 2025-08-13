@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.streams.domain;
 
+import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
@@ -70,5 +71,37 @@ public class StreamsRepository {
     public Optional<Streams> findById(Integer streamId) {
         return Optional.ofNullable(em.find(Streams.class, streamId));
     }
+
+    //스트림 검색
+    public List<Streams> findByQuery(String query){
+
+        //null이나 빈값이면
+        if (query == null || query.trim().isEmpty()) {
+            // 검색어 없으면 전체 유저 조회
+            String jpql = """
+        select distinct s
+        from Streams s
+        join s.streamHashtagList sh
+        join sh.hashtag h
+        where s.status = :live
+       """;
+            return em.createQuery(jpql, Streams.class).getResultList();
+        }
+
+        //검색 쿼리
+        String jpql = """
+        select distinct s
+        from Streams s
+        join s.streamHashtagList sh
+        join sh.hashtag h
+        where s.status = :live
+          and h.name like :query
+       """;
+        return em.createQuery(jpql, Streams.class)
+                .setParameter("query", "%" + query + "%")
+                .setParameter("live",StreamsStatus.LIVE)
+                .getResultList();
+    }
+
 }
 
