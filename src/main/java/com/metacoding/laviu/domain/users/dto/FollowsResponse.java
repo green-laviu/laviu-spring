@@ -9,29 +9,38 @@ public class FollowsResponse {
     public static class SaveDTO {
 
         private Integer id;
+        private Integer followerId;
         private Integer followingId;
         private Boolean isFollowing;
+        private Boolean isNotificationsEnabled;
 
-        public SaveDTO(Follows followPS, boolean isFollowing) {
-            this.id = followPS.getId();
-            this.followingId = followPS.getFollowing().getId();
-            this.isFollowing = isFollowing;
+        public SaveDTO(Follows follow) {
+            this.id = follow.getId();
+            this.followerId = follow.getFollower().getId();
+            this.followingId = follow.getFollowing().getId();
+            this.isFollowing = true;
+            this.isNotificationsEnabled = follow.getIsNotificationsEnabled();
         }
 
     }
 
     @Data
-    public static class deleteDTO {
+    public static class UpdateDTO {
 
         private Integer id;
+        private Integer followerId;
+        private Integer followingId;
         private Boolean isFollowing;
+        private Boolean isNotificationsEnabled;
 
-
-        public deleteDTO(Integer id, boolean isFollowing) {
-            this.id = id;
-            this.isFollowing = isFollowing;
+        public UpdateDTO(Follows follow) {
+            this.id = follow.getId();
+            this.followerId = follow.getFollower().getId();
+            this.followingId = follow.getFollowing().getId();
+            this.isFollowing = true;
+            this.isNotificationsEnabled = follow.getIsNotificationsEnabled();
         }
-    }
 
+    }
 
 }
