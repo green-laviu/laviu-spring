@@ -2,31 +2,46 @@ package com.metacoding.laviu.domain.users.controller;
 
 import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.users.domain.Users;
+import com.metacoding.laviu.domain.users.dto.FollowsResponse;
+import com.metacoding.laviu.domain.users.service.FollowsService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
+@RequiredArgsConstructor
 @RequestMapping("/s/api/v1/")
 @RestController
 public class FollowsController {
 
-    //팔로우 save
-    //request로 안받고id로 받아오는 body
-    //User id 생성자
-    //보내야 할 값
-    @PostMapping("users/{followerId}/followings/{followingId}")
-    public ResponseEntity<?> save(@PathVariable("followingId") int followingId) {
+    private final FollowsService followsService;
+
+    //follows save
+    //request로 안받고 id로 받아오는 body
+    @PostMapping("follows/user/{followerId}/following/{followingId}")
+    public ResponseEntity<?> save(@PathVariable("followingId") Integer followingId) {
 
         //1. 유저정보
-        Users user = new Users(1);
+        Users user = Users.builder().id(1).build();
 
-        //
+        //2.save
+        FollowsResponse.SaveDTO resDTO = followsService.save(user, followingId);
 
-
-        return Resp.ok(null);
+        return Resp.ok(resDTO);
     }
+
+    //follows delete
+    @DeleteMapping("follows/{followId}")
+    public ResponseEntity<?> delete(@PathVariable("followId") Integer id) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.delete
+        FollowsResponse.deleteDTO resDTO = followsService.delete(user, id);
+        return Resp.ok(resDTO);
+
+    }
+
 
 }

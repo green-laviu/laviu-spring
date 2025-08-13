@@ -1,8 +1,7 @@
 package com.metacoding.laviu.domain.users.dto;
 
+import com.metacoding.laviu.domain.users.domain.Follows;
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 public class FollowsResponse {
 
@@ -10,11 +9,28 @@ public class FollowsResponse {
     public static class SaveDTO {
 
         private Integer id;
-        private LocalDateTime followedAt;
-        private Integer followerId;
-        private String followerName;
         private Integer followingId;
-        private String followingName;
+        private Boolean isFollowing;
+
+        public SaveDTO(Follows followPS, boolean isFollowing) {
+            this.id = followPS.getId();
+            this.followingId = followPS.getFollowing().getId();
+            this.isFollowing = isFollowing;
+        }
+
+    }
+
+    @Data
+    public static class deleteDTO {
+
+        private Integer id;
+        private Boolean isFollowing;
+
+
+        public deleteDTO(Integer id, boolean isFollowing) {
+            this.id = id;
+            this.isFollowing = isFollowing;
+        }
     }
 
 

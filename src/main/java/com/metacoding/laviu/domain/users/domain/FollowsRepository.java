@@ -14,17 +14,17 @@ public class FollowsRepository {
 
 
     //팔로워 수
-    public Long countByFollowingId(int id) {
-        String jpql = "select count(f.id) from Follows f where f.following.id= :channelId";
+    public Long countByFollowingId(Integer streamerId) {
+        String jpql = "select count(f.id) from Follows f where f.following.id= :streamerId";
         Query query = em.createQuery(jpql, Long.class);
-        query.setParameter("channelId", id);
+        query.setParameter("streamerId", streamerId);
         return (Long) query.getSingleResult();
 
 
     }
 
     //팔로우 중인지 확인( boolean/ 카운트 쿼리)
-    public Boolean existsByFollowerIdAndFollowingId(int streamerId, int userId) {
+    public Boolean existsByFollowerIdAndFollowingId(Integer streamerId, Integer userId) {
 
         String jpql = """
                     select case when count(f) > 0 then true else false end
@@ -45,20 +45,28 @@ public class FollowsRepository {
     }
 
     //팔로우 save
-    public void save(Follows follow) {
+    public Follows save(Follows follow) {
         em.persist(follow);
+        return follow;
     }
 
-    public Optional<Follows> findByFollowerIdAndFollowingId(int streamerId, int userId) {
-        String jpql = """
-                    select f from Follows f
-                    where f.follower.id = :userId
-                      and f.following.id = :streamerId
-                """;
-        Query query = em.createQuery(jpql, Follows.class);
-        query.setParameter("userId", userId);
-        query.setParameter("streamerId", streamerId);
+    //id로 조회하기
+    public Optional<Follows> findByIdAndUserId(Integer id, Integer userId) {
 
-        return Optional.ofNullable((Follows) query.getSingleResult());
+        Query query = em.createQuery("select f from Follows f where f.id = :id and f.follower.id = :userId", Follows.class);
+        query.setParameter("id", id);
+        query.setParameter("userId", userId);
+
+        try {
+            return Optional.of((Follows) query.getSingleResult()); // 여기선 null 안 옴
+        } catch (RuntimeException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void delete(Follows follow) {
+        Query query = em.createQuery("delete Follows f where f.id = :id");
+        query.setParameter("id", follow.getId());
+        query.executeUpdate();
     }
 }

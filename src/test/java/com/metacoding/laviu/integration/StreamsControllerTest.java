@@ -31,7 +31,7 @@ public class StreamsControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/streams/" + streamId + "/end")
-                
+
         );
 
         //eye
@@ -83,4 +83,5 @@ public class StreamsControllerTest extends MyRestDoc {
 
         //then
     }
+
 }
