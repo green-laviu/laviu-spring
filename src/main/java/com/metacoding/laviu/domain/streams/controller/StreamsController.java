@@ -21,7 +21,7 @@ public class StreamsController {
     public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO) {
 
         //1.세션에서  id 꺼내기
-        Users user = Users.builder().id(3).build();
+        Users user = Users.builder().id(2).build();
         //2. UUID로 스트림 키 생성 및 저장
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         return Resp.ok(respDTO);
@@ -46,5 +46,18 @@ public class StreamsController {
         Integer userId = 1; // token으로 조회 후 사용
         streamsService.delete(streamId, userId);
         return Resp.ok(null);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> getStreamsList() {
+        StreamsResponse.StreamListDTO respDTO = streamsService.findAll();
+        return Resp.ok(respDTO);
+    }
+
+    @PutMapping("/{streamId}/setting")
+    public ResponseEntity<?> update(@PathVariable Integer streamId, @RequestBody StreamsRequest.UpdateDTO reqDTO) {
+        Integer userId = 1; // token으로 조회 후 사용
+        StreamsResponse.UpdateDTO respDTO = streamsService.update(streamId, userId, reqDTO);
+        return Resp.ok(respDTO);
     }
 }

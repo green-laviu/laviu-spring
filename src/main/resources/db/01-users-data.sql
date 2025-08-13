@@ -6,4 +6,6 @@ VALUES ('ssar', 'ssar@nate.com', '1234', 'https://nate.com/profile1.jpg', '안�
        ('cos', 'cos@nate.com', '1234', 'https://nate.com/profile2.jpg', '안녕하세요', 'token2', 'NAVER', 'USER',
         NOW(), null, NOW()),
        ('love', 'love@nate.com', '1234', 'https://nate.com/profile3.jpg', '안녕하세요', 'token3', 'NAVER', 'USER',
+        NOW(), null, NOW()),
+       ('hate', 'hate@nate.com', '1234', 'https://nate.com/profile4.jpg', '안녕하세요', 'token4', 'NAVER', 'USER',
         NOW(), null, NOW());

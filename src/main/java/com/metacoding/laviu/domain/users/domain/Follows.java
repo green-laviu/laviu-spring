@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,7 +15,7 @@ public class Follows {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
-    private Boolean notify = false;
+    private Boolean isNotificationsEnabled = true;
 
     //Date part
     @CreationTimestamp
@@ -28,5 +29,19 @@ public class Follows {
 
     // 기본생성자 사용금지
     protected Follows() {
+    }
+
+    @Builder
+    public Follows(Users follower, Users following) {
+        this.follower = follower;
+        this.following = following;
+    }
+
+    public void enableNotifications() {
+        this.isNotificationsEnabled = true;
+    }
+
+    public void disableNotifications() {
+        this.isNotificationsEnabled = false;
     }
 }

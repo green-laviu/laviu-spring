@@ -7,6 +7,7 @@ import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
+import com.metacoding.laviu.domain.users.service.FollowsService;
 import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,8 @@ public class StreamsTest {
     private ChatMessagesRepository chatMessagesRepository;
     @Autowired
     private ViewersService viewersService;
+    @Autowired
+    private FollowsService followsService;
 
     @Test
     public void save_test() {
@@ -38,16 +41,17 @@ public class StreamsTest {
         Users user = Users.builder().id(2).build();
         StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO();
         reqDTO.setTitle("제목");
-        reqDTO.setHashtags(List.of("소통", "게임"));
+        reqDTO.setHashtagList(List.of("소통", "게임"));
 
         //when
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         System.out.println("스트림키 : " + respDTO.getStreamKey());
-        System.out.println("id : " + respDTO.getId());
+        System.out.println("id : " + respDTO.getStreamId());
         System.out.println("상태 : " + respDTO.getStatus());
         System.out.println("해시 : " + respDTO.getHashtagList());
 
     }
+
 
 //    @Test
 //    public void detail_test() {

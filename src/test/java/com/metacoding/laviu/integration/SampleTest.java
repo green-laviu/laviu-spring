@@ -52,5 +52,4 @@ class SampleTest extends MyRestDoc {
                 matchesPattern("\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d+")));
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }*/
-
 }

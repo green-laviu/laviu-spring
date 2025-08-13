@@ -1,7 +1,70 @@
 package com.metacoding.laviu.domain.users.controller;
 
-import org.springframework.web.bind.annotation.RestController;
+import com.metacoding.laviu._core.utils.Resp;
+import com.metacoding.laviu.domain.users.domain.Users;
+import com.metacoding.laviu.domain.users.dto.FollowsResponse;
+import com.metacoding.laviu.domain.users.service.FollowsService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
+
+@RequiredArgsConstructor
+@RequestMapping("/s/api/v1/")
 @RestController
 public class FollowsController {
+
+    private final FollowsService followsService;
+
+    //follows save
+    //request로 안받고 id로 받아오는 body
+    @PostMapping("follows/user/{followerId}/following/{followingId}")
+    public ResponseEntity<?> save(@PathVariable("followingId") Integer followingId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(3).build();
+
+        //2.save
+        FollowsResponse.SaveDTO resDTO = followsService.save(user, followingId);
+
+        return Resp.ok(resDTO);
+    }
+
+    //follows delete
+    @DeleteMapping("follows/{followId}")
+    public ResponseEntity<?> delete(@PathVariable("followId") Integer followId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.delete
+        followsService.delete(user, followId);
+        return Resp.ok(null);
+
+    }
+
+    @PutMapping("follows/{followId}/notify-on")
+    public ResponseEntity<?> notifyOn(@PathVariable("followId") Integer followId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.save
+        FollowsResponse.UpdateDTO resDTO = followsService.notifyOn(user, followId);
+
+        return Resp.ok(resDTO);
+    }
+
+    @PutMapping("follows/{followId}/notify-off")
+    public ResponseEntity<?> notifyOff(@PathVariable("followId") Integer followId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.save
+        FollowsResponse.UpdateDTO resDTO = followsService.notifyOff(user, followId);
+
+        return Resp.ok(resDTO);
+    }
+
 }
