@@ -6,6 +6,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -46,7 +47,7 @@ public class StreamsRepository {
         } catch (NoResultException e) {
             return Optional.empty();
         }
-        
+
     }
 
 
@@ -67,5 +68,10 @@ public class StreamsRepository {
         }
     }
 
+    public List<Streams> findByStatusOrderByViewerCountDesc(StreamsStatus status) {
+        Query query = em.createQuery("select s from Streams s left join fetch s.streamer left join fetch s.streamHashtags sh left join fetch sh.hashtag where s.status = :status order by s.viewerCount desc", Streams.class);
+        query.setParameter("status", status);
+        return query.getResultList();
+    }
 }
 

@@ -242,4 +242,52 @@ public class StreamsService {
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
     }
+
+    public StreamsResponse.StreamListDTO findAll() {
+        List<Streams> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
+
+        if (liveStreamsList.isEmpty()) return null;
+
+        int liveStreamsListSize = liveStreamsList.size();
+        int carouselMaxSize = 3;
+        int twinMinSize = Math.min(liveStreamsListSize, carouselMaxSize);
+
+        List<Streams> carouselStreamsList = liveStreamsList.subList(0, twinMinSize);
+        List<StreamsResponse.StreamDTO> carouselList = new ArrayList<>();
+        for (Streams stream : carouselStreamsList) {
+            carouselList.add(mappingStreamDTO(stream));
+        }
+
+        List<StreamsResponse.StreamDTO> recommendedList = new ArrayList<>();
+        if (twinMinSize != liveStreamsListSize) {
+            List<Streams> recommendedStreamsList = liveStreamsList.subList(carouselMaxSize, liveStreamsListSize);
+            
+            for (Streams stream : recommendedStreamsList) {
+                recommendedList.add(mappingStreamDTO(stream));
+            }
+        } else {
+            recommendedList = carouselList;
+        }
+
+        return new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+    }
+
+    private StreamsResponse.StreamDTO mappingStreamDTO(Streams stream) {
+        List<Hashtags> hashtagsList = new ArrayList<>();
+        for (StreamHashtags sh : stream.getStreamHashtags()) {
+            hashtagsList.add(sh.getHashtag());
+        }
+        return new StreamsResponse.StreamDTO(
+                stream.getId(),
+                stream.getStreamKey(),
+                stream.getStreamer().getId(),
+                stream.getStreamer().getNickname(),
+                stream.getStreamer().getProfileImageUrl(),
+                stream.getTitle(),
+                stream.getViewerCount(),
+                stream.getThumbnailUrl(),
+                stream.getStatus(),
+                hashtagsList
+        );
+    }
 }
