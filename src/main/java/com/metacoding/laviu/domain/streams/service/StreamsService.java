@@ -21,6 +21,7 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
+import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +167,7 @@ public class StreamsService {
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2.viewer 테이블 추가
-        viewersService.save(streamPS, user);
+        Viewers viewerPS = viewersService.save(streamPS, user);
 
         //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
         streamPS.upViewerCount();
@@ -187,7 +188,7 @@ public class StreamsService {
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(live);
+        return new StreamsResponse.DetailDTO(live, viewerPS);
 
     }
 

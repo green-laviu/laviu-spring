@@ -6,6 +6,7 @@ import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
+import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class StreamsResponse {
         private Integer streamId;
         private String streamKey;
         private Integer streamerId;
-        private String streamerName;
+        private String streamer;
         private String streamerProfileImageUrl;
         private String title;
         private Integer viewerCount;
@@ -57,11 +58,11 @@ public class StreamsResponse {
         private StreamsStatus status;
         private List<HashtagsResponse.DTO> hashtags;
 
-        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamerName, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status, List<Hashtags> hashtagList) {
+        public StreamDTO(Integer streamId, String streamKey, Integer streamerId, String streamer, String streamerProfileImageUrl, String title, Integer viewerCount, String thumbnailUrl, StreamsStatus status, List<Hashtags> hashtagList) {
             this.streamId = streamId;
             this.streamKey = streamKey;
             this.streamerId = streamerId;
-            this.streamerName = streamerName;
+            this.streamer = streamer;
             this.streamerProfileImageUrl = streamerProfileImageUrl;
             this.title = title;
             this.viewerCount = viewerCount;
@@ -77,11 +78,12 @@ public class StreamsResponse {
     public static class DetailDTO {
         private LiveDetailDTO live;
         private List<ChatMessagesResponse.ChatDetailDTO> chatList;
+        private Integer viewerId;
 
-
-        public DetailDTO(LiveDetailDTO live) {
+        public DetailDTO(LiveDetailDTO live, Viewers viewer) {
             this.live = live;
             this.chatList = new ArrayList<>();
+            this.viewerId = viewer.getId();
         }
     }
 }
