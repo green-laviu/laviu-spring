@@ -51,7 +51,7 @@ public class FollowsService {
 
         //1. 팔로워 중인지 체크(pk로)
         Follows follow = followsRepository.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new ExceptionApi400(ErrorEnum.NOT_FOLLOWING));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOLLOWING));
 
         //2.삭제
         followsRepository.delete(follow);

@@ -29,11 +29,6 @@ public enum ErrorEnum {
     STREAM_IS_ALREADY_LIVE(400, "이미 진행 중인 방송이 존재합니다."),
 
     /**
-     * 400 Bad Request - 팔로잉 중이 아닙니다.
-     */
-    NOT_FOLLOWING(400, "팔로잉 중이 아닙니다."),
-
-    /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
     ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
@@ -93,6 +88,11 @@ public enum ErrorEnum {
      * 404 Not Found - 해당 방송을 찾을 수 없습니다.
      */
     STREAM_NOT_FOUND(404, "해당 방송을 찾을 수 없습니다."),
+
+    /**
+     * 404 Bad Request - 팔로잉 중이 아닙니다.
+     */
+    NOT_FOLLOWING(404, "팔로잉 중이 아닙니다."),
 
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
