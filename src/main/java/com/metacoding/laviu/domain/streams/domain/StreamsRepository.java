@@ -15,9 +15,9 @@ public class StreamsRepository {
     private final EntityManager em;
 
     public Optional<Streams> findByStreamKey(String streamKey) {
+        Query query = em.createQuery("select s from Streams s where s.streamKey = :streamKey");
+        query.setParameter("streamKey", streamKey);
         try {
-            Query query = em.createQuery("SELECT s FROM Streams s WHERE s.streamKey = :streamKey");
-            query.setParameter("streamKey", streamKey);
             return Optional.of((Streams) query.getSingleResult());
         } catch (Exception e) {
             return Optional.empty();
@@ -25,12 +25,13 @@ public class StreamsRepository {
     }
 
     //저장
-    public void save(Streams stream) {
+    public Streams save(Streams stream) {
         em.persist(stream);
+        return stream;
     }
 
     // live 중인 방송이 있는 지 조회 (userId로)
-    public Optional<Streams> findByuserId(int userId) {
+    public Optional<Streams> findByUserIdAndLive(int userId) {
 
         String jpql = """
                 SELECT s
@@ -50,18 +51,10 @@ public class StreamsRepository {
 
     }
 
-
-    public Optional<Streams> findByIdJoinUser(int id) {
-        Streams stream = em.find(Streams.class, id);
-        return Optional.ofNullable(stream);
-    }
-
-
-    public Optional<Streams> findById(Integer streamId) {
+    public Optional<Streams> findByIdJoinStreamer(int streamId) {
+        Query query = em.createQuery("select s from Streams s join fetch s.streamer where s.id = :streamId")
+                .setParameter("streamId", streamId);
         try {
-            Query query =
-                    em.createQuery("select s from Streams s where s.id = :streamId")
-                            .setParameter("streamId", streamId);
             return Optional.of((Streams) query.getSingleResult());
         } catch (Exception e) {
             return Optional.empty();
@@ -69,9 +62,13 @@ public class StreamsRepository {
     }
 
     public List<Streams> findByStatusOrderByViewerCountDesc(StreamsStatus status) {
-        Query query = em.createQuery("select s from Streams s left join fetch s.streamer left join fetch s.streamHashtags sh left join fetch sh.hashtag where s.status = :status order by s.viewerCount desc", Streams.class);
+        Query query = em.createQuery("select s from Streams s left join fetch s.streamer left join fetch s.streamHashtagList sh left join fetch sh.hashtag where s.status = :status order by s.viewerCount desc", Streams.class);
         query.setParameter("status", status);
         return query.getResultList();
+    }
+
+    public Optional<Streams> findById(Integer streamId) {
+        return Optional.ofNullable(em.find(Streams.class, streamId));
     }
 }
 

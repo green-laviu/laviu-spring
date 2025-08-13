@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.users.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -50,8 +51,16 @@ public class Users {
     protected Users() {
     }
 
-    //  id만 받는 생성자 (연관관계 전용)
-    public Users(Integer id) {
+    @Builder
+    public Users(Integer id, String nickname, String email, String password, String profileImageUrl, String bio, String fcmToken, UsersProvider provider, UsersType type) {
         this.id = id;
+        this.nickname = nickname;
+        this.email = email;
+        this.password = password;
+        this.profileImageUrl = profileImageUrl;
+        this.bio = bio;
+        this.fcmToken = fcmToken;
+        this.provider = provider;
+        this.type = type;
     }
 }

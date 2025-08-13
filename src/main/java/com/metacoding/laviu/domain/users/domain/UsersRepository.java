@@ -14,13 +14,7 @@ public class UsersRepository {
     private final EntityManager em;
 
     public Optional<Users> findById(Integer userId) {
-        try {
-            Query query = em.createQuery("select u from Users u where u.id = :userId");
-            query.setParameter("userId", userId);
-            return Optional.of((Users) query.getSingleResult());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(em.find(Users.class, userId));
     }
 
     public UsersResponse.StreamerDTO returnStreamerDTO(Integer userId, Integer tokenUserId) {

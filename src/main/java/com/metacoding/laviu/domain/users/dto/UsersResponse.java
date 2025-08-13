@@ -113,7 +113,7 @@ public class UsersResponse {
         private String nickname;               // 채널명
         private String profileImageUrl;    // 프로필 이미지
         private Long followerCount;         // 팔로워 수
-        private boolean isFollowing;       // 팔로우 여부
+        private Boolean isFollowing;       // 팔로우 여부
 
         public ChannelInfoDTO(Users user, Long followerCount, boolean isFollowing) {
             this.id = user.getId();

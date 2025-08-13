@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         log.error("스택 트레이스 시작");
         e.printStackTrace();
         log.error("스택 트레이스 끝");
-        return Resp.fail(HttpStatus.INTERNAL_SERVER_ERROR, ErrorEnum.INTERNAL_SERVER_ERROR.getMessage());
+        return Resp.fail(HttpStatus.INTERNAL_SERVER_ERROR, ErrorEnum.UNKNOWN_SERVER_ERROR.getMessage());
     }
 
     /**
