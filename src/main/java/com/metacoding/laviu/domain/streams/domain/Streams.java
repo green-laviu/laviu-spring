@@ -82,4 +82,11 @@ public class Streams {
     public void upViewerCount() {
         this.viewerCount++;
     }
+
+    public void updateInfo(String title, List<StreamHashtags> streamHashtagList) {
+        this.title = title;
+        this.streamHashtagList.clear();
+        this.streamHashtagList.addAll(streamHashtagList);
+        this.updatedAt = LocalDateTime.now();
+    }
 }
