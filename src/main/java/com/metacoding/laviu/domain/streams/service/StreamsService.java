@@ -6,9 +6,7 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu._core.utils.StringTrim;
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.HashtagsRepository;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
@@ -23,9 +21,7 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
-import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
-import com.metacoding.laviu.domain.viewers.dto.ViewersResponse;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -181,33 +177,17 @@ public class StreamsService {
         UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
         //5.채팅 테이블 목록
-        List<ChatMessages> chatList = chatMessagesRepository.findAllByStreamIdJoinUser(streamPS.getId());
-        List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatList);
+//        List<ChatMessages> chatListPS = chatMessagesRepository.findAllByStreamIdJoinUser(streamPS.getId());
+//        List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatListPS);
 
         //6.hlsUrl
         String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
 
-        //7.HASHTAGE  TODO(삭제/임의데이터) - 로직 변경
-        List<StreamHashtags> streamHashtagList = List.of(
-                StreamHashtags.builder()
-                        .stream(streamPS)
-                        .hashtag(Hashtags.builder().name("소통").build())
-                        .build(),
-                StreamHashtags.builder()
-                        .stream(streamPS)
-                        .hashtag(Hashtags.builder().name("게임").build())
-                        .build()
-        );
-
-        //8.viewer 목록
-        List<Viewers> viewerList = viewersRepository.findAllByStreamId(streamPS.getId());
-        List<ViewersResponse.ViewersDetailDTO> viewerResultList = ViewersResponse.ViewersDetailDTO.fromList(viewerList);
-
         //9.라이브정보 합치기
-        LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl, streamHashtagList);
+        LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
+        return new StreamsResponse.DetailDTO(live);
 
     }
 

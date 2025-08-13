@@ -36,12 +36,12 @@ public class Streams {
     private LocalDateTime endedAt;
 
     //FK(Foreign Key) part
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users streamer;
 
     // 스트림 해시태그
-    @OneToMany(mappedBy = "stream")
-    private List<StreamHashtags> streamHashtags = new ArrayList<>();
+    @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StreamHashtags> streamHashtagList = new ArrayList<>();
 
     @Builder
     public Streams(String streamKey, String title, String thumbnailUrl, Integer viewerCount, StreamsStatus status, Users streamer) {

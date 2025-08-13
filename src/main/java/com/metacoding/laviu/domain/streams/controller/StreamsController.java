@@ -21,8 +21,7 @@ public class StreamsController {
     public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO) {
 
         //1.세션에서  id 꺼내기
-        int id = 2;
-        Users user = new Users(id);
+        Users user = Users.builder().id(3).build();
         //2. UUID로 스트림 키 생성 및 저장
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         return Resp.ok(respDTO);
@@ -34,11 +33,11 @@ public class StreamsController {
     public ResponseEntity<?> get(@PathVariable Integer streamId) {
         //1.뷰어의 id 꺼내기
 
-        Users user = new Users(2);
+        Users user = Users.builder().id(3).build();
 
         //조회
-        streamsService.getLiveStreamDetails(streamId, user);
-        return Resp.ok(null);
+        StreamsResponse.DetailDTO respDTO = streamsService.getLiveStreamDetails(streamId, user);
+        return Resp.ok(respDTO);
     }
 
 

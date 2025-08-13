@@ -24,9 +24,9 @@ public class ChatMessages {
     private LocalDateTime createdAt;
 
     //FK(Foreign Key)
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Streams stream;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users user;
 
     protected ChatMessages() {

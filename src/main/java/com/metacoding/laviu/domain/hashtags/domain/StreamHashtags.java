@@ -14,9 +14,9 @@ public class StreamHashtags {
     private Integer id;
 
     //FK(Foreign Key) part
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Streams stream;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Hashtags hashtag;
 
     // 기본생성자 사용금지
