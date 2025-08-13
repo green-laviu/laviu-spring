@@ -31,11 +31,11 @@ public class ViewerSanctions {
     private LocalDateTime updateAt;
 
     //FK(Foreign Key) part
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Streams stream;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users streamer;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users sanctionedUser;
 
     // 기본생성자 사용금지

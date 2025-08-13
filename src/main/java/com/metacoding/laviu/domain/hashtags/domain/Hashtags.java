@@ -20,9 +20,7 @@ public class Hashtags {
     }
 
     @Builder
-
     public Hashtags(String name) {
-
         this.name = name;
     }
 }

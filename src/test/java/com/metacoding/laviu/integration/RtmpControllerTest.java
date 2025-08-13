@@ -22,27 +22,35 @@ public class RtmpControllerTest extends MyRestDoc {
 
     @Test
     public void on_publish_test() throws Exception {
-        //given
+        // given
         String token = "123";
         String name = "abc123";
-        StreamsRequest.StreamsVerifyDTO reqDTO = new StreamsRequest.StreamsVerifyDTO();
-        reqDTO.setName(name);
-        reqDTO.setArgs("token=" + token);
+        String app = "live";
+        String addr = "192.168.0.5";
+        String clientid = "4";
+        String tcurl = "rtmp://localhost/live";
 
-        String requestBody = om.writeValueAsString(reqDTO);
+        // RTMP 서버의 on-publish 이벤트 바디 형식을 그대로 사용
+        // application/x-www-form-urlencoded 형식으로 문자열을 직접 생성합니다.
+        String requestBody = "app=" + app + "&name=" + name + "&args=" + "token=" + token
+                + "&addr=" + addr + "&clientid=" + clientid + "&tcurl=" + tcurl;
 
-        //when
+        System.out.println("✅요청 바디: " + requestBody);
+
+        // when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .post("/rtmp/on-publish")
+                        // contentType을 application/x-www-form-urlencoded 로 변경
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .content(requestBody)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer " + token)
         );
 
         //eye
-        String str = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("result : " + str);
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
     }
 
     @Test
@@ -54,6 +62,8 @@ public class RtmpControllerTest extends MyRestDoc {
         reqDTO.setThumbnailUrl(thumbnailsUrl);
 
         String requestBody = om.writeValueAsString(reqDTO);
+        System.out.println("✅요청 바디: " + requestBody);
+
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
@@ -63,7 +73,9 @@ public class RtmpControllerTest extends MyRestDoc {
         );
 
         //eye
-        String str = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("result : " + str);
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
     }
 }

@@ -21,9 +21,9 @@ public class Follows {
     private LocalDateTime followedAt;
 
     //FK(Foreign Key) part
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users follower;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Users following;
 
     // 기본생성자 사용금지
