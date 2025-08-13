@@ -18,7 +18,7 @@ public class StreamsResponse {
         private Integer streamId;          // streamId
         private String streamKey;          // UUID로 된 스트림 키
         private String title;              // 방송 제목
-        private List<HashtagsResponse.DTO> hashtagList;     // ["소통", "게임"]
+        private List<String> hashtagList;     // ["소통", "게임"]
         private StreamsStatus status; // PENDING, LIVE, ENDED 등
 
         public SaveDTO(Streams stream) {
@@ -26,7 +26,7 @@ public class StreamsResponse {
             this.streamKey = stream.getStreamKey();
             this.title = stream.getTitle();
             this.hashtagList = stream.getStreamHashtagList().stream()
-                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
+                    .map(sh -> sh.getHashtag().getName())
                     .toList();
             this.status = stream.getStatus();
         }
@@ -87,7 +87,7 @@ public class StreamsResponse {
         private Integer streamId;          // streamId
         private String streamKey;          // UUID로 된 스트림 키
         private String title;              // 방송 제목
-        private List<HashtagsResponse.DTO> hashtagList;     // ["소통", "게임"]
+        private List<String> hashtagList;     // ["소통", "게임"]
         private StreamsStatus status; // PENDING, LIVE, ENDED 등
 
         public UpdateDTO(Streams stream) {
@@ -95,7 +95,7 @@ public class StreamsResponse {
             this.streamKey = stream.getStreamKey();
             this.title = stream.getTitle();
             this.hashtagList = stream.getStreamHashtagList().stream()
-                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
+                    .map(sh -> sh.getHashtag().getName())
                     .toList();
             this.status = stream.getStatus();
         }

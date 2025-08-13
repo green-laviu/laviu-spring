@@ -66,9 +66,6 @@ public class StreamsService {
         if (!streamsPS.getStreamer().getId().equals(usersId))
             throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
-        // 연결이 끊어졌다가 다시 스트림 하면 아래의 조건이 실행됨
-        if (streamsPS.getStatus() == StreamsStatus.LIVE) return;
-
         streamsPS.startLive();
     }
 
