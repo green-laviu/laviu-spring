@@ -4,14 +4,19 @@ public enum ErrorEnum {
     // 나중에 수정해서 사용함
 
     /**
+     * 400 Bad Request - 이미 참여하고 있는 방송입니다.
+     */
+    ALREADY_PARTICIPATING_IN_STREAM(400, "이미 참여하고 있는 방송입니다"),
+
+    /**
      * 400 Bad Request - 이미 응답된 요청입니다.
      */
-    INVALID_INVITE_RESPONSE_STATE(400, "이미 응답된 요청입니다"),
+    ALREADY_RESPONDED_TO_INVITE(400, "이미 응답된 요청입니다"),
 
     /**
      * 400 Bad Request - 이미 종료된 방송입니다.
      */
-    STREAM_ENDED_STATE(400, "이미 종료된 방송입니다"),
+    STREAM_ALREADY_ENDED(400, "이미 종료된 방송입니다"),
 
     /**
      * 400 Bad Request - 잘못된 형식의 토큰으로 요청이 들어왔습니다.
@@ -21,12 +26,7 @@ public enum ErrorEnum {
     /**
      * 400 Bad Request - 이미 진행 중인 방송이 존재합니다.
      */
-    ALREADY_LIVE_STREAMING(400, "이미 진행 중인 방송이 존재합니다."),
-
-    /**
-     * 400 Bad Request - 진행 중인 방송이 없습니다.
-     */
-    NO_LIVE_STREAMING(400, "진행 중인 방송이 없습니다."),
+    STREAM_IS_ALREADY_LIVE(400, "이미 진행 중인 방송이 존재합니다."),
 
     /**
      * 400 Bad Request - 진행 중인 방송이 없습니다.
@@ -46,57 +46,52 @@ public enum ErrorEnum {
     /**
      * 401 Unauthorized - 토큰이 만료되었습니다.
      */
-    TOKEN_EXPIRED(401, "토큰이 만료되었습니다"),
+    TOKEN_HAS_EXPIRED(401, "토큰이 만료되었습니다"),
 
     /**
-     * 401 Bad Request - 유효하지 않은 토큰입니다.
+     * 401 Unauthorized - 유효하지 않은 토큰입니다.
      */
     INVALID_TOKEN(401, "유효하지 않는 토큰입니다"),
 
     /**
-     * 401 Bad Request - Authorization 헤더에 'Bearer'가 누락되었습니다.
+     * 401 Unauthorized - Authorization 헤더에 'Bearer'가 누락되었습니다.
      */
-    BEARER_PREFIX_MISSING(401, "Authorization 헤더에 'Bearer'가 누락되었습니다"),
+    BEARER_PREFIX_IS_MISSING(401, "Authorization 헤더에 'Bearer'가 누락되었습니다"),
 
     /**
      * 401 Unauthorized - 토큰이 존재하지 않습니다.
      */
-    TOKEN_NOT_FOUND(401, "토큰이 존재하지 않습니다"),
+    TOKEN_IS_MISSING(401, "토큰이 존재하지 않습니다"),
 
     /**
      * 403 Forbidden - 접근 권한이 없습니다.
      */
-    ACCESS_DENIED(403, "접근 권한이 없습니다."),
+    ACCESS_IS_DENIED(403, "접근 권한이 없습니다."),
 
     /**
-     * 404 Not Found - 해당 방송이 존재하지 않습니다.
+     * 403 Forbidden - 해당 방송을 하는 방송인이 아닙니다.
      */
-    NO_MATCH_STREAMER_ID_AND_USER_ID(403, "해당 방송을 하는 방송인이 아닙니다."),
+    NOT_THE_STREAMER_OF_THIS_STREAM(403, "해당 방송을 하는 방송인이 아닙니다."),
 
     /**
-     * 404 Not Found - 관리자가 존재하지 않습니다.
+     * 404 Not Found - 해당 유저를 찾을 수 없습니다.
      */
-    NOT_MY_FRIEND(404, "서로 친구가 아닙니다"),
+    USER_NOT_FOUND(404, "해당 유저를 찾을 수 없습니다."),
 
     /**
-     * 404 Not Found - 해당 유저가 존재하지 않습니다.
+     * 404 Not Found - 해당 시청자를 찾을 수 없습니다.
      */
-    NOT_FOUND_USER(404, "해당 유저를 찾을 수 없습니다."),
+    VIEWER_NOT_FOUND(404, "해당 시청자를 찾을 수 없습니다."),
 
     /**
-     * 404 Not Found - 해당 시청자가 존재하지 않습니다.
+     * 404 Not Found - 해당 방송을 찾을 수 없습니다.
      */
-    NOT_FOUND_VIEWER(404, "해당 시청자를 찾을 수 없습니다."),
-
-    /**
-     * 404 Not Found - 해당 방송이 존재하지 않습니다.
-     */
-    NOT_FOUND_STREAM(404, "해당 방송을 찾을 수 없습니다."),
+    STREAM_NOT_FOUND(404, "해당 방송을 찾을 수 없습니다."),
 
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
      */
-    INTERNAL_SERVER_ERROR(500, "알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요"),
+    UNKNOWN_SERVER_ERROR(500, "알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요"),
 
     /**
      * [신규 추가]

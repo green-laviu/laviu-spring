@@ -1,4 +1,4 @@
-package com.metacoding.laviu.domain.streams.controller;
+package com.metacoding.laviu.domain.chatmessages.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
