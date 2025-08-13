@@ -44,7 +44,7 @@ public class Users {
     private List<Follows> followsList;
     @OneToMany(mappedBy = "following")
     private List<Follows> followingList;
-    @OneToMany(mappedBy = "streams")
+    @OneToMany(mappedBy = "streamer")
     private List<Streams> streamsList;
 
     // 기본생성자 사용금지

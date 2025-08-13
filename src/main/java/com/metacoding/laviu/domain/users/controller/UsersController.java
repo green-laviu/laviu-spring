@@ -19,7 +19,8 @@ public class UsersController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUsers(@PathVariable Integer userId) {
-        Integer tokenUserId = 1; // 토큰으로 조회
+        
+        Integer tokenUserId = 2; // 토큰으로 조회
         UsersResponse.StreamerDTO users = usersService.getStreamerDetailDto(userId, tokenUserId);
         return Resp.ok(users);
     }
