@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,5 +29,11 @@ public class Follows {
 
     // 기본생성자 사용금지
     protected Follows() {
+    }
+
+    @Builder
+    public Follows(Users follower, Users following) {
+        this.follower = follower;
+        this.following = following;
     }
 }
