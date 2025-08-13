@@ -9,36 +9,34 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
-
 @Getter
-@Table(name = "chat_messages_tb")
 @Entity
+@Table(name = "chat_messages_tb")
 public class ChatMessages {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @ManyToOne
-    private Streams stream;
-    @ManyToOne
-    private Users user;
-
+    @Column(nullable = false)
     private String content;
 
+    //data part
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    //FK(Foreign Key)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Streams stream;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Users user;
 
     protected ChatMessages() {
-
     }
 
     @Builder
-    public ChatMessages(Integer id, Streams stream, Users user, String content) {
+    public ChatMessages(Integer id, String content, Streams stream, Users user) {
         this.id = id;
+        this.content = content;
         this.stream = stream;
         this.user = user;
-        this.content = content;
-
     }
 }
