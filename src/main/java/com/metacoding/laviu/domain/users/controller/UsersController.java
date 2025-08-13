@@ -19,7 +19,7 @@ public class UsersController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<?> getUsers(@PathVariable Integer userId) {
-        
+
         Integer tokenUserId = 2; // 토큰으로 조회
         UsersResponse.StreamerDTO users = usersService.getStreamerDetailDto(userId, tokenUserId);
         return Resp.ok(users);
@@ -27,7 +27,7 @@ public class UsersController {
 
     @GetMapping("/me")
     public ResponseEntity<?> getMe() {
-        Integer userId = 1; // 토큰으로 조회
+        Integer userId = 2; // 토큰으로 조회
         UsersResponse.MeDTO users = usersService.getMyDetailDto(userId);
         return Resp.ok(users);
     }
