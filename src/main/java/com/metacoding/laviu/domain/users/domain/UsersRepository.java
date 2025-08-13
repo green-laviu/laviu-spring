@@ -24,7 +24,33 @@ public class UsersRepository {
     }
 
     public UsersResponse.StreamerDTO returnStreamerDTO(Integer userId, Integer tokenUserId) {
-        Query query = em.createNativeQuery("select from detail_users_info(:userId, :tokenId)", Object[].class);
+        Query query = em.createNativeQuery(
+                /* 스트리머의 식별자, 닉네임, 프로필 URL, 팔로워 수, 소개글, 요청자의 팔로우 여부, 방송 여부, */
+                "select u.id as streamer_id, u.nickname as streamer_name, u.profile_image_url as streamer_profile_image_url," +
+                        " (select COUNT(*) from follows_tb f where f.following_id = u.id) as follower_count, " +
+                        "  u.bio as introduction," +
+                        "  case when EXISTS(" +
+                        " select 1 from follows_tb f2" +
+                        " where f2.follower_id = :tokenId and f2.following_id = u.id" +
+                        " ) THEN 1 ELSE 0 end as is_following, " +
+                        " coalesce(" +
+                        /* LIVE 우선 */
+                        " (select s" +
+                        " from streams_tb s" +
+                        " where s.streamer_id = u.id and s.status = 'LIVE'" +
+                        " order by s.started_at desc" +
+                        " limit 1)," +
+                        /* 없으면 최근 스트림 status */
+                        " (select s2.statu" +
+                        " from streams_tb s2" +
+                        " where s2.streamer_id = u.id" +
+                        " order by s2.started_at desc" +
+                        " limit 1)," +
+                        /* 둘 다 없으면 ENDED */
+                        " 'ENDED'" +
+                        " ) as stream_status" +
+                        "from users_tb u" +
+                        "where u.id = :userId;", Object[].class);
         query.setParameter("userId", userId);
         query.setParameter("tokenId", userId);
 
