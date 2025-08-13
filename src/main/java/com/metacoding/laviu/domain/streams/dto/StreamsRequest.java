@@ -41,4 +41,9 @@ public class StreamsRequest {
 
     }
 
+    @Data
+    public static class UpdateDTO {
+        private String title;
+        private List<String> hashtagList;
+    }
 }

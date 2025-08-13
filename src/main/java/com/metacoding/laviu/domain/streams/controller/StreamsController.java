@@ -53,4 +53,11 @@ public class StreamsController {
         StreamsResponse.StreamListDTO respDTO = streamsService.findAll();
         return Resp.ok(respDTO);
     }
+
+    @PutMapping("/{streamId}/setting")
+    public ResponseEntity<?> update(@PathVariable Integer streamId, @RequestBody StreamsRequest.UpdateDTO reqDTO) {
+        Integer userId = 1; // token으로 조회 후 사용
+        StreamsResponse.UpdateDTO respDTO = streamsService.update(streamId, userId, reqDTO);
+        return Resp.ok(respDTO);
+    }
 }

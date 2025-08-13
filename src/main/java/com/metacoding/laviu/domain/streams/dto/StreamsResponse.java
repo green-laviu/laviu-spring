@@ -1,7 +1,6 @@
 package com.metacoding.laviu.domain.streams.dto;
 
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
-import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
@@ -19,15 +18,15 @@ public class StreamsResponse {
         private Integer streamId;          // streamId
         private String streamKey;          // UUID로 된 스트림 키
         private String title;              // 방송 제목
-        private List<String> hashtagList;     // ["소통", "게임"]
+        private List<HashtagsResponse.DTO> hashtagList;     // ["소통", "게임"]
         private StreamsStatus status; // PENDING, LIVE, ENDED 등
 
-        public SaveDTO(Streams stream, List<StreamHashtags> streamHashtags) {
+        public SaveDTO(Streams stream) {
             this.streamId = stream.getId();
             this.streamKey = stream.getStreamKey();
             this.title = stream.getTitle();
-            this.hashtagList = streamHashtags.stream()
-                    .map(sh -> sh.getHashtag().getName())
+            this.hashtagList = stream.getStreamHashtagList().stream()
+                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
                     .toList();
             this.status = stream.getStatus();
         }
@@ -80,6 +79,25 @@ public class StreamsResponse {
             this.live = live;
             this.chatList = new ArrayList<>();
             this.viewerId = viewer.getId();
+        }
+    }
+
+    @Data
+    public static class UpdateDTO {
+        private Integer streamId;          // streamId
+        private String streamKey;          // UUID로 된 스트림 키
+        private String title;              // 방송 제목
+        private List<HashtagsResponse.DTO> hashtagList;     // ["소통", "게임"]
+        private StreamsStatus status; // PENDING, LIVE, ENDED 등
+
+        public UpdateDTO(Streams stream) {
+            this.streamId = stream.getId();
+            this.streamKey = stream.getStreamKey();
+            this.title = stream.getTitle();
+            this.hashtagList = stream.getStreamHashtagList().stream()
+                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
+                    .toList();
+            this.status = stream.getStatus();
         }
     }
 }
