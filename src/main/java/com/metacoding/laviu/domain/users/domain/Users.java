@@ -1,11 +1,13 @@
 package com.metacoding.laviu.domain.users.domain;
 
+import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Table(name = "users_tb")
@@ -35,6 +37,14 @@ public class Users {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
+
+    //FK(Foreign Key) part
+    @OneToMany(mappedBy = "follower")
+    private List<Follows> followsList;
+    @OneToMany(mappedBy = "following")
+    private List<Follows> followingList;
+    @OneToMany(mappedBy = "streams")
+    private List<Streams> streamsList;
 
     // 기본생성자 사용금지
     protected Users() {

@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.users.domain;
 
+import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +21,17 @@ public class UsersRepository {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    public UsersResponse.StreamerDTO returnStreamerDTO(Integer userId, Integer tokenUserId) {
+        Query query = em.createNativeQuery("select from detail_users_info(:userId, :tokenId)", Object[].class);
+        query.setParameter("userId", userId);
+        query.setParameter("tokenId", userId);
+
+        Object[] column = (Object[]) query.getSingleResult();
+        UsersResponse.StreamerDTO result = new UsersResponse.StreamerDTO(
+
+        );
+        return result;
     }
 }
