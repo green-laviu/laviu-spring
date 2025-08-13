@@ -29,15 +29,9 @@ public enum ErrorEnum {
     STREAM_IS_ALREADY_LIVE(400, "이미 진행 중인 방송이 존재합니다."),
 
     /**
-     * 400 Bad Request - 팔로잉 중이 아닙니다.
-     */
-    NOT_FOLLOWING(400, "팔로잉 중이 아닙니다."),
-
-    /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
     ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
-
 
     /**
      * 401 Unauthorized - 로그인이 필요합니다.
@@ -70,6 +64,11 @@ public enum ErrorEnum {
     TOKEN_IS_MISSING(401, "토큰이 존재하지 않습니다"),
 
     /**
+     * 403 Forbidden - 팔로잉 관계의 소유자가 아닙니다.
+     */
+    NOT_THE_OWNER_OF_FOLLOWING(403, "팔로잉 관계의 소유자가 아닙니다."),
+
+    /**
      * 403 Forbidden - 접근 권한이 없습니다.
      */
     ACCESS_IS_DENIED(403, "접근 권한이 없습니다."),
@@ -78,6 +77,11 @@ public enum ErrorEnum {
      * 403 Forbidden - 해당 방송을 하는 방송인이 아닙니다.
      */
     NOT_THE_STREAMER_OF_THIS_STREAM(403, "해당 방송을 하는 방송인이 아닙니다."),
+
+    /**
+     * 404 Not Found - 팔로잉 중이 아닙니다.
+     */
+    NOT_FOLLOWING(404, "팔로잉 중이 아닙니다."),
 
     /**
      * 404 Not Found - 해당 유저를 찾을 수 없습니다.

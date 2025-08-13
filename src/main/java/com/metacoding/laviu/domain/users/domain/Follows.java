@@ -15,7 +15,7 @@ public class Follows {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(nullable = false)
-    private Boolean notify = false;
+    private Boolean isNotificationsEnabled = true;
 
     //Date part
     @CreationTimestamp
@@ -35,5 +35,13 @@ public class Follows {
     public Follows(Users follower, Users following) {
         this.follower = follower;
         this.following = following;
+    }
+
+    public void enableNotifications() {
+        this.isNotificationsEnabled = true;
+    }
+
+    public void disableNotifications() {
+        this.isNotificationsEnabled = false;
     }
 }

@@ -22,7 +22,7 @@ public class FollowsController {
     public ResponseEntity<?> save(@PathVariable("followingId") Integer followingId) {
 
         //1. 유저정보
-        Users user = Users.builder().id(1).build();
+        Users user = Users.builder().id(3).build();
 
         //2.save
         FollowsResponse.SaveDTO resDTO = followsService.save(user, followingId);
@@ -32,16 +32,39 @@ public class FollowsController {
 
     //follows delete
     @DeleteMapping("follows/{followId}")
-    public ResponseEntity<?> delete(@PathVariable("followId") Integer id) {
+    public ResponseEntity<?> delete(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
 
         //2.delete
-        FollowsResponse.deleteDTO resDTO = followsService.delete(user, id);
-        return Resp.ok(resDTO);
+        followsService.delete(user, followId);
+        return Resp.ok(null);
 
     }
 
+    @PutMapping("follows/{followId}/notify-on")
+    public ResponseEntity<?> notifyOn(@PathVariable("followId") Integer followId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.save
+        FollowsResponse.UpdateDTO resDTO = followsService.notifyOn(user, followId);
+
+        return Resp.ok(resDTO);
+    }
+
+    @PutMapping("follows/{followId}/notify-off")
+    public ResponseEntity<?> notifyOff(@PathVariable("followId") Integer followId) {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        //2.save
+        FollowsResponse.UpdateDTO resDTO = followsService.notifyOff(user, followId);
+
+        return Resp.ok(resDTO);
+    }
 
 }

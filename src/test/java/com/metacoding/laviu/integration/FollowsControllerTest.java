@@ -55,4 +55,40 @@ public class FollowsControllerTest extends MyRestDoc {
         //then
     }
 
+    @Test
+    public void notify_on_test() throws Exception {
+
+        //given
+        Integer followId = 1;
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/s/api/v1/follows/{followId}/notify-on", followId)
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+    }
+
+    @Test
+    public void notify_off_test() throws Exception {
+
+        //given
+        Integer followId = 1;
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/s/api/v1/follows/{followId}/notify-off", followId)
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+    }
+
 }
