@@ -51,10 +51,10 @@ public class FollowsRepository {
     }
 
     //id로 조회하기
-    public Optional<Follows> findByIdAndUserId(Integer id, Integer userId) {
+    public Optional<Follows> findByIdAndUserId(Integer followId, Integer userId) {
 
-        Query query = em.createQuery("select f from Follows f where f.id = :id and f.follower.id = :userId", Follows.class);
-        query.setParameter("id", id);
+        Query query = em.createQuery("select f from Follows f where f.id = :followId and f.follower.id = :userId", Follows.class);
+        query.setParameter("followId", followId);
         query.setParameter("userId", userId);
 
         try {
@@ -65,8 +65,10 @@ public class FollowsRepository {
     }
 
     public void delete(Follows follow) {
-        Query query = em.createQuery("delete Follows f where f.id = :id");
-        query.setParameter("id", follow.getId());
-        query.executeUpdate();
+        em.remove(follow);
+    }
+
+    public Optional<Follows> findById(Integer followId) {
+        return Optional.ofNullable(em.find(Follows.class, followId));
     }
 }
