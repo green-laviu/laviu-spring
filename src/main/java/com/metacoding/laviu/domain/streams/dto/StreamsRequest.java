@@ -27,7 +27,7 @@ public class StreamsRequest {
     @Data
     public static class SaveDTO {
         private String title;
-        private List<String> hashtags;
+        private List<String> hashtagList;
 
         public Streams toEntity(Users user, String streamKey) {
             return Streams.builder()

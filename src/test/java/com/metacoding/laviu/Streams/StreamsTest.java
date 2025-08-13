@@ -41,12 +41,12 @@ public class StreamsTest {
         Users user = Users.builder().id(2).build();
         StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO();
         reqDTO.setTitle("제목");
-        reqDTO.setHashtags(List.of("소통", "게임"));
+        reqDTO.setHashtagList(List.of("소통", "게임"));
 
         //when
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         System.out.println("스트림키 : " + respDTO.getStreamKey());
-        System.out.println("id : " + respDTO.getId());
+        System.out.println("id : " + respDTO.getStreamId());
         System.out.println("상태 : " + respDTO.getStatus());
         System.out.println("해시 : " + respDTO.getHashtagList());
 
