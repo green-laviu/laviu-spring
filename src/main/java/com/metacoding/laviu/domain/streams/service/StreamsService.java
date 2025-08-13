@@ -6,9 +6,7 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu._core.utils.StringTrim;
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.HashtagsRepository;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
@@ -23,9 +21,7 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
-import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
-import com.metacoding.laviu.domain.viewers.dto.ViewersResponse;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,9 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.metacoding.laviu._core.error.ErrorEnum.ALREADY_LIVE_STREAMING;
-import static com.metacoding.laviu._core.error.ErrorEnum.NO_LIVE_STREAMING;
 
 
 @RequiredArgsConstructor
@@ -59,6 +52,7 @@ public class StreamsService {
             System.out.println(key + " : " + params.get(key));
         }
         */
+
         String streamKey = reqDTO.getName();
         String args = reqDTO.getArgs();
         Map<String, String> queryMap = parseQueryString(args);
@@ -70,14 +64,14 @@ public class StreamsService {
         Integer usersId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
         // Entity 확인
         usersRepository.findById(usersId)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_USER));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 유저 정보와 조회
         if (!streamsPS.getStreamer().getId().equals(usersId))
-            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
-        streamsPS.updateStatus(StreamsStatus.LIVE);
+        streamsPS.startLive();
     }
 
     private Map<String, String> parseQueryString(String query) {
@@ -112,23 +106,22 @@ public class StreamsService {
     @Transactional
     public StreamsResponse.SaveDTO save(StreamsRequest.SaveDTO reqDTO, Users user) {
 
-        // 1.streams 테이블에 user 아이디로 live 인 row가 있는지 확인 없으면 정상 있으면 예외
-        Optional<Streams> streamOP = streamsRepository.findByuserId(user.getId());
+        // 1.streams 테이블에 user 아이디로 live 가 존재하는지 확인
+        Optional<Streams> streamOP = streamsRepository.findByUserIdAndLive(user.getId());
 
-        if (streamOP.isPresent()) throw new ExceptionApi400(ALREADY_LIVE_STREAMING);
+        // 2. live 데이터가 존재하면 예외
+        if (streamOP.isPresent()) throw new ExceptionApi400(ErrorEnum.STREAM_IS_ALREADY_LIVE);
 
-        //2. streamkey 생성
+        // 3. streamKey 생성
         String streamKey = CommonUtils.generateStreamKey();
 
-        //3. 스트림 저장(엔티티 반환 후 저장)
+        // 4. 스트림 저장(엔티티 반환 후 저장)
         Streams stream = reqDTO.toEntity(user, streamKey);
-        streamsRepository.save(stream);
+        Streams streamPS = streamsRepository.save(stream);
 
-        //4.hashtags save TODO
-        // HashTagsService 에게 reqDTO.hashtags 를 넘겨서
-        // 서비스 에서 db 조회 해서 있으면 조회된 엔티티 들을 리스트로 반환, 없으면 insert
-        // 받아온 엔티티로 스트림해시태그 db 에 insert 하기
-        List<String> normalized = Optional.ofNullable(reqDTO.getHashtags())
+        // 5. 해시태그 저장
+        // 5-1 해시태그에서 앞뒤 공백 제거 및 내부 공백 1개로 변경
+        List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtagList())
                 .orElseGet(List::of)
                 .stream()
                 .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
@@ -136,13 +129,13 @@ public class StreamsService {
                 .distinct()                                   // 중복 제거
                 .toList();
 
-        // 2) 해시태그 저장/조회 + 매핑 저장
+        // 5-2 해시태그 저장/조회 + 매핑 저장
         List<StreamHashtags> streamHashtags = new ArrayList<>(); // 응답/DTO에 내려줄 매핑 목록 버퍼
-        for (String tagName : normalized) { // 정규화·중복제거된 태그명 순회
-            Hashtags hashtag = hashtagsRepository.findByName(tagName) // 태그 존재 여부 조회
+        for (String hashtagName : normalizedHashtags) { // 정규화·중복제거된 태그명 순회
+            Hashtags hashtag = hashtagsRepository.findByName(hashtagName) // 태그 존재 여부 조회
                     .orElseGet(() -> { // 없으면 생성로직 수행 (upsert)
                         Hashtags h = Hashtags.builder()
-                                .name(tagName) // 태그명 세팅
+                                .name(hashtagName) // 태그명 세팅
                                 .build();
                         hashtagsRepository.save(h); // 신규 해시태그 영속화
                         return h; // 생성한 엔티티 반환
@@ -164,54 +157,37 @@ public class StreamsService {
      * 방송 보기 (시청자)
      */
     @Transactional
-    public void getLiveStreamDetails(int streamId, Users user) {
+    public StreamsResponse.DetailDTO getLiveStreamDetails(Integer streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
 
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
-        Streams stream = streamsRepository.findByIdJoinUser(streamId)
-                .orElseThrow(() -> new ExceptionApi400(NO_LIVE_STREAMING));
+        Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
-        //2.viewer
-        //viewersService에게 save를 넘김
-        viewersService.save(stream, user);
+        // 2.viewer 테이블 추가
+        viewersService.save(streamPS, user);
 
         //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
-        stream.updateViewerCount();
+        streamPS.upViewerCount();
 
         //4.팔로워수 팔로워 여부 , 채널dto 생성
-        Long followerCount = followsRepository.countByFollowingId(stream.getStreamer().getId());
-        Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(stream.getStreamer().getId(), user.getId());
-        UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(stream.getStreamer(), followerCount, isFollowing);
+        Long followerCount = followsRepository.countByFollowingId(streamPS.getStreamer().getId());
+        Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(streamPS.getStreamer().getId(), user.getId());
+        UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
         //5.채팅 테이블 목록
-        List<ChatMessages> chatList = chatMessagesRepository.findAllByStreamIdJoinUser(stream.getId());
-        List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatList);
+//        List<ChatMessages> chatListPS = chatMessagesRepository.findAllByStreamIdJoinUser(streamPS.getId());
+//        List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatListPS);
 
         //6.hlsUrl
-        String hlsUrl = "http://host/hls/" + stream.getStreamKey() + ".m3u8";
-
-        //7.HASHTAGE  TODO(삭제/임의데이터) - 로직 변경
-        List<StreamHashtags> streamHashtagList = List.of(
-                StreamHashtags.builder()
-                        .stream(stream)
-                        .hashtag(Hashtags.builder().name("소통").build())
-                        .build(),
-                StreamHashtags.builder()
-                        .stream(stream)
-                        .hashtag(Hashtags.builder().name("게임").build())
-                        .build()
-        );
-
-        //8.viewer 목록
-        List<Viewers> viewerList = viewersRepository.findAllByStreamId(stream.getId());
-        List<ViewersResponse.ViewersDetailDTO> viewerResultList = ViewersResponse.ViewersDetailDTO.fromList(viewerList);
+        String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
 
         //9.라이브정보 합치기
-        LiveDetailDTO live = new LiveDetailDTO(stream, channel, hlsUrl, streamHashtagList);
+        LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        StreamsResponse.DetailDTO resDTO = new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
+        return new StreamsResponse.DetailDTO(live);
 
     }
 
@@ -223,30 +199,28 @@ public class StreamsService {
     public void delete(Integer streamsId, Integer usersId) {
         // 방송 없으면 터짐
         Streams streamsPS = streamsRepository.findById(streamsId)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 권한 없음
         if (!streamsPS.getStreamer().getId().equals(usersId))
-            throw new ExceptionApi403(ErrorEnum.NO_MATCH_STREAMER_ID_AND_USER_ID);
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
         // 이미 종료된 방송
         if (streamsPS.getStatus() == StreamsStatus.ENDED)
-            throw new ExceptionApi400(ErrorEnum.STREAM_ENDED_STATE);
+            throw new ExceptionApi400(ErrorEnum.STREAM_ALREADY_ENDED);
         // 방송 종료
-        streamsPS.off(StreamsStatus.ENDED);
+        streamsPS.off();
     }
 
     @Transactional
     public void updateThumbnail(String streamKey, StreamsRequest.ThumbnailUpdateDTO reqDTO) {
         Streams streamsPS =
                 streamsRepository.findByStreamKey(streamKey)
-                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOUND_STREAM));
+                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
     }
 
     public StreamsResponse.StreamListDTO findAll() {
         List<Streams> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
-
-        if (liveStreamsList.isEmpty()) return null;
 
         int liveStreamsListSize = liveStreamsList.size();
         int carouselMaxSize = 3;
@@ -261,7 +235,7 @@ public class StreamsService {
         List<StreamsResponse.StreamDTO> recommendedList = new ArrayList<>();
         if (twinMinSize != liveStreamsListSize) {
             List<Streams> recommendedStreamsList = liveStreamsList.subList(carouselMaxSize, liveStreamsListSize);
-            
+
             for (Streams stream : recommendedStreamsList) {
                 recommendedList.add(mappingStreamDTO(stream));
             }
@@ -274,7 +248,7 @@ public class StreamsService {
 
     private StreamsResponse.StreamDTO mappingStreamDTO(Streams stream) {
         List<Hashtags> hashtagsList = new ArrayList<>();
-        for (StreamHashtags sh : stream.getStreamHashtags()) {
+        for (StreamHashtags sh : stream.getStreamHashtagList()) {
             hashtagsList.add(sh.getHashtag());
         }
         return new StreamsResponse.StreamDTO(

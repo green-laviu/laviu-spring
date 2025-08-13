@@ -14,8 +14,8 @@ public class StreamsRequest {
         private String name;
         private String args;
         private String addr;
-        private String clientId;
-        private String tcUrl;
+        private String clientid;
+        private String tcurl;
     }
 
     @Data
@@ -27,20 +27,15 @@ public class StreamsRequest {
     @Data
     public static class SaveDTO {
         private String title;
-        private List<String> hashtags;
-
-        public SaveDTO(String title, List<String> hashtags) {
-            this.title = title;
-            this.hashtags = hashtags;
-        }
+        private List<String> hashtagList;
 
         public Streams toEntity(Users user, String streamKey) {
             return Streams.builder()
                     .streamKey(streamKey)
                     .title(title)
                     .status(StreamsStatus.PENDING) // 기본값
-                    .viewerCount(0)
                     .streamer(user)
+                    .viewerCount(0)
                     .build();
         }
 

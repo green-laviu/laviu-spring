@@ -29,7 +29,9 @@ public class ViewersControllerTest extends MyRestDoc {
         );
 
         //eye
-        String str = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("result : " + str);
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
     }
 }
