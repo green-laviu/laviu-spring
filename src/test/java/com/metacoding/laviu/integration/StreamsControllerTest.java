@@ -45,7 +45,7 @@ public class StreamsControllerTest extends MyRestDoc {
         //given
         StreamsRequest.SaveDTO reqDTO = new StreamsRequest.SaveDTO();
         reqDTO.setTitle("방송타이틀");
-        reqDTO.setHashtags(List.of("게임", "방송"));
+        reqDTO.setHashtagList(List.of("게임1", "방송1"));
 
         String requestBody = om.writeValueAsString(reqDTO);
         System.out.println(requestBody);
@@ -93,7 +93,37 @@ public class StreamsControllerTest extends MyRestDoc {
         );
 
         //eye
-        String str = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("result : " + str);
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+    }
+
+    @Test
+    public void update_test() throws Exception {
+        //given
+        Integer streamId = 1;
+
+        StreamsRequest.UpdateDTO reqDTO = new StreamsRequest.UpdateDTO();
+        reqDTO.setTitle("방송타이틀5");
+        reqDTO.setHashtagList(List.of("게임5", "방송5"));
+
+        String requestBody = om.writeValueAsString(reqDTO);
+        System.out.println(requestBody);
+
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/s/api/v1/streams/{streamId}/setting", streamId)
+                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+
     }
 }

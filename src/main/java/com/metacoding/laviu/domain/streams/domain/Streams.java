@@ -100,4 +100,11 @@ public class Streams {
     public Streams(StreamsStatus status) {
         this.status = status;
     }
+
+    public void updateInfo(String title, List<StreamHashtags> streamHashtagList) {
+        this.title = title;
+        this.streamHashtagList.clear();
+        this.streamHashtagList.addAll(streamHashtagList);
+        this.updatedAt = LocalDateTime.now();
+    }
 }
