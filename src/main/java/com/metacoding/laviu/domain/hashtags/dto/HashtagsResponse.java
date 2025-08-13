@@ -7,11 +7,11 @@ public class HashtagsResponse {
 
     @Data
     public static class DTO {
-        private Integer id;
+        private Integer hashtagId;
         private String hashtagName;
 
         public DTO(Hashtags hashtags) {
-            this.id = hashtags.getId();
+            this.hashtagId = hashtags.getId();
             this.hashtagName = hashtags.getName();
         }
     }
