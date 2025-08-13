@@ -30,7 +30,7 @@ public class UsersService {
         users.updataProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
     }
 
-
+    @Transactional
     public void delete(Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
         usersRepository.delete(users);
