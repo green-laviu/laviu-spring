@@ -30,10 +30,6 @@ public class UsersService {
         users.updataProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
     }
 
-    private void updateSetting(Integer userId, Integer tokenUserId) {
-        Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
-        // 해당 연산을 모름
-    }
 
     public void delete(Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);

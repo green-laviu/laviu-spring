@@ -40,9 +40,4 @@ public class UsersController {
         return Resp.ok(null);
     }
 
-    @PutMapping("/{userId}/setting")
-    public ResponseEntity<?> updateSetting(@PathVariable Integer userId) {
-        usersService.updateSetting(userId, tokenUserId);
-        return Resp.ok(null);
-    }
 }
