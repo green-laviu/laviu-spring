@@ -15,4 +15,7 @@ public class UsersRepository {
         return Optional.ofNullable(em.find(Users.class, userId));
     }
 
+    public void delete(Users users) {
+        em.remove(users);
+    }
 }

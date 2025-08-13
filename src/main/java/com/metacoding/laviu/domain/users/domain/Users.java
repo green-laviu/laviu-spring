@@ -63,4 +63,10 @@ public class Users {
         this.provider = provider;
         this.type = type;
     }
+
+    public void updataProfile(String username, String channelDescription, String profileImageUrl) {
+        this.nickname = username;
+        this.bio = channelDescription;
+        this.profileImageUrl = profileImageUrl;
+    }
 }
