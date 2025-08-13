@@ -6,11 +6,9 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu._core.utils.StringTrim;
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
-import com.metacoding.laviu.domain.hashtags.domain.HashtagsRepository;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
-import com.metacoding.laviu.domain.hashtags.domain.StreamHashtagsRepository;
+import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
@@ -22,7 +20,6 @@ import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import com.metacoding.laviu.domain.viewers.domain.Viewers;
-import com.metacoding.laviu.domain.viewers.domain.ViewersRepository;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,13 +33,10 @@ import java.util.stream.Collectors;
 @Service
 public class StreamsService {
     private final StreamsRepository streamsRepository;
-    private final ViewersRepository viewersRepository;
     private final FollowsRepository followsRepository;
-    private final ChatMessagesRepository chatMessagesRepository;
     private final ViewersService viewersService;
-    private final HashtagsRepository hashtagsRepository;
-    private final StreamHashtagsRepository streamHashtagsRepository;
     private final UsersRepository usersRepository;
+    private final HashtagsService hashtagsService;
 
     @Transactional
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
@@ -133,24 +127,16 @@ public class StreamsService {
         // 5-2 해시태그 저장/조회 + 매핑 저장
         List<StreamHashtags> streamHashtags = new ArrayList<>(); // 응답/DTO에 내려줄 매핑 목록 버퍼
         for (String hashtagName : normalizedHashtags) { // 정규화·중복제거된 태그명 순회
-            Hashtags hashtag = hashtagsRepository.findByName(hashtagName) // 태그 존재 여부 조회
-                    .orElseGet(() -> { // 없으면 생성로직 수행 (upsert)
-                        Hashtags h = Hashtags.builder()
-                                .name(hashtagName) // 태그명 세팅
-                                .build();
-                        hashtagsRepository.save(h); // 신규 해시태그 영속화
-                        return h; // 생성한 엔티티 반환
-                    });
-
+            Hashtags hashtagPS = hashtagsService.save(hashtagName);
             StreamHashtags sh = StreamHashtags.builder() // 스트림-해시태그 매핑 엔티티 생성
-                    .stream(stream)   // 현재 저장한 스트림
-                    .hashtag(hashtag) // 조회/신규 생성된 해시태그
+                    .stream(streamPS)   // 현재 저장한 스트림
+                    .hashtag(hashtagPS) // 조회/신규 생성된 해시태그
                     .build();
-            streamHashtagsRepository.save(sh); // 매핑 테이블 저장
             streamHashtags.add(sh); // 응답용 리스트에 추가
         }
+        streamPS.getStreamHashtagList().addAll(streamHashtags);
 
-        return new StreamsResponse.SaveDTO(stream, streamHashtags);
+        return new StreamsResponse.SaveDTO(streamPS);
     }
 
 
@@ -202,8 +188,7 @@ public class StreamsService {
         Streams streamsPS = streamsRepository.findById(streamsId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 권한 없음
-        if (!streamsPS.getStreamer().getId().equals(usersId))
-            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
+        checkStreamerPermission(streamsPS, usersId);
         // 이미 종료된 방송
         if (streamsPS.getStatus() == StreamsStatus.ENDED)
             throw new ExceptionApi400(ErrorEnum.STREAM_ALREADY_ENDED);
@@ -245,5 +230,51 @@ public class StreamsService {
         }
 
         return new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+    }
+
+    @Transactional
+    public StreamsResponse.UpdateDTO update(Integer streamId, Integer userId, StreamsRequest.UpdateDTO reqDTO) {
+        // 유저 조회
+
+        // 방송 조회
+        Streams streamPS = streamsRepository.findById(streamId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
+
+        // 수정 권한 체크
+        checkStreamerPermission(streamPS, userId);
+
+        // 수정
+        // 해시태그 저장
+        // 해시태그에서 앞뒤 공백 제거 및 내부 공백 1개로 변경
+        List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtagList())
+                .orElseGet(List::of)
+                .stream()
+                .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
+                .filter(tag -> tag != null && !tag.isEmpty()) // 빈값 제거
+                .distinct()                                   // 중복 제거
+                .toList();
+
+        // 해시태그 저장/조회 + 매핑 저장
+        List<StreamHashtags> streamHashtagList = new ArrayList<>(); // 응답/DTO에 내려줄 매핑 목록 버퍼
+        for (String hashtagName : normalizedHashtags) { // 정규화·중복제거된 태그명 순회
+            Hashtags hashtagPS = hashtagsService.save(hashtagName);
+
+            StreamHashtags sh = StreamHashtags.builder() // 스트림-해시태그 매핑 엔티티 생성
+                    .stream(streamPS)   // 현재 저장한 스트림
+                    .hashtag(hashtagPS) // 조회/신규 생성된 해시태그
+                    .build();
+            streamHashtagList.add(sh); // 응답용 리스트에 추가
+        }
+
+        // 타이틀 변경
+        streamPS.updateInfo(reqDTO.getTitle(), streamHashtagList);
+
+        // 응답
+        return new StreamsResponse.UpdateDTO(streamPS);
+    }
+
+    private void checkStreamerPermission(Streams streams, Integer streamerId) {
+        if (!streams.getStreamer().getId().equals(streamerId))
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
     }
 }

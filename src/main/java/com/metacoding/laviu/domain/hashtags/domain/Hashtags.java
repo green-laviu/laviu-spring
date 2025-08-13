@@ -20,7 +20,8 @@ public class Hashtags {
     }
 
     @Builder
-    public Hashtags(String name) {
+    public Hashtags(Integer id, String name) {
+        this.id = id;
         this.name = name;
     }
 }
