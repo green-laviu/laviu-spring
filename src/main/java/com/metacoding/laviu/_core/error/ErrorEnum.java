@@ -29,6 +29,11 @@ public enum ErrorEnum {
     NO_LIVE_STREAMING(400, "진행 중인 방송이 없습니다."),
 
     /**
+     * 400 Bad Request - 진행 중인 방송이 없습니다.
+     */
+    NOT_FOLLOWING(400, "팔로잉 중이 아닙니다."),
+
+    /**
      * 401 Unauthorized - 로그인이 필요합니다.
      */
     LOGIN_REQUIRED(401, "로그인이 필요합니다"),
