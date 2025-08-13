@@ -21,7 +21,7 @@ public class StreamsController {
     public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO) {
 
         //1.세션에서  id 꺼내기
-        Users user = Users.builder().id(3).build();
+        Users user = Users.builder().id(2).build();
         //2. UUID로 스트림 키 생성 및 저장
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
         return Resp.ok(respDTO);

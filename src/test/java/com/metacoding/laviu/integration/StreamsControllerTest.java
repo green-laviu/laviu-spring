@@ -95,5 +95,6 @@ public class StreamsControllerTest extends MyRestDoc {
         //eye
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
+
     }
 }
