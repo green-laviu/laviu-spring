@@ -286,6 +286,7 @@ public class StreamsService {
 
         //1. 구하기
         List<Streams> streamList = streamsRepository.findAllByQuery(query);
+        System.out.println("나와라 " + streamList.get(0).getStreamHashtagList());
 
         //2. dto로 변환
         List<StreamsResponse.StreamDTO> respDTO = streamList.stream()

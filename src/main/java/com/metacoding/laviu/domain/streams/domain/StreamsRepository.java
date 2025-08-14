@@ -81,8 +81,8 @@ public class StreamsRepository {
         String jpql = """
                 select distinct s
                 from Streams s
-                join fetch s.streamHashtagList sh
-                join fetch sh.hashtag h
+                join  s.streamHashtagList sh
+                join  sh.hashtag h
                 where s.status = :live
                 and (:query <> '' and lower(h.name) like concat('%', lower(:query), '%'))
                 """;
