@@ -1,0 +1,43 @@
+{{<layout}}
+    {{$title}}{{model.title}}{{/title}}
+    {{$body}}
+        <h2>{{model.title}}</h2>
+        <table>
+            <thead>
+            <tr>
+                <th>썸네일</th>
+                <th>방송제목</th>
+                <th>스트리머 이름</th>
+                <th>방송상태</th>
+                <th>시청자수</th>
+                <th>방송시작시간</th>
+                <th>방송종료시간</th>
+                <th>스트림키</th>
+                <th>방송종료</th>
+            </tr>
+            </thead>
+            <tbody>
+            {{#model.streams}}
+                <tr>
+                    <td><img src="{{thumbnailUrl}}" width="80" alt="thumb"></td>
+                    <td>{{title}}</td>
+                    <td>{{streamerName}}</td>
+                    <td>{{status}}</td>
+                    <td>{{viewerCount}}</td>
+                    <td>{{startTime}}</td>
+                    <td>{{endTime}}</td>
+                    <td>{{streamKey}}</td>
+                    <td>
+                        <button class="end-btn">종료</button>
+                    </td>
+                </tr>
+            {{/model.streams}}
+            {{^model.streams}}
+                <tr>
+                    <td colspan="9">데이터가 없습니다.</td>
+                </tr>
+            {{/model.streams}}
+            </tbody>
+        </table>
+    {{/body}}
+{{/layout}}
