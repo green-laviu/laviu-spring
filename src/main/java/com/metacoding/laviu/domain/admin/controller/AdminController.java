@@ -43,24 +43,15 @@ public class AdminController {
     // 실시간 방송 관리
     @GetMapping("/api/v1/admin/streams")
     public String adminStreamManage(HttpServletRequest request) {
-        AdminResponse.StreamListDTO model = adminService.adminStreamManage(); // 1:1 동일 메서드명
-        request.setAttribute("model", model); // view에서 {{model.*}}로 접근
+        AdminResponse.StreamListDTO model = adminService.adminStreamManage();
+        request.setAttribute("model", model);
         return "admin-stream-manage"; // mustache 파일명
     }
 
     // 유저 목록
     @GetMapping("/api/v1/admin/users")
     public String adminUserList(HttpServletRequest request) {
-        Map<String, Object> model = Map.of(
-                "title", "유저 목록",
-                "menu", Map.of("broadcast", false, "user", true, "report", false),
-                "users", List.of(
-                        Map.of("email", "test@example.com", "nickname", "테스터",
-                                "joinDate", "2025-08-01", "updateDate", "2025-08-10",
-                                "lastLogin", "2025-08-13", "oauthProvider", "GOOGLE",
-                                "selfIntro", "안녕하세요", "type", "USER")
-                )
-        );
+        AdminResponse.UserListDTO model = adminService.adminUserManage();
         request.setAttribute("model", model);
         return "admin-user-list";
     }

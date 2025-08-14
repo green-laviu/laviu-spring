@@ -9,16 +9,4 @@ public class AdminRequest {
         private String email;
         private String password;
     }
-
-    @Data
-    public static class StreamDTO {
-    }
-
-    @Data
-    public static class UserListDTO {
-    }
-
-    @Data
-    public static class ReportListDTO {
-    }
 }

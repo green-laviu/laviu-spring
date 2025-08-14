@@ -93,5 +93,12 @@ public class StreamsRepository {
                 .getResultList();
     }
 
+    // 관리자 페이지에서 사용할 모든 스트림 목록 조회 (LIVE 상태만)
+    public List<Streams> findAllLiveStreamsWithStreamer() {
+        return em.createQuery(
+                        "select s from Streams s join fetch s.streamer where s.status = :status order by s.startedAt desc", Streams.class
+                ).setParameter("status", StreamsStatus.LIVE)
+                .getResultList();
+    }
 }
 
