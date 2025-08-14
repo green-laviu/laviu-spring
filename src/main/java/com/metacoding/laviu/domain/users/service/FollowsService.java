@@ -4,6 +4,9 @@ import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi400;
 import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu.domain.streams.domain.Streams;
+import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
+import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import com.metacoding.laviu.domain.users.domain.Follows;
 import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -13,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,6 +25,7 @@ public class FollowsService {
 
     private final FollowsRepository followsRepository;
     private final UsersRepository usersRepository;
+    private final StreamsRepository streamsRepository;
 
     @Transactional
     public FollowsResponse.SaveDTO save(Users followerUser, Integer followingId) {
@@ -89,6 +94,18 @@ public class FollowsService {
     }
 
     public List<FollowsResponse.FollowDTO> list(Users user) {
+        List<Follows> followsPS = followsRepository.findByFollowerId(user.getId());
+        if (followsPS.isEmpty()) {
+            return List.of();
+        }
+        Collection<Integer> userIds = followsPS.stream()
+        List<Streams> streamsPs = streamsRepository.findByUser_IdInAndStatus(userIds, StreamsStatus.LIVE);
+    }
+
+    private FollowsResponse.FollowDTO getDto(Follows follow) {
+        return null;
+    }
+    private Collection<Integer> getUserIds(Collection<Follows> follows){
 
     }
 }

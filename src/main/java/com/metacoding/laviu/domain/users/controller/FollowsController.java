@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
 @RequestMapping("/s/api/v1/follows/")
@@ -67,12 +69,13 @@ public class FollowsController {
         return Resp.ok(resDTO);
     }
 
+    // 현재 팔로우 하고 있는 유저의 목록 조회
     @GetMapping
     public ResponseEntity<?> followList() {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-
+        List<FollowsResponse.FollowDTO> result = followsService.list(user);
         return Resp.ok(null);
     }
 
