@@ -60,7 +60,7 @@ public class AdminService {
      *
      * @return 실시간 방송 목록과 페이지 정보를 담은 DTO
      */
-    public AdminResponse.StreamListDTO adminStreamManage() {
+    public AdminResponse.StreamListDTO adminStreamList() {
 
         // 1. StreamsRepository를 사용하여 LIVE 상태인 스트림 목록을 조회
         List<Streams> liveStreams = streamsRepository.findAllLiveStreamsWithStreamer();
@@ -88,7 +88,7 @@ public class AdminService {
      *
      * @return 유저 목록과 페이지 정보를 담은 DTO
      */
-    public AdminResponse.UserListDTO adminUserManage() {
+    public AdminResponse.UserListDTO adminUserList() {
         // 1. UsersRepository를 사용하여 모든 유저 목록을 조회
         List<Users> users = usersRepository.getAllUsers();
 
@@ -110,14 +110,14 @@ public class AdminService {
     }
 
     /**
-     * 관리자 페이지의 신고 관리 화면에 필요한 데이터를 제공하는 메서드.
+     * 관리자 페이지의 신고 내역 화면에 필요한 데이터를 제공하는 메서드.
      * 모든 신고 목록을 조회하여 DTO에 담아 반환합니다.
      *
      * @return 신고 목록과 페이지 정보를 담은 DTO
      */
     public AdminResponse.ReportListDTO adminReportList() {
-        // 1. AbuseReportsRepository를 사용하여 모든 신고 목록을 최신순으로 조회
-        List<AbuseReports> reports = abusereportsRepository.findAllOrderByCreatedAtDesc();
+        // 1. AbuseReportsRepository를 사용하여 모든 신고 목록을 조회
+        List<AbuseReports> abuseReports = abusereportsRepository.findAllOrderByCreatedAtDesc();
 
         // 2. AdminResponse.ReportListDTO 객체를 생성하고, 페이지에 필요한 기본 정보를 설정
         AdminResponse.ReportListDTO respDTO = new AdminResponse.ReportListDTO();
@@ -125,8 +125,8 @@ public class AdminService {
         respDTO.getMenu().put("report", true);
 
         // 3. 조회한 AbuseReports 엔티티 리스트를 ReportListDTO의 내부 클래스인 Report DTO 리스트로 변환
-        List<AdminResponse.ReportListDTO.Report> dtoList = reports.stream()
-                .map(AdminResponse.ReportListDTO.Report::new) // Report DTO 생성자에 AbuseReports 엔티티를 전달
+        List<AdminResponse.ReportListDTO.Report> dtoList = abuseReports.stream()
+                .map(AdminResponse.ReportListDTO.Report::new)
                 .collect(Collectors.toList());
 
         // 4. 변환된 DTO 리스트를 respDTO에 설정

@@ -107,28 +107,28 @@ public class AdminResponse {
 
         @Data
         public static class Report {
-            private Integer id;                         // 신고 ID
-            private String reporterEmail;               // 신고자의 이메일
-            private String reportReason;                // 신고 사유 (예: "부적절한 언어")
-            private String reportedContent;             // 신고된 콘텐츠의 제목 (예: "게임 방송")
-            private String reportedType;                // 신고 대상의 타입 (현재는 "스트림"으로 고정)
-            private String status;                      // 신고 처리 상태 (예: PENDING, RESOLVED)
-            private LocalDateTime createdAt;            // 신고가 접수된 시간
-            private LocalDateTime processedAt;          // 신고가 처리된 시간
+            private Integer id;
+            private Integer reporterId; // 신고자 ID
+            private Integer reportedStreamId; // 신고된 방송 ID
+            private Integer reportedStreamerId; // 신고된 스트리머 ID
+            private String broadcastTitle; // 신고된 방송 제목
+            private String streamerNickname; // 신고된 스트리머 닉네임
+            private String detailReason; // 신고 상세 사유
+            private String reportType; // 신고 유형 (카테고리)
+            private LocalDateTime createdAt;
+            private String status;
 
             public Report(AbuseReports abuseReport) {
                 this.id = abuseReport.getId();
-                // 신고자 이메일 (abuseReporter는 Users 엔티티이므로 email 필드 접근)
-                this.reporterEmail = abuseReport.getAbuseReporter().getEmail();
-                // 신고 사유 (category는 AbuseReportsCategorys 엔티티이므로 title 필드 접근)
-                this.reportReason = abuseReport.getCategory().getTitle();
-                // 신고 대상 콘텐츠 (stream title)
-                this.reportedContent = abuseReport.getSnapshotStreamTitle();
-                // 신고 대상 타입 (예시: "스트리머" 또는 "스트림") - 필요시 로직 추가
-                this.reportedType = "스트림";
-                this.status = abuseReport.getStatus().name();
+                this.reporterId = abuseReport.getAbuseReporter().getId();
+                this.reportedStreamId = abuseReport.getAbuseReportedStream().getId();
+                this.reportedStreamerId = abuseReport.getAbuseReportedStreamer().getId();
+                this.broadcastTitle = abuseReport.getSnapshotStreamTitle();
+                this.streamerNickname = abuseReport.getSnapshotStreamerNickname();
+                this.detailReason = abuseReport.getDetails();
+                this.reportType = abuseReport.getCategory().getTitle();
                 this.createdAt = abuseReport.getCreatedAt();
-                this.processedAt = abuseReport.getProcessedAt();
+                this.status = abuseReport.getStatus().name();
             }
         }
     }
