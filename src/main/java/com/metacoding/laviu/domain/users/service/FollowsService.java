@@ -89,6 +89,6 @@ public class FollowsService {
     }
 
     public List<FollowsResponse.FollowDTO> list(Users user) {
-
+        return null;
     }
 }

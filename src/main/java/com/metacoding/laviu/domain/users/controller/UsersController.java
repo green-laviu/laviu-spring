@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.controller;
 
 import com.metacoding.laviu._core.utils.Resp;
+import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.UsersRequest;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import com.metacoding.laviu.domain.users.service.UsersService;
@@ -30,8 +31,9 @@ public class UsersController {
 
     @PutMapping("/{userId}")
     public ResponseEntity<?> updateUsers(@PathVariable Integer userId, @RequestBody UsersRequest.updateDTO updateDTO) {
-        usersService.update(updateDTO, userId, tokenUserId);
-        return Resp.ok(null);
+        Users users = usersService.update(updateDTO, userId, tokenUserId);
+        UsersResponse.MeDTO usersDTO = usersService.getMyDetailDto(tokenUserId);
+        return Resp.ok(usersDTO);
     }
 
     @DeleteMapping("/{userId}")

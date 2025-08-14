@@ -24,47 +24,52 @@ public class UsersService {
     private final StreamsRepository streamsRepository;
     private final FollowsRepository followsRepository;
 
+    // 유저 정보 수정
     @Transactional
-    public void update(UsersRequest.updateDTO updateDTO, Integer userId, Integer tokenUserId) {
+    public Users update(UsersRequest.updateDTO updateDTO, Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
         users.updataProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
+
+        return users;
     }
 
+    // 유저 회원탈퇴(soft delete)
     @Transactional
     public void delete(Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
         usersRepository.delete(users);
     }
 
-
+    // 다른 유저 정보 조회
     public UsersResponse.StreamerDTO getStreamerDetailDto(Integer userId, Integer tokenUserId) {
-        StreamsResponse.StreamDTO liveStream = getLiveStream(userId);
+        StreamsResponse.UserInfoStreamsDTO liveStream = getLiveStream(userId);
         Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(tokenUserId, userId);
+
         UsersResponse.StreamerDTO.Streamer streamer =
                 new UsersResponse.StreamerDTO.Streamer(
                         getUsers(userId),
                         getFollowerCount(userId),
-                        isFollowing, liveStream.getStatus()
+                        isFollowing,
+                        getStreamsStatus(liveStream)
                 );
         return new UsersResponse.StreamerDTO(streamer, liveStream);
     }
 
     public UsersResponse.MeDTO getMyDetailDto(Integer userId) {
-        StreamsResponse.StreamDTO live = getLiveStream(userId);
+        StreamsResponse.UserInfoStreamsDTO liveStream = getLiveStream(userId);
         UsersResponse.MeDTO.Me me = new UsersResponse.MeDTO.Me(
                 getUsers(userId),
                 getFollowerCount(userId),
-                isLive(live.getStatus())
+                isLive(getStreamsStatus(liveStream))
         );
-        return new UsersResponse.MeDTO(me, live);
+        return new UsersResponse.MeDTO(me, liveStream);
     }
     // 진행 중이거나 끝난 방송 리턴
 
-    private StreamsResponse.StreamDTO getLiveStream(Integer userId) {
-        Streams streamPS = streamsRepository.findByUserIdAndLive(userId).orElse(
-                Streams.builder().status(StreamsStatus.ENDED).build()
-        );
-        return new StreamsResponse.StreamDTO(streamPS);
+    private StreamsResponse.UserInfoStreamsDTO getLiveStream(Integer userId) {
+        Streams streamPS = streamsRepository.findByUserIdAndLive(userId).orElse(null);
+        if (streamPS == null) return null;
+        return new StreamsResponse.UserInfoStreamsDTO(streamPS);
     }
 
     // 유저 조회 또는 Exception
@@ -88,5 +93,10 @@ public class UsersService {
         Users users = getUsers(userId);
         if (!users.getId().equals(tokenUserId)) throw new ExceptionApi403(ErrorEnum.ACCESS_IS_DENIED);
         return users;
+    }
+
+    // 방송 값에 따른 StreamsStatus 값 추출
+    private StreamsStatus getStreamsStatus(StreamsResponse.UserInfoStreamsDTO liveStream) {
+        return liveStream == null ? StreamsStatus.ENDED : liveStream.getStatus();
     }
 }

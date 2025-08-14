@@ -11,27 +11,29 @@ public class UsersResponse {
     @Data
     public static class MeDTO {
         private Me me;
-        private StreamsResponse.StreamDTO live;
+        private StreamsResponse.UserInfoStreamsDTO live;
 
         @Data
         public static class Me {
-            private Integer id;
+            private Integer userId;
             private String nickname;
             private String profileImageUrl;
             private Long followerCount;
             private Boolean isLive;
+            private String bio;
 
             @Builder
             public Me(Users user, Long followerCount, Boolean isLive) {
-                this.id = user.getId();
+                this.userId = user.getId();
                 this.nickname = user.getNickname();
                 this.profileImageUrl = user.getProfileImageUrl();
                 this.followerCount = followerCount;
                 this.isLive = isLive;
+                this.bio = user.getBio();
             }
         }
 
-        public MeDTO(Me me, StreamsResponse.StreamDTO live) {
+        public MeDTO(Me me, StreamsResponse.UserInfoStreamsDTO live) {
             this.me = me;
             this.live = live;
         }
@@ -40,25 +42,26 @@ public class UsersResponse {
     @Data
     public static class StreamerDTO {
         private Streamer streamer;
-        private StreamsResponse.StreamDTO liveStream;
+        private StreamsResponse.UserInfoStreamsDTO liveStream;
 
         @Data
         public static class Streamer {
-            private Integer streamerId;
-            private String streamerName;
-            private String streamerProfileImageUrl;
+            private Integer userId;
+            private String nickname;
+            private String profileImageUrl;
             private Long followerCount;
-            private String introduction;
+            private String bio;
             private Boolean isFollowing;
             private Boolean isNotified;
             private StreamsStatus streamStatus;
+            private Boolean isLive;
 
             public Streamer(Users user, Long followerCount, Boolean isFollowing, StreamsStatus streamStatus) {
-                this.streamerId = user.getId();
-                this.streamerName = user.getNickname();
-                this.streamerProfileImageUrl = user.getProfileImageUrl();
+                this.userId = user.getId();
+                this.nickname = user.getNickname();
+                this.profileImageUrl = user.getProfileImageUrl();
                 this.followerCount = followerCount;
-                this.introduction = user.getBio();
+                this.bio = user.getBio();
                 this.isFollowing = isFollowing;
                 this.streamStatus = streamStatus;
             }
@@ -70,7 +73,7 @@ public class UsersResponse {
             }
         }
 
-        public StreamerDTO(Streamer streamer, StreamsResponse.StreamDTO liveStream) {
+        public StreamerDTO(Streamer streamer, StreamsResponse.UserInfoStreamsDTO liveStream) {
             this.streamer = streamer;
             this.liveStream = liveStream;
         }
