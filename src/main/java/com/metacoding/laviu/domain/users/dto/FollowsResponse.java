@@ -8,14 +8,14 @@ public class FollowsResponse {
     @Data
     public static class SaveDTO {
 
-        private Integer id;
+        private Integer followId;
         private Integer followerId;
         private Integer followingId;
         private Boolean isFollowing;
         private Boolean isNotificationsEnabled;
 
         public SaveDTO(Follows follow) {
-            this.id = follow.getId();
+            this.followId = follow.getId();
             this.followerId = follow.getFollower().getId();
             this.followingId = follow.getFollowing().getId();
             this.isFollowing = true;
@@ -27,14 +27,14 @@ public class FollowsResponse {
     @Data
     public static class UpdateDTO {
 
-        private Integer id;
+        private Integer followId;
         private Integer followerId;
         private Integer followingId;
         private Boolean isFollowing;
         private Boolean isNotificationsEnabled;
 
         public UpdateDTO(Follows follow) {
-            this.id = follow.getId();
+            this.followId = follow.getId();
             this.followerId = follow.getFollower().getId();
             this.followingId = follow.getFollowing().getId();
             this.isFollowing = true;
