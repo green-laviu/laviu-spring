@@ -103,6 +103,12 @@ public enum ErrorEnum {
      */
     STREAM_NOT_FOUND(404, "해당 방송을 찾을 수 없습니다."),
 
+
+    /**
+     * 404 Not Found - 해당 신고카테고리를 찾을 수 없습니다.
+     */
+    ABUSEREPORTCATEGORYS_NOT_FOUND(404, "해당 신고카테고리를 찾을 수 없습니다."),
+
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
      */

@@ -1,13 +1,13 @@
 package com.metacoding.laviu.domain.abusereports.controller;
 
+import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.abusereports.dto.AbuseReportsRequest;
+import com.metacoding.laviu.domain.abusereports.dto.AbuseReportsResponse;
 import com.metacoding.laviu.domain.abusereports.service.AbuseReportsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @RequiredArgsConstructor
@@ -19,13 +19,15 @@ public class AbuseReportsController {
 
     //신고 save
     @PostMapping("/streams/{streamId}/abusereports")
-    public void save(AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId) {
+    public ResponseEntity<?> save(@RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId) {
 
         //1.유저 인증
-        Users streamer = Users.builder().id(2).build();
-
+        Users viewer = Users.builder().id(2).nickname("testname").build();
         //2. 서비스에 넘기기
-        abuseReportsService.save(reqDTO, streamer);
+        AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, viewer, streamId);
+
+        //TEST용 응답이고 TEST 완료시 NULL 변환 필요
+        return Resp.ok(respDTO);
 
     }
 }
