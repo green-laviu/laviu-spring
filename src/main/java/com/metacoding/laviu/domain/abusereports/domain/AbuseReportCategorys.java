@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 
 @Getter
-@Table(name = "abuse_reports_cartegorys_tb")
+@Table(name = "abuse_report_cartegorys_tb")
 @Entity
-public class AbuseReportsCategorys {
+public class AbuseReportCategorys {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
