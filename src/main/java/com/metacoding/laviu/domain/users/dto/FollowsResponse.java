@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.dto;
 
 import com.metacoding.laviu.domain.users.domain.Follows;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.Data;
 
 public class FollowsResponse {
@@ -43,4 +44,16 @@ public class FollowsResponse {
 
     }
 
+    @Data
+    public static class FollowDTO {
+        private UsersResponse.DTO user;
+        private Boolean isFollowing;
+        private Boolean isLive;
+
+        public FollowDTO(Users user, Boolean isFollowing, Boolean isLive) {
+            this.user = new UsersResponse.DTO(user);
+            this.isFollowing = isFollowing;
+            this.isLive = isLive;
+        }
+    }
 }

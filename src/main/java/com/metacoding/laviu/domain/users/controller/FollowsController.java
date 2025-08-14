@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RequiredArgsConstructor
-@RequestMapping("/s/api/v1/")
+@RequestMapping("/s/api/v1/follows/")
 @RestController
 public class FollowsController {
 
@@ -18,7 +18,7 @@ public class FollowsController {
 
     //follows save
     //request로 안받고 id로 받아오는 body
-    @PostMapping("follows/user/{followerId}/following/{followingId}")
+    @PostMapping("user/{followerId}/following/{followingId}")
     public ResponseEntity<?> save(@PathVariable("followingId") Integer followingId) {
 
         //1. 유저정보
@@ -31,7 +31,7 @@ public class FollowsController {
     }
 
     //follows delete
-    @DeleteMapping("follows/{followId}")
+    @DeleteMapping("{followId}")
     public ResponseEntity<?> delete(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -43,7 +43,7 @@ public class FollowsController {
 
     }
 
-    @PutMapping("follows/{followId}/notify-on")
+    @PutMapping("{followId}/notify-on")
     public ResponseEntity<?> notifyOn(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -55,7 +55,7 @@ public class FollowsController {
         return Resp.ok(resDTO);
     }
 
-    @PutMapping("follows/{followId}/notify-off")
+    @PutMapping("{followId}/notify-off")
     public ResponseEntity<?> notifyOff(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -65,6 +65,24 @@ public class FollowsController {
         FollowsResponse.UpdateDTO resDTO = followsService.notifyOff(user, followId);
 
         return Resp.ok(resDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<?> followList() {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        return Resp.ok(null);
+    }
+
+    @GetMapping("live")
+    public ResponseEntity<?> liveList() {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+
+        return Resp.ok(null);
     }
 
 }
