@@ -26,8 +26,8 @@ public class AbuseReportsController {
         //2. 서비스에 넘기기
         AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, viewer, streamId);
 
-        //TEST용 응답이고 TEST 완료시 NULL 변환 필요
-        return Resp.ok(respDTO);
+        //TEST용 응답시 "respDTO" 변경 (test용으로 값을 확인해볼려고 생성했어요)
+        return Resp.ok(null);
 
     }
 }

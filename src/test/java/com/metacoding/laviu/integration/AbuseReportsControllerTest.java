@@ -26,8 +26,8 @@ public class AbuseReportsControllerTest extends MyRestDoc {
         //given
         AbuseReportsRequest.saveDTO reqDTO = new AbuseReportsRequest.saveDTO();
         reqDTO.setDetails("신고사유");
-        reqDTO.setCategoryId(1);
-        Integer streamId = 5;
+        reqDTO.setCategoryId(2);
+        Integer streamId = 1;
 
         String requestBody = om.writeValueAsString(reqDTO);
         System.out.println("바디확인" + requestBody);
