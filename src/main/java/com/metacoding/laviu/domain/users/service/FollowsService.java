@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class FollowsService {
@@ -84,5 +86,9 @@ public class FollowsService {
         followPS.disableNotifications();
 
         return new FollowsResponse.UpdateDTO(followPS);
+    }
+
+    public List<FollowsResponse.FollowDTO> list(Users user) {
+
     }
 }
