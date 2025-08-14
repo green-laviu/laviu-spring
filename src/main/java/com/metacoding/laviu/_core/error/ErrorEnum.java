@@ -29,6 +29,11 @@ public enum ErrorEnum {
     STREAM_IS_ALREADY_LIVE(400, "이미 진행 중인 방송이 존재합니다."),
 
     /**
+     * 400 Bad Request - 방송중이 아닙니다.
+     */
+    STREAM_NOT_LIVE(400, "LIVE 방송중이 아닙니다."),
+
+    /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
     ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
