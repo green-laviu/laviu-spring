@@ -43,6 +43,7 @@ public class Streams {
     @OneToMany(mappedBy = "stream", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<StreamHashtags> streamHashtagList = new ArrayList<>();
 
+    @Builder
     public Streams(String streamKey, String title, String thumbnailUrl, Integer viewerCount, StreamsStatus status, Users streamer) {
         this.streamKey = streamKey;
         this.title = title;
@@ -80,25 +81,6 @@ public class Streams {
 
     public void upViewerCount() {
         this.viewerCount++;
-    }
-
-    @Builder
-    public Streams(Integer id, String streamKey, String title, String thumbnailUrl, Integer viewerCount, StreamsStatus status, LocalDateTime startedAt, LocalDateTime updatedAt, LocalDateTime endedAt, Users streamer, List<StreamHashtags> streamHashtagList) {
-        this.id = id;
-        this.streamKey = streamKey;
-        this.title = title;
-        this.thumbnailUrl = thumbnailUrl;
-        this.viewerCount = viewerCount;
-        this.status = status;
-        this.startedAt = startedAt;
-        this.updatedAt = updatedAt;
-        this.endedAt = endedAt;
-        this.streamer = streamer;
-        this.streamHashtagList = streamHashtagList;
-    }
-
-    public Streams(StreamsStatus status) {
-        this.status = status;
     }
 
     public void updateInfo(String title, List<StreamHashtags> streamHashtagList) {

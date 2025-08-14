@@ -62,7 +62,7 @@ public class UsersService {
 
     private StreamsResponse.StreamDTO getLiveStream(Integer userId) {
         Streams streamPS = streamsRepository.findByUserIdAndLive(userId).orElse(
-                new Streams(StreamsStatus.ENDED)
+                Streams.builder().status(StreamsStatus.ENDED).build()
         );
         return new StreamsResponse.StreamDTO(streamPS);
     }
