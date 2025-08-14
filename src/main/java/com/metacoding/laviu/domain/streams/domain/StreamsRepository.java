@@ -6,6 +6,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -69,6 +70,13 @@ public class StreamsRepository {
 
     public Optional<Streams> findById(Integer streamId) {
         return Optional.ofNullable(em.find(Streams.class, streamId));
+    }
+
+    public List<Streams> findByUser_IdInAndStatus(Collection<Integer> userIds, StreamsStatus streamsStatus) {
+        Query query = em.createQuery("select s from Streams s where s.streamer.id in :userIds and s.status = :status", Streams.class);
+        query.setParameter("userIds", userIds);
+        query.setParameter("status", streamsStatus);
+        return query.getResultList();
     }
 }
 

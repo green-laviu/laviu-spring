@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.controller;
 
 import com.metacoding.laviu._core.utils.Resp;
+import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.FollowsResponse;
 import com.metacoding.laviu.domain.users.service.FollowsService;
@@ -75,17 +76,18 @@ public class FollowsController {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-        List<FollowsResponse.FollowDTO> result = followsService.list(user);
-        return Resp.ok(null);
+        List<FollowsResponse.FollowDTO> result = followsService.followDtoList(user);
+        return Resp.ok(result);
     }
 
+    // 현재 팔로우 하고있는 유저의 방송 목록 조회
     @GetMapping("live")
     public ResponseEntity<?> liveList() {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-
-        return Resp.ok(null);
+        List<StreamsResponse.StreamDTO> result = followsService.followliveList(user);
+        return Resp.ok(result);
     }
 
 }
