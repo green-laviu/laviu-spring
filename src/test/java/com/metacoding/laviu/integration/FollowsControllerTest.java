@@ -91,23 +91,5 @@ public class FollowsControllerTest extends MyRestDoc {
         //then
     }
 
-    @Test
-    public void get_search_users_test() throws Exception {
-        //given
-        String query = "ssar";
-        //when
-        ResultActions actions = mvc.perform(
-                MockMvcRequestBuilders
-                       .get("/s/api/v1/search/users?query=" + query )
-
-                        //null  확인용
-                       // .get("/s/api/v1/search/users")
-        );
-        //eye
-        String responseBody = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("✅응답바디 : " + responseBody);
-
-        //then
-    }
 
 }

@@ -284,12 +284,14 @@ public class StreamsService {
     //스트림 검색
     public List<StreamsResponse.StreamDTO> getSearchStreams(String query) {
 
-        List <Streams> streamList = streamsRepository.findByQuery(query);
+        //1. 구하기
+        List<Streams> streamList = streamsRepository.findAllByQuery(query);
 
-        List<StreamsResponse.StreamDTO> resDTO = streamList.stream()
+        //2. dto로 변환
+        List<StreamsResponse.StreamDTO> respDTO = streamList.stream()
                 .map(StreamsResponse.StreamDTO::new) // 생성자에 Streams 넣어서 DTO 변환
                 .toList();
 
-        return resDTO;
+        return respDTO;
     }
 }

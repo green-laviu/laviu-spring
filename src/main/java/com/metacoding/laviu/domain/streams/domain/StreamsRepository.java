@@ -1,6 +1,5 @@
 package com.metacoding.laviu.domain.streams.domain;
 
-import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Query;
@@ -73,33 +72,24 @@ public class StreamsRepository {
     }
 
     //스트림 검색
-    public List<Streams> findByQuery(String query){
+    public List<Streams> findAllByQuery(String query) {
 
-        //null이나 빈값이면
-        if (query == null || query.trim().isEmpty()) {
-            // 검색어 없으면 전체 유저 조회
-            String jpql = """
-        select distinct s
-        from Streams s
-        join s.streamHashtagList sh
-        join sh.hashtag h
-        where s.status = :live
-       """;
-            return em.createQuery(jpql, Streams.class).getResultList();
-        }
+        //공백 제거 , 빈 문자열 처리
+        String queryResult = (query == null) ? "" : query.replaceAll(" ", "").trim();
 
         //검색 쿼리
         String jpql = """
-        select distinct s
-        from Streams s
-        join s.streamHashtagList sh
-        join sh.hashtag h
-        where s.status = :live
-          and h.name like :query
-       """;
+                select distinct s
+                from Streams s
+                join fetch s.streamHashtagList sh
+                join fetch sh.hashtag h
+                where s.status = :live
+                and (:query <> '' and lower(h.name) like concat('%', lower(:query), '%'))
+                """;
+
         return em.createQuery(jpql, Streams.class)
-                .setParameter("query", "%" + query + "%")
-                .setParameter("live",StreamsStatus.LIVE)
+                .setParameter("query", queryResult)
+                .setParameter("live", StreamsStatus.LIVE)
                 .getResultList();
     }
 

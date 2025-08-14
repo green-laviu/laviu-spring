@@ -1,7 +1,6 @@
 package com.metacoding.laviu.domain.users.domain;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,23 +17,22 @@ public class UsersRepository {
     }
 
     //유저 검색
-    public List<Users> findByQuery(String query) {
+    public List<Users> findAllByQuery(String query, Integer userId) {
 
-        //null이나 빈값이면
-        if (query == null || query.trim().isEmpty()) {
+        //1.공백 제거 , 빈 문자열 처리
+        String queryResult = (query == null) ? "" : query.replaceAll(" ", "").trim();
 
-            // 검색어 없으면 전체 유저 조회
-            String jpql = "select u from Users u";
-            return em.createQuery(jpql, Users.class).getResultList();
-        }
-
-        //검색 쿼리문
+        //2.내 정보는 리스트에 제외 + 빈문자열은 빈 리스트 반환
         String jpql = """
                 select u from Users u
-                 where u.nickname like :query
+                 where u.id <> :userId
+                 and (:query <> '' and lower(u.nickname) like concat('%', lower(:query), '%'))
                 """;
         return em.createQuery(jpql, Users.class)
-                .setParameter("query", "%" + query + "%")
+                .setParameter("query", queryResult)
+                .setParameter("userId", userId)
                 .getResultList();
     }
+
+
 }
