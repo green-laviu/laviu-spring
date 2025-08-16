@@ -9,6 +9,7 @@ import com.metacoding.laviu._core.utils.StringTrim;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
+import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
@@ -37,6 +38,7 @@ public class StreamsService {
     private final ViewersService viewersService;
     private final UsersRepository usersRepository;
     private final HashtagsService hashtagsService;
+    private final NotificationsService notificationsService;
 
     @Transactional
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
@@ -70,6 +72,9 @@ public class StreamsService {
         if (streamsPS.getStatus() == StreamsStatus.LIVE) return;
 
         streamsPS.startLive();
+
+        //팔로워에게 알림저장
+        notificationsService.save(streamsPS);
     }
 
     private Map<String, String> parseQueryString(String query) {
