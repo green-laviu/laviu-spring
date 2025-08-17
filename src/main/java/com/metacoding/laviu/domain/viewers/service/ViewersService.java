@@ -31,19 +31,23 @@ public class ViewersService {
     @Transactional
     public Viewers save(String streamKey, Users user) {
         // 1. 방송 조회
-        Streams streamPS = streamsRepository.findByStreamKeyAndLive(streamKey)
+        Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
-        //1. viewers 테이블 확인
+        // 2. viewers 테이블 확인
         Optional<Viewers> viewerOP = viewersRepository.findByStreamIdAndUserId(streamPS.getId(), user.getId());
 
         if (viewerOP.isPresent()) throw new ExceptionApi400(ErrorEnum.ALREADY_PARTICIPATING_IN_STREAM);
 
-        //2. viewers 생성
+        // 3. viewers 생성
         Viewers viewer = Viewers.builder()
                 .user(user)
                 .stream(streamPS)
                 .build();
+
+        // 4. 시청자수 올리기
+        streamPS.upViewerCount();
+
         //save
         return viewersRepository.save(viewer);
     }
@@ -52,22 +56,27 @@ public class ViewersService {
      *  시청자 방송 그만 보기
      */
     @Transactional
-    public void delete(Integer viewerId) {
-        // 시청자 존재 여부 확인
-        Viewers viewerPS =
-                viewersRepository.findById(viewerId)
-                        .orElseThrow(() -> new ExceptionApi404(ErrorEnum.VIEWER_NOT_FOUND));
+    public void delete(String streamKey, Users user) {
         // 방송 존재 여부 확인
         Streams streamsPS =
-                streamsRepository.findById(viewerPS.getStream().getId())
+                streamsRepository.findByStreamKey(streamKey)
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         streamsPS.downViewerCount();
+
+        // 뷰 찾기
+        Viewers viewerPS = viewersRepository.findByStreamIdAndUserId(streamsPS.getId(), user.getId())
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.VIEWER_NOT_FOUND));
+
+        // 뷰 테이블 삭제
         viewersRepository.delete(viewerPS);
+
+        // 시청자 수 내리기
+        streamsPS.downViewerCount();
     }
 
     public List<ViewersResponse.ViewersDetailDTO> getList(String streamKey) {
         // 1. 방송 조회
-        Streams streamPS = streamsRepository.findByStreamKeyAndLive(streamKey)
+        Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2. 시청자들 조회

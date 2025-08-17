@@ -12,6 +12,7 @@ public class ChatMessageDTO {
     private Integer authorId;        // 작성자 PK
     private String authorNickname;   // 작성자 닉네임
     private String authorHandle;     // 이메일 @ 앞부분 (예: "user123")
+    private Boolean isStreamer; // 스트리머 여부
 
     // 메시지 정보
     private String message;

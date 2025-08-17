@@ -107,17 +107,5 @@ public class StreamsRepository {
         }
     }
 
-    public Optional<Streams> findByStreamKeyAndLive(String streamKey) {
-        Query query = em.createQuery("select s from Streams s where s.streamKey = :streamKey and s.status = :status");
-        query.setParameter("streamKey", streamKey);
-        query.setParameter("status", StreamsStatus.LIVE);
-
-        try {
-            return Optional.of((Streams) query.getSingleResult());
-        } catch (Exception e) {
-            return Optional.empty();
-        }
-    }
-
 }
 

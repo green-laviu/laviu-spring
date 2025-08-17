@@ -39,6 +39,7 @@ public class ChatMessagesController {
             updateAndSendParticipantList(streamKey);
         } catch (ExceptionApi404 e) {
             // 나중에 추가해야함 TODO
+            System.out.println("이미 참가중입니다");
         }
 
     }
@@ -56,7 +57,7 @@ public class ChatMessagesController {
     }
 
     // [변경] 참가자 목록을 보내는 헬퍼 메서드
-    private void updateAndSendParticipantList(String streamKey) {
+    public void updateAndSendParticipantList(String streamKey) {
         var participantList = viewersService.getList(streamKey);
         // 스트리머 전용 구독 주소로 메시지 전송
         messagingTemplate.convertAndSend("/sub/" + streamKey + "/participants", participantList);

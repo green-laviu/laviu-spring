@@ -157,8 +157,8 @@ public class StreamsService {
         // 2.viewer 테이블 추가
 //        Viewers viewerPS = viewersService.save(streamPS, user);
 
-        //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
-        streamPS.upViewerCount();
+//        //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수) -> 웹소켓 부분으로 이동함
+//        streamPS.upViewerCount();
 
         //4.팔로워수 팔로워 여부 , 채널dto 생성
         Long followerCount = followsRepository.countByFollowingId(streamPS.getStreamer().getId());

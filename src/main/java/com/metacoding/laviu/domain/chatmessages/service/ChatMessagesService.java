@@ -19,7 +19,7 @@ public class ChatMessagesService {
 
     public ChatMessageDTO save(String streamKey, Users user, ChatMessageDTO chatMessageDTO) {
         // 1. 방송 조회
-        Streams streamPS = streamsRepository.findByStreamKeyAndLive(streamKey)
+        Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2. 채팅 엔티티 생성
@@ -34,7 +34,10 @@ public class ChatMessagesService {
 
         // 4. 시간 등록
         chatMessageDTO.setTimestamp(chatMessagePS.getCreatedAt());
-        
+
+        // 5. 스트리머 유무
+        chatMessageDTO.setIsStreamer(streamPS.getStreamer().getId().equals(user.getId()));
+
         return chatMessageDTO;
     }
 }
