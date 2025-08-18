@@ -16,6 +16,10 @@ public class UsersRepository {
         return Optional.ofNullable(em.find(Users.class, userId));
     }
 
+    public void delete(Users users) {
+        em.remove(users);
+    }
+
     //유저 검색
     public List<Users> findAllByQuery(String query, Integer userId) {
 
@@ -33,6 +37,4 @@ public class UsersRepository {
                 .setParameter("userId", userId)
                 .getResultList();
     }
-
-
 }
