@@ -29,7 +29,6 @@ public class UsersControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/s/api/v1/users/" + userId)
-                // contentType을 application/x-www-form-urlencoded 로 변경
         );
 
         //eye
@@ -47,7 +46,6 @@ public class UsersControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/s/api/v1/users/me")
-                // contentType을 application/x-www-form-urlencoded 로 변경
         );
 
         //eye
@@ -60,8 +58,9 @@ public class UsersControllerTest extends MyRestDoc {
     @Test
     public void update_users_test() throws Exception {
         // given
-        int userId = 2;
+        int userId = 1;
 
+        // TODO : 테스트 코드에서 요청 DTO 만들때 setter를 사용한다. 이유는 리플랙션으로 서블릿이 setter를 사용하기 때문에 동일하게 한다
         UsersRequest.updateDTO reqDTO = new UsersRequest.updateDTO(
                 "testUser",
                 "tempChannelDescription",
@@ -69,13 +68,13 @@ public class UsersControllerTest extends MyRestDoc {
         );
 
         String requestBody = om.writeValueAsString(reqDTO);
+        // TODO : 요청 DTO 도 sysout으로 꼭 확인한다
         // when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/users/" + userId)
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
-                // contentType을 application/x-www-form-urlencoded 로 변경
         );
 
         //eye
@@ -93,7 +92,6 @@ public class UsersControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .delete("/s/api/v1/users/" + userId)
-                // contentType을 application/x-www-form-urlencoded 로 변경
         );
 
         //eye

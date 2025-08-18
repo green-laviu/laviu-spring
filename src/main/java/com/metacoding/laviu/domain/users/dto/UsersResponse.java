@@ -64,12 +64,7 @@ public class UsersResponse {
                 this.bio = user.getBio();
                 this.isFollowing = isFollowing;
                 this.streamStatus = streamStatus;
-            }
-
-            @Builder
-            public Streamer(Users user, Long followerCount, Boolean isFollowing, Boolean isNotified, StreamsStatus streamStatus) {
-                this(user, followerCount, isFollowing, streamStatus);
-                this.isNotified = isNotified;
+                this.isLive = streamStatus.name().equals(StreamsStatus.LIVE.name()); // TODO : 여긴 me 처럼 안되어 있어서 임시로 넣음. 수정 바람
             }
         }
 

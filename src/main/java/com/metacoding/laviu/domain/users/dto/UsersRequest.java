@@ -19,4 +19,9 @@ public class UsersRequest {
         public updateDTO() {
         }
     }
+
+    @Data
+    public static class SearchDTO {
+        private String query;
+    }
 }
