@@ -1,9 +1,11 @@
 package com.metacoding.laviu.domain.admin.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
+import com.metacoding.laviu._core.error.ex.ExceptionApi401;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.abusereports.domain.AbuseReports;
 import com.metacoding.laviu.domain.abusereports.domain.AbuseReportsRepository;
+import com.metacoding.laviu.domain.abusereports.domain.AbuseReportsStatus;
 import com.metacoding.laviu.domain.admin.dto.AdminRequest;
 import com.metacoding.laviu.domain.admin.dto.AdminResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
@@ -11,6 +13,7 @@ import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.domain.UsersType;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +34,7 @@ public class AdminService {
      *
      * @param reqDTO 로그인 요청 데이터(이메일, 비밀번호)
      * @return 로그인 성공 시, 관리자 정보를 담은 DTO
-     * @throws ExceptionApi404 유저를 찾을 수 없거나 비밀번호가 일치하지 않을 때, 또는 관리자 권한이 없을 때 발생
+     * @throws ExceptionApi404, ExceptionApi403 유저를 찾을 수 없거나 비밀번호가 일치하지 않을 때, 또는 관리자 권한이 없을 때 발생
      */
     public AdminResponse.LoginDTO login(AdminRequest.LoginDTO reqDTO) {
 
@@ -46,7 +49,7 @@ public class AdminService {
 
         // 3. 유저의 타입이 ADMIN인지 다시 한 번 확인합니다. (getByEmailAndType에서 이미 확인했지만, 방어적 코드)
         if (!user.getType().equals(UsersType.ADMIN)) {
-            throw new ExceptionApi404(ErrorEnum.ACCESS_IS_DENIED);
+            throw new ExceptionApi401(ErrorEnum.ADMIN_PRIVILEGE_REQUIRED);
         }
 
         // 4. 모든 검증을 통과하면 AdminResponse.LoginDTO를 생성하여 반환합니다.
@@ -67,7 +70,9 @@ public class AdminService {
 
         // 2. AdminResponse.StreamManageDTO 객체를 생성하고, 페이지에 필요한 기본 정보를 설정
         AdminResponse.StreamListDTO respDTO = new AdminResponse.StreamListDTO();
-        respDTO.setTitle("실시간 방송 관리");
+
+        // DTO의 menu 필드(Map<String, Boolean>)에 "broadcast"라는 키와 true라는 값을 추가하여,
+        // 뷰(Mustache)에서 이 값을 참조해 해당 메뉴에 checked 속성을 부여
         respDTO.getMenu().put("broadcast", true);
 
         // 3. 조회한 Streams 엔티티 리스트를 StreamManageDTO의 내부 클래스인 Stream DTO 리스트로 변환
@@ -94,7 +99,9 @@ public class AdminService {
 
         // 2. AdminResponse.UserManageDTO 객체를 생성하고, 페이지에 필요한 기본 정보를 설정
         AdminResponse.UserListDTO respDTO = new AdminResponse.UserListDTO();
-        respDTO.setTitle("유저 관리");
+
+        // DTO의 menu 필드(Map<String, Boolean>)에 "user"라는 키와 true라는 값을 추가하여,
+        // 뷰(Mustache)에서 이 값을 참조해 해당 메뉴에 checked 속성을 부여
         respDTO.getMenu().put("user", true);
 
         // 3. 조회한 Users 엔티티 리스트를 UserManageDTO의 내부 클래스인 User DTO 리스트로 변환
@@ -117,11 +124,13 @@ public class AdminService {
      */
     public AdminResponse.ReportListDTO adminReportList() {
         // 1. AbuseReportsRepository를 사용하여 모든 신고 목록을 조회
-        List<AbuseReports> abuseReports = abusereportsRepository.findAllOrderByCreatedAtDesc();
+        List<AbuseReports> abuseReports = abusereportsRepository.findAll();
 
         // 2. AdminResponse.ReportListDTO 객체를 생성하고, 페이지에 필요한 기본 정보를 설정
         AdminResponse.ReportListDTO respDTO = new AdminResponse.ReportListDTO();
-        respDTO.setTitle("신고 내역");
+
+        // DTO의 menu 필드(Map<String, Boolean>)에 "report"라는 키와 true라는 값을 추가하여,
+        // 뷰(Mustache)에서 이 값을 참조해 해당 메뉴에 checked 속성을 부여
         respDTO.getMenu().put("report", true);
 
         // 3. 조회한 AbuseReports 엔티티 리스트를 ReportListDTO의 내부 클래스인 Report DTO 리스트로 변환
@@ -136,4 +145,18 @@ public class AdminService {
         return respDTO;
     }
 
+    @Transactional // 데이터 변경이 발생하므로 @Transactional 어노테이션 추가
+    public void processAbuseReport(Integer reportId, String status) {
+        // 1. 해당 신고를 찾습니다.
+        AbuseReports abuseReports = abusereportsRepository.findById(reportId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.REPORT_NOT_FOUND));
+
+        // 2. 받은 문자열 상태를 Enum 타입으로 변환합니다.
+        AbuseReportsStatus newStatus = AbuseReportsStatus.valueOf(status);
+
+        // 3. 엔티티의 상태를 변경하는 메서드를 호출합니다.
+        abuseReports.process(newStatus);
+
+        // 4. (JPA 사용 시) 변경된 상태는 트랜잭션 종료 시 자동으로 저장됩니다.
+    }
 }

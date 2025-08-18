@@ -41,4 +41,9 @@ public class AbuseReports {
     // 기본생성자 사용금지
     protected AbuseReports() {
     }
+
+    public void process(AbuseReportsStatus newStatus) {
+        this.status = newStatus;
+        this.processedAt = LocalDateTime.now();
+    }
 }

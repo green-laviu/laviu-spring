@@ -9,4 +9,9 @@ public class AdminRequest {
         private String email;
         private String password;
     }
+
+    @Data
+    public static class ProcessReportDTO {
+        private String status;
+    }
 }
