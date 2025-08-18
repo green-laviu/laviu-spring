@@ -1,5 +1,7 @@
 package com.metacoding.laviu.domain.users.service;
 
+import com.metacoding.laviu._core.error.ErrorEnum;
+import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.users.domain.Follows;
 import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -55,5 +57,10 @@ public class UsersService {
 
         return searchResultList;
 
+    }
+
+    public Users findById(Integer sanctionedUserId) {
+        return usersRepository.findById(sanctionedUserId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
     }
 }

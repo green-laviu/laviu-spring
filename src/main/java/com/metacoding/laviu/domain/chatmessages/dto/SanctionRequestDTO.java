@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class SanctionRequestDTO {
-    private Integer userId;
+    private Integer sanctionedUserId;
     private String type; // chatBan, kick
 }
