@@ -72,7 +72,7 @@ public class StreamsRepository {
         return Optional.ofNullable(em.find(Streams.class, streamId));
     }
 
-    public List<Streams> findByUser_IdInAndStatus(Collection<Integer> userIds, StreamsStatus streamsStatus) {
+    public List<Streams> findAllByUserIdsAndStatus(Collection<Integer> userIds, StreamsStatus streamsStatus) {
         Query query = em.createQuery("select s from Streams s where s.streamer.id in :userIds and s.status = :status", Streams.class);
         query.setParameter("userIds", userIds);
         query.setParameter("status", streamsStatus);

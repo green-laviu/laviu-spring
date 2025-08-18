@@ -125,7 +125,7 @@ public class FollowsService {
 
     // 사용자가 팔로우 중인 유저의 Streams List 반환하는 내부 로직
     private List<Streams> getFollowLiveStreamsList(Users user) {
-        return streamsRepository.findByUser_IdInAndStatus(getUserIds(getFollowsList(user)), StreamsStatus.LIVE);
+        return streamsRepository.findAllByUserIdsAndStatus(getUserIds(getFollowsList(user)), StreamsStatus.LIVE);
     }
 
     // 팔로워들의 id만 추출하는 내부 로직
