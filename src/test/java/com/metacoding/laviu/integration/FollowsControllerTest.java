@@ -91,4 +91,37 @@ public class FollowsControllerTest extends MyRestDoc {
         //then
     }
 
+    @Test
+    public void follow_list_test() throws Exception {
+        //given
+        Integer followId = 1;
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/s/api/v1/follows/")
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+    }
+
+    @Test
+    public void live_list_test() throws Exception {
+        //given
+        Integer followId = 1;
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .get("/s/api/v1/follows/live")
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+        //then
+    }
 }
