@@ -44,4 +44,8 @@ public class Notifications {
         this.type = type;
         this.user = user;
     }
+
+    public void markAsRead() {
+        this.isRead = true;
+    }
 }

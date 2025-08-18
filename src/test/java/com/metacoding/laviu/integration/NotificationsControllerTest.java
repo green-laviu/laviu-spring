@@ -2,10 +2,6 @@ package com.metacoding.laviu.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacoding.laviu.MyRestDoc;
-import com.metacoding.laviu.domain.notifications.domain.Notifications;
-import com.metacoding.laviu.domain.notifications.domain.NotificationsType;
-import com.metacoding.laviu.domain.streams.domain.Streams;
-import com.metacoding.laviu.domain.users.domain.Follows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 
 @Transactional
@@ -27,7 +20,7 @@ public class NotificationsControllerTest extends MyRestDoc {
     private ObjectMapper om;
 
     @Test
-    public void getNotificationList_test() throws Exception {
+    public void get_notification_list_test() throws Exception {
         //given
 
         //when
@@ -43,7 +36,23 @@ public class NotificationsControllerTest extends MyRestDoc {
         //then
     }
 
+    @Test
+    public void update_is_read_test() throws Exception {
 
+        //given
+        Integer notificationId = 3;
+        //when
+        ResultActions actions = mvc.perform(
+                MockMvcRequestBuilders
+                        .put("/s/api/v1/notifications/{notificationId}", notificationId)
+        );
+
+        //eye
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅응답바디 : " + responseBody);
+
+
+    }
 
 
 }
