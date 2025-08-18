@@ -102,7 +102,7 @@ public class FollowsService {
     }
 
     // 사용자가 팔로우하고 있는 유저의 목록을 FollowDto list로 주는 외부 연동 로직
-    public List<FollowsResponse.FollowDTO> followDtoList(Users user) {
+    public List<FollowsResponse.FollowDTO> followList(Users user) {
         return getFollowDtoList(getFollowLiveStreamsList(user));
     }
 

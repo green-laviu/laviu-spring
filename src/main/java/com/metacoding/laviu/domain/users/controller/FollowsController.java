@@ -76,8 +76,8 @@ public class FollowsController {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-        List<FollowsResponse.FollowDTO> result = followsService.followDtoList(user);
-        return Resp.ok(result);
+        List<FollowsResponse.FollowDTO> respDTO = followsService.followList(user);
+        return Resp.ok(respDTO);
     }
 
     // 현재 팔로우 하고있는 유저의 방송 목록 조회
@@ -86,8 +86,8 @@ public class FollowsController {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-        List<StreamsResponse.StreamDTO> result = followsService.followliveList(user);
-        return Resp.ok(result);
+        List<StreamsResponse.StreamDTO> respDTO = followsService.followliveList(user);
+        return Resp.ok(respDTO);
     }
 
 }
