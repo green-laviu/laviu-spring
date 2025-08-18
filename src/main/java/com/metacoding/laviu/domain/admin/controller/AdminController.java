@@ -25,7 +25,7 @@ public class AdminController {
     }
 
     // 관리자 로그인
-    @PostMapping("/api/v1/auth/admin/login")
+    @PostMapping("/v1/auth/admin/login")
     public String login(@RequestBody AdminRequest.LoginDTO reqDTO, HttpSession session) {
         AdminResponse.LoginDTO admin = adminService.login(reqDTO);
         session.setAttribute("ADMIN", admin);
@@ -33,14 +33,14 @@ public class AdminController {
     }
 
     // 관리자 로그아웃
-    @PostMapping("/v1/auth/admin/logout")
+    @PostMapping("/s/v1/auth/admin/logout")
     public String logout(HttpSession session) {
         if (session != null) session.invalidate();
         return "redirect:/admin/login";
     }
 
     // 실시간 방송 관리
-    @GetMapping("/v1/admin/streams")
+    @GetMapping("/s/v1/admin/streams")
     public String adminStreamManage(HttpServletRequest request) {
         AdminResponse.StreamListDTO model = adminService.adminStreamList();
         request.setAttribute("model", model);
@@ -48,7 +48,7 @@ public class AdminController {
     }
 
     // 유저 목록
-    @GetMapping("/v1/admin/users")
+    @GetMapping("/s/v1/admin/users")
     public String adminUserList(HttpServletRequest request) {
         AdminResponse.UserListDTO model = adminService.adminUserList();
         request.setAttribute("model", model);
@@ -56,7 +56,7 @@ public class AdminController {
     }
 
     // 신고 내역
-    @GetMapping("/s/api/v1/admin/abusereports")
+    @GetMapping("/s/v1/admin/abusereports")
     public String adminReportList(HttpServletRequest request) {
         AdminResponse.ReportListDTO model = adminService.adminReportList();
         request.setAttribute("model", model);
@@ -64,7 +64,7 @@ public class AdminController {
     }
 
     // 신고 내역 수락/거절
-    @PostMapping("/s/api/v1/admin/abusereports/{id}")
+    @PostMapping("/s/v1/admin/abusereports/{id}")
     public String processAbuseReport(@PathVariable("id") Integer id, @RequestBody AdminRequest.ProcessReportDTO reqDTO) {
         adminService.processAbuseReport(id, reqDTO.getStatus());
         return "redirect:/s/api/v1/admin/abusereports";

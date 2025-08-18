@@ -110,6 +110,12 @@ public enum ErrorEnum {
     ABUSEREPORTCATEGORYS_NOT_FOUND(404, "해당 신고 카테고리를 찾을 수 없습니다."),
 
     /**
+     * [신규 추가]
+     * 404 Not Found - 해당 신고를 찾을 수 없습니다.
+     */
+    REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다."),
+
+    /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
      */
     UNKNOWN_SERVER_ERROR(500, "알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요"),
@@ -119,13 +125,7 @@ public enum ErrorEnum {
      * 500 Internal Server Error - 데이터베이스에 저장된 값이 코드와 일치하지 않을 때 발생합니다.
      * 예: DB의 뱃지 타입 '월간기록'을 Java Enum으로 변환하려 할 때, 해당 Enum 상수가 없는 경우.
      */
-    INVALID_DATABASE_DATA(500, "서버 데이터에 문제가 발생했습니다. 관리자에게 문의해주세요."),
-
-    /**
-     * [신규 추가]
-     * 404 Not Found - 해당 신고를 찾을 수 없습니다.
-     */
-    REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다.");
+    INVALID_DATABASE_DATA(500, "서버 데이터에 문제가 발생했습니다. 관리자에게 문의해주세요.");
 
     /**
      * HTTP 상태 코드
