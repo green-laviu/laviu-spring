@@ -35,5 +35,10 @@ public class ChatMessagesRepository {
 
         return list;
     }
+
+    public ChatMessages save(ChatMessages chatMessages) {
+        em.persist(chatMessages);
+        return chatMessages;
+    }
 }
 

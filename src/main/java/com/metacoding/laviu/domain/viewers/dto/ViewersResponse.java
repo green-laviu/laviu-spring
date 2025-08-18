@@ -20,7 +20,6 @@ public class ViewersResponse {
         private String nickname;       // 작성자 닉네임
         private LocalDateTime connectedAt; //생성일자
 
-
         public static ViewersResponse.ViewersDetailDTO from(Viewers viewer) {
             ViewersResponse.ViewersDetailDTO dto = new ViewersResponse.ViewersDetailDTO();
             dto.id = viewer.getId();
@@ -33,9 +32,5 @@ public class ViewersResponse {
         public static List<ViewersResponse.ViewersDetailDTO> fromList(List<Viewers> list) {
             return list.stream().map(ViewersResponse.ViewersDetailDTO::from).toList(); // JDK16+ (JDK8이면 Collectors.toList())
         }
-
-
     }
-
-
 }

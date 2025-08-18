@@ -19,7 +19,6 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
-import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -156,10 +155,10 @@ public class StreamsService {
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2.viewer 테이블 추가
-        Viewers viewerPS = viewersService.save(streamPS, user);
+//        Viewers viewerPS = viewersService.save(streamPS, user);
 
-        //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
-        streamPS.upViewerCount();
+//        //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수) -> 웹소켓 부분으로 이동함
+//        streamPS.upViewerCount();
 
         //4.팔로워수 팔로워 여부 , 채널dto 생성
         Long followerCount = followsRepository.countByFollowingId(streamPS.getStreamer().getId());
@@ -177,7 +176,7 @@ public class StreamsService {
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(live, viewerPS);
+        return new StreamsResponse.DetailDTO(live);
 
     }
 
@@ -294,5 +293,10 @@ public class StreamsService {
                 .toList();
 
         return respDTO;
+    }
+
+    // 방송 주인 확인
+    public Boolean isStreamOwner(String streamKey, Integer userId) {
+        return streamsRepository.existsByStreamKeyAndUserId(streamKey, userId);
     }
 }
