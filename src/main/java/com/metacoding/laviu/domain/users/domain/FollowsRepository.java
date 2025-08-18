@@ -5,6 +5,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -70,5 +71,9 @@ public class FollowsRepository {
 
     public Optional<Follows> findById(Integer followId) {
         return Optional.ofNullable(em.find(Follows.class, followId));
+    }
+
+    public List<Follows> findByFollowerId(Integer id) {
+        return em.createQuery("select f from Follows f where f.follower.id = :id", Follows.class).setParameter("id", id).getResultList();
     }
 }
