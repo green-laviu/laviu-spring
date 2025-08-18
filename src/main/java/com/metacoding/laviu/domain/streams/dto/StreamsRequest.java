@@ -46,4 +46,12 @@ public class StreamsRequest {
         private String title;
         private List<String> hashtagList;
     }
+    
+    @Data
+    public static class SearchDTO {
+        private String query;
+
+    }
+
+
 }

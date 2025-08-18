@@ -109,4 +109,32 @@ public class UsersResponse {
             this.bio = users.getBio();
         }
     }
+
+    @Data
+    public static class SearchDTO {
+        private Integer userId;
+        private String nickname;
+        private String profileImageUrl;
+        private Long followerCount;
+        private FollowStatusDTO FollowStatus;
+
+        public SearchDTO(Users users, Long followerCount, FollowStatusDTO followStatus) {
+            this.userId = users.getId();
+            this.nickname = users.getNickname();
+            this.profileImageUrl = users.getProfileImageUrl();
+            this.followerCount = followerCount;
+            this.FollowStatus = followStatus;
+        }
+    }
+
+    @Data
+    public static class FollowStatusDTO {
+        private Integer followId; // FollowsPK
+        private Boolean isFollowing; // 팔로워 여부
+
+        public FollowStatusDTO(Integer followId, Boolean isFollowing) {
+            this.followId = followId;
+            this.isFollowing = isFollowing;
+        }
+    }
 }
