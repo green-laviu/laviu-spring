@@ -1,7 +1,8 @@
 package com.metacoding.laviu.domain.chatmessages.controller;
 
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessageDTO;
+import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesRequest;
+import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
@@ -46,12 +47,12 @@ public class ChatMessagesController {
 
     // [변경] 채팅 메시지 처리
     @MessageMapping("/streams/{streamKey}/chats")
-    public void handleChatMessage(@DestinationVariable String streamKey, ChatMessageDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
+    public void handleChatMessage(@DestinationVariable String streamKey, ChatMessagesRequest.saveDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        ChatMessageDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
+        ChatMessagesResponse.ChatBroadcastRespDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
 
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
     }

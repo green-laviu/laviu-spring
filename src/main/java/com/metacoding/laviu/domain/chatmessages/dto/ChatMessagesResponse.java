@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.chatmessages.dto;
 
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -36,7 +37,25 @@ public class ChatMessagesResponse {
         public static List<ChatDetailDTO> fromList(List<ChatMessages> list) {
             return list.stream().map(ChatDetailDTO::from).toList(); // JDK16+ (JDK8이면 Collectors.toList())
         }
+    }
 
+    @Data
+    public static class ChatBroadcastRespDTO {
+        private Integer authorId;
+        private String authorNickname;
+        private String emailId; // 또는 username
+        private boolean isStreamer;
+        private String content;
+        private LocalDateTime timestamp;
 
+        @Builder
+        public ChatBroadcastRespDTO(Integer authorId, String authorNickname, String emailId, boolean isStreamer, String content, LocalDateTime timestamp) {
+            this.authorId = authorId;
+            this.authorNickname = authorNickname;
+            this.emailId = emailId;
+            this.isStreamer = isStreamer;
+            this.content = content;
+            this.timestamp = timestamp;
+        }
     }
 }
