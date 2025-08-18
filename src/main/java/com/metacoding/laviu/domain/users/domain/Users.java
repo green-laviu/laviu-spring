@@ -6,11 +6,13 @@ import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @Getter
 @Table(name = "users_tb")
@@ -60,15 +62,13 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-        String[] roleList = this.roles.split(",");
-
-        for (String role : roleList) {
-            authorities.add(() -> "ROLE_" + role); // ROLE_ 접두사 필수
+        if (this.roles == null || this.roles.isEmpty()) {
+            return Collections.emptyList();
         }
-
-        return authorities;
+        // "USER,ADMIN" 같은 문자열을 쉼표로 분리하고, 각 역할에 "ROLE_" 접두사를 붙여 SimpleGrantedAuthority 객체로 변환
+        return Arrays.stream(this.roles.split(","))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
+                .toList();
     }
 
     @Override

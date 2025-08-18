@@ -5,7 +5,6 @@ import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -16,7 +15,6 @@ public class ViewerSanctions {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer durationSeconds;
     private Integer offenseCount;
     private Boolean isActive;
 
@@ -27,8 +25,6 @@ public class ViewerSanctions {
     //Date part
     @CreationTimestamp
     private LocalDateTime createAt;
-    @UpdateTimestamp
-    private LocalDateTime updateAt;
 
     //FK(Foreign Key) part
     @ManyToOne(fetch = FetchType.LAZY)

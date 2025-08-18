@@ -22,7 +22,7 @@ public class ChatMessagesController {
     private ChatMessagesService chatMessagesService;
 
     // [변경] 사용자가 채팅방에 참여했을 때 호출
-    @MessageMapping("/stream/{streamKey}/join")
+    @MessageMapping("/streams/{streamKey}/join")
     public void handleJoin(@DestinationVariable String streamKey, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
@@ -45,7 +45,7 @@ public class ChatMessagesController {
     }
 
     // [변경] 채팅 메시지 처리
-    @MessageMapping("/stream/{streamKey}/chat")
+    @MessageMapping("/streams/{streamKey}/chats")
     public void handleChatMessage(@DestinationVariable String streamKey, ChatMessageDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
@@ -53,13 +53,13 @@ public class ChatMessagesController {
 
         ChatMessageDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
 
-        messagingTemplate.convertAndSend("/sub/" + streamKey + "/chat", respDTO);
+        messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
     }
 
     // [변경] 참가자 목록을 보내는 헬퍼 메서드
     public void updateAndSendParticipantList(String streamKey) {
         var participantList = viewersService.getList(streamKey);
         // 스트리머 전용 구독 주소로 메시지 전송
-        messagingTemplate.convertAndSend("/sub/" + streamKey + "/participants", participantList);
+        messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/participants", participantList);
     }
 }

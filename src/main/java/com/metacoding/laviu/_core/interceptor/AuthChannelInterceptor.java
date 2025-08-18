@@ -40,9 +40,11 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             if (user != null) {
                 System.out.println("토큰 검증 성공, id: " + user.getId());
                 // 세션에 사용자 인증 정보 등록(권한 정보는 ROLE 문자열에서 필요시 파싱)
+                System.out.println("세션에 저장 중");
                 accessor.setUser(new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()
                 ));
+                System.out.println("세션에 저장 성공");
             } else {
                 System.out.println("토큰 검증 실패!");
                 throw new AccessDeniedException("유효하지 않은 토큰입니다. 연결을 거부합니다.");
@@ -61,6 +63,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             String destination = accessor.getDestination();
             System.out.println("사용자: " + user.getId() + ", 구독 대상: " + destination);
             String streamKey = StreamKeyUtil.extractStreamKeyFromDestination(destination);
+            System.out.println("스트림 키" + streamKey);
 
             // 2-A. 스트리머 전용 채널('/participants') 구독 시 → 소유권 검사
             if (destination != null && destination.contains("/participants")) {

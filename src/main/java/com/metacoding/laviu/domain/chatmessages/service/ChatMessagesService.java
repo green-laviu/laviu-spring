@@ -10,6 +10,7 @@ import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class ChatMessagesService {
     private final ChatMessagesRepository chatMessagesRepository;
     private final StreamsRepository streamsRepository;
 
+    @Transactional
     public ChatMessageDTO save(String streamKey, Users user, ChatMessageDTO chatMessageDTO) {
         // 1. 방송 조회
         Streams streamPS = streamsRepository.findByStreamKey(streamKey)

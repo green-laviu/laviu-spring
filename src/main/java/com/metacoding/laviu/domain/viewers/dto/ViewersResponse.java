@@ -2,7 +2,6 @@ package com.metacoding.laviu.domain.viewers.dto;
 
 import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,7 +11,6 @@ import static com.metacoding.laviu._core.utils.CommonUtils.localPart;
 
 public class ViewersResponse {
 
-    @NoArgsConstructor
     @Data
     public static class ViewersDetailDTO {
         private Integer id;
