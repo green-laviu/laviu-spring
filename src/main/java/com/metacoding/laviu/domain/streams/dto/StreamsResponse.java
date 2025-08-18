@@ -5,7 +5,6 @@ import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
-import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -73,12 +72,10 @@ public class StreamsResponse {
     public static class DetailDTO {
         private LiveDetailDTO live;
         private List<ChatMessagesResponse.ChatDetailDTO> chatList;
-        private Integer viewerId;
 
-        public DetailDTO(LiveDetailDTO live, Viewers viewer) {
+        public DetailDTO(LiveDetailDTO live) {
             this.live = live;
             this.chatList = new ArrayList<>();
-            this.viewerId = viewer.getId();
         }
     }
 

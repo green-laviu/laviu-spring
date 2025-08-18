@@ -31,7 +31,7 @@ ext {
 }
 
 dependencies {
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Mustache 템플릿 엔진을 사용하여 동적인 HTML 페이지를 렌더링하기 위한 의존성입니다.
     implementation 'org.springframework.boot:spring-boot-starter-mustache'

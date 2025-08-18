@@ -5,30 +5,33 @@ import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter
 @Table(name = "users_tb")
 @Entity
-public class Users {
+public class Users implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nickname;
     @Column(unique = true)
-    private String email;
+    private String email; // 로그인 부분의 id 로 사용
     @Column(nullable = false)
     private String password;
     private String profileImageUrl;
     private String bio;
     private String fcmToken;
+    private String roles; // "USER,ADMIN"
 
     //Enum part
     @Enumerated(EnumType.STRING)
     private UsersProvider provider;
-    @Enumerated(EnumType.STRING)
-    private UsersType type;
 
     //Date part
     @CreationTimestamp
@@ -42,7 +45,7 @@ public class Users {
     }
 
     @Builder
-    public Users(Integer id, String nickname, String email, String password, String profileImageUrl, String bio, String fcmToken, UsersProvider provider, UsersType type) {
+    public Users(Integer id, String nickname, String email, String password, String profileImageUrl, String bio, String fcmToken, String roles, UsersProvider provider, LocalDateTime lastLoginAt) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -50,7 +53,26 @@ public class Users {
         this.profileImageUrl = profileImageUrl;
         this.bio = bio;
         this.fcmToken = fcmToken;
+        this.roles = roles;
         this.provider = provider;
-        this.type = type;
+        this.lastLoginAt = lastLoginAt;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> authorities = new ArrayList<>();
+
+        String[] roleList = this.roles.split(",");
+
+        for (String role : roleList) {
+            authorities.add(() -> "ROLE_" + role); // ROLE_ 접두사 필수
+        }
+
+        return authorities;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
     }
 }
