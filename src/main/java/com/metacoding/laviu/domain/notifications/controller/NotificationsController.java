@@ -6,9 +6,7 @@ import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,16 +18,29 @@ public class NotificationsController {
     private final NotificationsService notificationsService;
 
 
+    //알림 수신함 목록
     @GetMapping
     public ResponseEntity<?> getNotificationList() {
 
         //1.유저 정보 검색
-        Users user = Users.builder().id(2).build();
+        Users user = Users.builder().id(1).build();
 
-        List< NotificationsResponse.NotificationsListDto> respDTO = notificationsService.findAll(user);
+        //list 조회
+        List<NotificationsResponse.NotificationsListDto> respDTO = notificationsService.findAll(user);
 
         return Resp.ok(respDTO);
     }
+
+    //알림클릭시 is read =ture 로 update
+    @PutMapping("/{notificationId}")
+    ResponseEntity<?> updateIsRead(@PathVariable Integer notificationId) {
+
+        //read로 변경 메소드
+        notificationsService.markAsRead(notificationId);
+
+        return Resp.ok(null);
+    }
+
 }
 
 
