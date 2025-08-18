@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.chatmessages.controller;
 
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessageDTO;
+import com.metacoding.laviu.domain.chatmessages.dto.SanctionRequestDTO;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
@@ -22,7 +23,7 @@ public class ChatMessagesController {
     private ChatMessagesService chatMessagesService;
 
     // [변경] 사용자가 채팅방에 참여했을 때 호출
-    @MessageMapping("/stream/{streamKey}/join")
+    @MessageMapping("/streams/{streamKey}/join")
     public void handleJoin(@DestinationVariable String streamKey, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
@@ -45,7 +46,7 @@ public class ChatMessagesController {
     }
 
     // [변경] 채팅 메시지 처리
-    @MessageMapping("/stream/{streamKey}/chat")
+    @MessageMapping("/streams/{streamKey}/chat")
     public void handleChatMessage(@DestinationVariable String streamKey, ChatMessageDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
@@ -54,6 +55,21 @@ public class ChatMessagesController {
         ChatMessageDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
 
         messagingTemplate.convertAndSend("/sub/" + streamKey + "/chat", respDTO);
+    }
+
+    // [변경] 채팅 메시지 처리
+    @MessageMapping("/streams/{streamKey}/sanction")
+    public void handleSanction(@DestinationVariable String streamKey, SanctionRequestDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
+        // Users 객체 전체 꺼내기
+        Authentication auth = (Authentication) headerAccessor.getUser();
+        Users user = (Users) auth.getPrincipal();
+
+        // 제재 테이블 저장
+        // 응답 데이터 반환
+
+        // 응답 전송
+        //
+        messagingTemplate.convertAndSend(reqDTO.getUserId(), "/queue/" + destination, respDTO);
     }
 
     // [변경] 참가자 목록을 보내는 헬퍼 메서드

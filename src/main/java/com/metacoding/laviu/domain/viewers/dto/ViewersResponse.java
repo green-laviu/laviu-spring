@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.viewers.dto;
 
+import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,16 +16,19 @@ public class ViewersResponse {
     @NoArgsConstructor
     @Data
     public static class ViewersDetailDTO {
-        private Integer id;
+        private Integer viewerId;
+        private Integer userId;
         private String email;           // user mail 에서 @ 앞부분
         private String nickname;       // 작성자 닉네임
         private LocalDateTime connectedAt; //생성일자
 
         public static ViewersResponse.ViewersDetailDTO from(Viewers viewer) {
             ViewersResponse.ViewersDetailDTO dto = new ViewersResponse.ViewersDetailDTO();
-            dto.id = viewer.getId();
-            dto.email = localPart(viewer.getUser().getEmail());
-            dto.nickname = viewer.getUser().getNickname();
+            Users user = viewer.getUser();
+            dto.viewerId = viewer.getId();
+            dto.userId = user.getId();
+            dto.email = localPart(user.getEmail());
+            dto.nickname = user.getNickname();
             dto.connectedAt = viewer.getConnectedAt();
             return dto;
         }
