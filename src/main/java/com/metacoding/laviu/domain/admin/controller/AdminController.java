@@ -26,14 +26,14 @@ public class AdminController {
 
     // 관리자 로그인
     @PostMapping("/api/v1/auth/admin/login")
-    public String login(AdminRequest.LoginDTO reqDTO, HttpSession session) {
+    public String login(@RequestBody AdminRequest.LoginDTO reqDTO, HttpSession session) {
         AdminResponse.LoginDTO admin = adminService.login(reqDTO);
         session.setAttribute("ADMIN", admin);
         return "redirect:/v1/admin/streams";
     }
 
     // 관리자 로그아웃
-    @PostMapping("/s/v1/auth/admin/logout")
+    @PostMapping("/v1/auth/admin/logout")
     public String logout(HttpSession session) {
         if (session != null) session.invalidate();
         return "redirect:/admin/login";
@@ -63,7 +63,8 @@ public class AdminController {
         return "admin-report-list";
     }
 
-    @PostMapping("/api/v1/admin/abusereports/{id}/status")
+    // 신고 내역 수락/거절
+    @PostMapping("/s/api/v1/admin/abusereports/{id}")
     public String processAbuseReport(@PathVariable("id") Integer id, @RequestBody AdminRequest.ProcessReportDTO reqDTO) {
         adminService.processAbuseReport(id, reqDTO.getStatus());
         return "redirect:/s/api/v1/admin/abusereports";

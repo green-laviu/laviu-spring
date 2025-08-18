@@ -69,7 +69,7 @@
 
         async function updateReportStatus(reportId, status) {
             try {
-                const response = await fetch(`/api/v1/admin/abusereports/${reportId}/status`, {
+                const response = await fetch(`/s/api/v1/admin/abusereports/${reportId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

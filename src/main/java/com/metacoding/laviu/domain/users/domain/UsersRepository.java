@@ -56,4 +56,16 @@ public class UsersRepository {
         return em.createQuery("select u from Users u order by u.createdAt desc", Users.class)
                 .getResultList();
     }
+
+    /**
+     * 테스트용 save
+     */
+    public Users save(Users user) {
+        em.persist(user);
+        return user;
+    }
+
+    public void deleteAll() {
+        em.createQuery("delete from Users").executeUpdate();
+    }
 }
