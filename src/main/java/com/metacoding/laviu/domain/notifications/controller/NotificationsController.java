@@ -36,9 +36,9 @@ public class NotificationsController {
     ResponseEntity<?> updateIsRead(@PathVariable Integer notificationId) {
 
         //read로 변경 메소드
-        notificationsService.markAsRead(notificationId);
+        NotificationsResponse.UpdateIsReadDTO respDTO = notificationsService.markAsRead(notificationId);
 
-        return Resp.ok(null);
+        return Resp.ok(respDTO);
     }
 
 }

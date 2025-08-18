@@ -74,7 +74,7 @@ public class NotificationsService {
 
     //알림 isRead 변경
     @Transactional
-    public void markAsRead(Integer notificationId) {
+    public NotificationsResponse.UpdateIsReadDTO markAsRead(Integer notificationId) {
 
         // 알림 조회
         Notifications NotificationPS = notificationsRepository.findById(notificationId)
@@ -82,5 +82,7 @@ public class NotificationsService {
 
         // 알림 isRead = true로 변경
         NotificationPS.markAsRead();
+
+        return new NotificationsResponse.UpdateIsReadDTO(NotificationPS);
     }
 }

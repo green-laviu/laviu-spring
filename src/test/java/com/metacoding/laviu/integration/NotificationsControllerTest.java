@@ -40,7 +40,7 @@ public class NotificationsControllerTest extends MyRestDoc {
     public void update_is_read_test() throws Exception {
 
         //given
-        Integer notificationId = 3;
+        Integer notificationId = 1;
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
