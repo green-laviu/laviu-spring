@@ -23,6 +23,7 @@ public class JwtUtil {
                 .withClaim("id", user.getId()) // 사용자 ID 클레임 추가
                 .withClaim("roles", user.getRoles()) // 사용자 역할 클레임 추가
                 .withClaim("email", user.getEmail()) // 사용자 email 클레임 추가
+                .withClaim("nickname", user.getNickname()) // 사용자 email 클레임 추가
                 .sign(Algorithm.HMAC512(SECRET)); // 비밀 키로 서명
 
         return TOKEN_PREFIX + jwt; // "Bearer " 접두사 붙여 반환
@@ -37,7 +38,13 @@ public class JwtUtil {
         Integer id = decodedJWT.getClaim("id").asInt();
         String roles = decodedJWT.getClaim("roles").asString();
         String email = decodedJWT.getClaim("email").asString();
+        String nickname = decodedJWT.getClaim("nickname").asString();
 
-        return Users.builder().id(id).roles(roles).email(email).build();
+        return Users.builder()
+                .id(id)
+                .roles(roles)
+                .email(email)
+                .nickname(nickname)
+                .build();
     }
 }

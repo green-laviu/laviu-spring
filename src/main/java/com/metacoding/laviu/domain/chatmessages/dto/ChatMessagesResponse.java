@@ -40,7 +40,7 @@ public class ChatMessagesResponse {
     }
 
     @Data
-    public static class ChatBroadcastRespDTO {
+    public static class wsBroadcastDTO {
         private Integer authorId;
         private String authorNickname;
         private String emailId; // 또는 username
@@ -49,7 +49,7 @@ public class ChatMessagesResponse {
         private LocalDateTime timestamp;
 
         @Builder
-        public ChatBroadcastRespDTO(Integer authorId, String authorNickname, String emailId, boolean isStreamer, String content, LocalDateTime timestamp) {
+        public wsBroadcastDTO(Integer authorId, String authorNickname, String emailId, boolean isStreamer, String content, LocalDateTime timestamp) {
             this.authorId = authorId;
             this.authorNickname = authorNickname;
             this.emailId = emailId;

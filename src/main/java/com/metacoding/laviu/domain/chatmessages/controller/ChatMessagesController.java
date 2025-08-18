@@ -47,12 +47,12 @@ public class ChatMessagesController {
 
     // [변경] 채팅 메시지 처리
     @MessageMapping("/streams/{streamKey}/chats")
-    public void handleChatMessage(@DestinationVariable String streamKey, ChatMessagesRequest.saveDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
+    public void handleChatMessage(@DestinationVariable String streamKey, ChatMessagesRequest.wsSaveDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        ChatMessagesResponse.ChatBroadcastRespDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
+        ChatMessagesResponse.wsBroadcastDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
 
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
     }

@@ -14,8 +14,8 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @RequiredArgsConstructor
 public class StompDisconnectEvent implements ApplicationListener<SessionDisconnectEvent> {
 
-    private ChatMessagesController chatMessagesController;
-    private ViewersService viewersService;
+    private final ChatMessagesController chatMessagesController;
+    private final ViewersService viewersService;
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
@@ -35,7 +35,6 @@ public class StompDisconnectEvent implements ApplicationListener<SessionDisconne
         if (user != null && streamKey != null) {
             // [변경] 퇴장 로직 처리
             viewersService.delete(streamKey, user);
-            System.out.println(user.getNickname() + " 퇴장");
 
             // [변경] 참가자 목록 업데이트 (새 DTO 사용). 임시로 컨트롤러 메서드 가져옴
             chatMessagesController.updateAndSendParticipantList(streamKey);

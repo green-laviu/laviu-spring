@@ -20,7 +20,7 @@ public class ChatMessagesService {
     private final StreamsRepository streamsRepository;
 
     @Transactional
-    public ChatMessagesResponse.ChatBroadcastRespDTO save(String streamKey, Users user, ChatMessagesRequest.saveDTO reqDTO) {
+    public ChatMessagesResponse.wsBroadcastDTO save(String streamKey, Users user, ChatMessagesRequest.wsSaveDTO reqDTO) {
         // 1. 방송 조회
         Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
@@ -36,7 +36,7 @@ public class ChatMessagesService {
         ChatMessages chatMessagePS = chatMessagesRepository.save(chatMessages);
 
         // 4. 시간 등록
-        return ChatMessagesResponse.ChatBroadcastRespDTO.builder()
+        return ChatMessagesResponse.wsBroadcastDTO.builder()
                 .authorId(user.getId())
                 .authorNickname(user.getNickname())
                 .emailId(user.getEmail()) // 또는 getUsername()
