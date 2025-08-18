@@ -23,7 +23,7 @@ public class NotificationsController {
     public ResponseEntity<?> getNotificationList() {
 
         //1.유저 정보 검색
-        Users user = Users.builder().id(1).build();
+        Users user = Users.builder().id(2).build();
 
         //list 조회
         List<NotificationsResponse.NotificationsListDto> respDTO = notificationsService.findAll(user);

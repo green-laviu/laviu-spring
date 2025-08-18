@@ -82,6 +82,5 @@ public class NotificationsService {
 
         // 알림 isRead = true로 변경
         NotificationPS.markAsRead();
-
     }
 }
