@@ -145,18 +145,16 @@ public class AdminService {
         return respDTO;
     }
 
-    @Transactional // 데이터 변경이 발생하므로 @Transactional 어노테이션 추가
+    @Transactional
     public void processAbuseReport(Integer reportId, String status) {
-        // 1. 해당 신고를 찾습니다.
+        // 1. 해당 신고를 찾기
         AbuseReports abuseReports = abusereportsRepository.findById(reportId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.REPORT_NOT_FOUND));
 
-        // 2. 받은 문자열 상태를 Enum 타입으로 변환합니다.
-        AbuseReportsStatus newStatus = AbuseReportsStatus.valueOf(status);
+        // 2. 받은 문자열 상태를 Enum 타입으로 변환
+        AbuseReportsStatus updateStatus = AbuseReportsStatus.valueOf(status);
 
-        // 3. 엔티티의 상태를 변경하는 메서드를 호출합니다.
-        abuseReports.process(newStatus);
-
-        // 4. (JPA 사용 시) 변경된 상태는 트랜잭션 종료 시 자동으로 저장됩니다.
+        // 3. 엔티티의 상태를 변경하는 메서드 호출
+        abuseReports.updateStatus(updateStatus);
     }
 }

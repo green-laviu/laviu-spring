@@ -60,9 +60,4 @@ public class AbuseReports {
         this.status = status;
         this.processedAt = LocalDateTime.now();
     }
-
-    public void process(AbuseReportsStatus newStatus) {
-        this.status = newStatus;
-        this.processedAt = LocalDateTime.now();
-    }
 }
