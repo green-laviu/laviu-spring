@@ -70,5 +70,28 @@ public class StreamsRepository {
     public Optional<Streams> findById(Integer streamId) {
         return Optional.ofNullable(em.find(Streams.class, streamId));
     }
+
+    //스트림 검색
+    public List<Streams> findAllByQuery(String query) {
+
+        //공백 제거 , 빈 문자열 처리
+        String queryResult = (query == null) ? "" : query.replaceAll(" ", "").trim();
+
+        //검색 쿼리
+        String jpql = """
+                select distinct s
+                from Streams s
+                join  s.streamHashtagList sh
+                join  sh.hashtag h
+                where s.status = :live
+                and (:query <> '' and lower(h.name) like concat('%', lower(:query), '%'))
+                """;
+
+        return em.createQuery(jpql, Streams.class)
+                .setParameter("query", queryResult)
+                .setParameter("live", StreamsStatus.LIVE)
+                .getResultList();
+    }
+
 }
 
