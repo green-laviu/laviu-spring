@@ -53,7 +53,7 @@ public class SecurityConfig {
 
                 // Form 로그인 설정
                 .formLogin(form -> form
-                        .loginPage("/admin/login-form")        // 커스텀 로그인 페이지
+                        .loginPage("/admin/login-form")        // 커스텀 로그인 페이지 TODO
                         .loginProcessingUrl("/v1/admin/login")     // 로그인 처리 URL
                         .defaultSuccessUrl("/admin/dashboard")  // 로그인 성공 후 이동할 페이지
                         .failureUrl("/admin/login-form?error")  // 로그인 실패 시 이동할 페이지
