@@ -122,14 +122,14 @@ public class StreamsTest {
 //        System.out.println(" 화질 : " + live.getQualityOptions());
 //
 //        //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-//        StreamsResponse.DetailDTO resDTO = new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
+//        StreamsResponse.DetailDTO respDTO = new StreamsResponse.DetailDTO(chatResultList, live, viewerResultList);
 //
 //        System.out.println("----------5차-----------");
-//        System.out.println(" 채팅 닉네임 : " + resDTO.getChatList().get(1).getNickname());
-//        System.out.println(" 채팅 닉네임 : " + resDTO.getChatList().get(1).getEmail());
-//        System.out.println("시청자 이메일" + resDTO.getViewerList().get(1).getEmail());
-//        System.out.println("채널 이름" + resDTO.getLive().getTitle());
-//        System.out.println("채널 팔로워 수 " + resDTO.getLive().getChannel().getFollowerCount());
+//        System.out.println(" 채팅 닉네임 : " + respDTO.getChatList().get(1).getNickname());
+//        System.out.println(" 채팅 닉네임 : " + respDTO.getChatList().get(1).getEmail());
+//        System.out.println("시청자 이메일" + respDTO.getViewerList().get(1).getEmail());
+//        System.out.println("채널 이름" + respDTO.getLive().getTitle());
+//        System.out.println("채널 팔로워 수 " + respDTO.getLive().getChannel().getFollowerCount());
 //
 //    }
 

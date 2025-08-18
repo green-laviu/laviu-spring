@@ -28,9 +28,9 @@ public class FollowsController {
         Users user = Users.builder().id(3).build();
 
         //2.save
-        FollowsResponse.SaveDTO resDTO = followsService.save(user, followingId);
+        FollowsResponse.SaveDTO respDTO = followsService.save(user, followingId);
 
-        return Resp.ok(resDTO);
+        return Resp.ok(respDTO);
     }
 
     //follows delete
@@ -53,9 +53,9 @@ public class FollowsController {
         Users user = Users.builder().id(2).build();
 
         //2.save
-        FollowsResponse.UpdateDTO resDTO = followsService.notifyOn(user, followId);
+        FollowsResponse.UpdateDTO respDTO = followsService.notifyOn(user, followId);
 
-        return Resp.ok(resDTO);
+        return Resp.ok(respDTO);
     }
 
     @PutMapping("{followId}/notify-off")
@@ -65,9 +65,9 @@ public class FollowsController {
         Users user = Users.builder().id(2).build();
 
         //2.save
-        FollowsResponse.UpdateDTO resDTO = followsService.notifyOff(user, followId);
+        FollowsResponse.UpdateDTO respDTO = followsService.notifyOff(user, followId);
 
-        return Resp.ok(resDTO);
+        return Resp.ok(respDTO);
     }
 
     // 현재 팔로우 하고 있는 유저의 목록 조회
