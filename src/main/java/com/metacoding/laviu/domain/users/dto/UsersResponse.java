@@ -132,4 +132,19 @@ public class UsersResponse {
             this.isFollowing = isFollowing;
         }
     }
+
+    @Data
+    public static class UpdateDTO {
+        private Integer userId;
+        private String nickname;
+        private String profileImageUrl;
+        private String bio;
+
+        public UpdateDTO(Users user) {
+            this.userId = user.getId();
+            this.nickname = user.getNickname();
+            this.profileImageUrl = user.getProfileImageUrl();
+            this.bio = user.getBio();
+        }
+    }
 }

@@ -31,11 +31,11 @@ public class UsersService {
 
     // 유저 정보 수정
     @Transactional
-    public Users update(UsersRequest.updateDTO updateDTO, Integer userId, Integer tokenUserId) {
+    public UsersResponse.UpdateDTO update(UsersRequest.updateDTO updateDTO, Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
         users.updataProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
 
-        return users;
+        return new UsersResponse.UpdateDTO(users);
     }
 
     // 유저 회원탈퇴(soft delete)
@@ -46,7 +46,7 @@ public class UsersService {
     }
 
     // 다른 유저 정보 조회
-    public UsersResponse.StreamerDTO getStreamerDetailDto(Integer userId, Integer tokenUserId) {
+    public UsersResponse.StreamerDTO getStreamerDetail(Integer userId, Integer tokenUserId) {
         StreamsResponse.UserInfoStreamsDTO liveStream = getLiveStream(userId);
         Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(tokenUserId, userId);
 
@@ -60,7 +60,7 @@ public class UsersService {
         return new UsersResponse.StreamerDTO(streamer, liveStream);
     }
 
-    public UsersResponse.MeDTO getMyDetailDto(Integer userId) {
+    public UsersResponse.MeDTO getMyDetail(Integer userId) {
         StreamsResponse.UserInfoStreamsDTO liveStream = getLiveStream(userId);
         UsersResponse.MeDTO.Me me = new UsersResponse.MeDTO.Me(
                 getUsers(userId),
