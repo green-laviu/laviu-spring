@@ -18,10 +18,12 @@ public class JwtUtil {
     // JWT 토큰 생성
     public static String create(Users user) {
         String jwt = JWT.create()
-                .withSubject(user.getEmail()) // 토큰의 주체 (여기서는 사용자 이름)
+                .withSubject("laviu") // 토큰의 주체 (여기서는 사용자 이름)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) // 토큰 만료 시간
                 .withClaim("id", user.getId()) // 사용자 ID 클레임 추가
                 .withClaim("roles", user.getRoles()) // 사용자 역할 클레임 추가
+                .withClaim("email", user.getEmail()) // 사용자 email 클레임 추가
+                .withClaim("nickname", user.getNickname()) // 사용자 email 클레임 추가
                 .sign(Algorithm.HMAC512(SECRET)); // 비밀 키로 서명
 
         return TOKEN_PREFIX + jwt; // "Bearer " 접두사 붙여 반환
@@ -35,8 +37,14 @@ public class JwtUtil {
 
         Integer id = decodedJWT.getClaim("id").asInt();
         String roles = decodedJWT.getClaim("roles").asString();
-        String email = decodedJWT.getSubject();
+        String email = decodedJWT.getClaim("email").asString();
+        String nickname = decodedJWT.getClaim("nickname").asString();
 
-        return Users.builder().id(id).roles(roles).email(email).build();
+        return Users.builder()
+                .id(id)
+                .roles(roles)
+                .email(email)
+                .nickname(nickname)
+                .build();
     }
 }

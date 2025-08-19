@@ -4,7 +4,7 @@ import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu._core.utils.StreamKeyUtil;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -17,10 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
-    @Autowired
-    private StreamsService streamService; // 스트림 소유권 확인 서비스
+    private final StreamsService streamService; // 스트림 소유권 확인 서비스
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -40,9 +40,11 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             if (user != null) {
                 System.out.println("토큰 검증 성공, id: " + user.getId());
                 // 세션에 사용자 인증 정보 등록(권한 정보는 ROLE 문자열에서 필요시 파싱)
+                System.out.println("세션에 저장 중");
                 accessor.setUser(new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()
                 ));
+                System.out.println("세션에 저장 성공");
             } else {
                 System.out.println("토큰 검증 실패!");
                 throw new AccessDeniedException("유효하지 않은 토큰입니다. 연결을 거부합니다.");
@@ -61,6 +63,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             String destination = accessor.getDestination();
             System.out.println("사용자: " + user.getId() + ", 구독 대상: " + destination);
             String streamKey = StreamKeyUtil.extractStreamKeyFromDestination(destination);
+            System.out.println("스트림 키" + streamKey);
 
             // 2-A. 스트리머 전용 채널('/participants') 구독 시 → 소유권 검사
             if (destination != null && destination.contains("/participants")) {
@@ -69,6 +72,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 }
             }
             // 2-B. 채팅 채널은 사용자 인증만 있으면 구독 가능(추가 검사 없음)
+            // TODO -> join 을 통해서 viewers 테이블에 존재하면 채팅 구독 가능하게 변경
         }
         System.out.println("=== 인터셉터 통과 ===");
         return message;

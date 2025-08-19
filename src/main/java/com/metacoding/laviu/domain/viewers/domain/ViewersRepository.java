@@ -22,7 +22,7 @@ public class ViewersRepository {
     }
 
     public List<Viewers> findAllByStreamId(Integer streamId) {
-        Query query = em.createQuery("select v from Viewers v where v.stream.id = :streamId", Viewers.class);
+        Query query = em.createQuery("select v from Viewers v join fetch v.user u where v.stream.id = :streamId", Viewers.class);
         query.setParameter("streamId", streamId);
         return query.getResultList();
     }

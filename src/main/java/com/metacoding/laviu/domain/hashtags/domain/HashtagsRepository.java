@@ -5,6 +5,7 @@ import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -29,5 +30,11 @@ public class HashtagsRepository {
     public Hashtags save(Hashtags hashtag) {
         em.persist(hashtag);
         return hashtag;
+    }
+
+    public List<Hashtags> findAllByStreamId(Integer id) {
+        return em.createQuery("select h from Hashtags h join fetch h.streamHashtagList sh where sh.stream.id = :id", Hashtags.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 }

@@ -10,25 +10,25 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
 @Slf4j
-public class SearchControllerTest extends MyRestDoc {
+public class NotificationsControllerTest extends MyRestDoc {
 
     @Autowired
     private ObjectMapper om;
 
     @Test
-    public void get_search_users_test() throws Exception {
+    public void get_notification_list_test() throws Exception {
         //given
-        String query = "love";
+
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/s/api/v1/search/users?query=" + query)
-
-
+                        .get("/s/api/v1/notifications")
         );
+
         //eye
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
@@ -37,17 +37,16 @@ public class SearchControllerTest extends MyRestDoc {
     }
 
     @Test
-    public void get_search_streams_test() throws Exception {
+    public void update_is_read_test() throws Exception {
 
         //given
-        String query = " 게임";
+        Integer notificationId = 1;
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
-                        .get("/s/api/v1/search/streams?query=" + query)
-
-
+                        .put("/s/api/v1/notifications/{notificationId}", notificationId)
         );
+
         //eye
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
@@ -57,3 +56,5 @@ public class SearchControllerTest extends MyRestDoc {
 
 
 }
+
+
