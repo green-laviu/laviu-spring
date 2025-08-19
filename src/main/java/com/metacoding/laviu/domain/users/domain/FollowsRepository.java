@@ -73,6 +73,14 @@ public class FollowsRepository {
         return Optional.ofNullable(em.find(Follows.class, followId));
     }
 
+
+    public List<Follows> findAllByIdAndNotify(Integer followingId) {
+        Query query = em.createQuery("select f from Follows f where f.following.id = :followingId and f.isNotificationsEnabled =true", Follows.class);
+        query.setParameter("followingId", followingId);
+        List resultList = query.getResultList();
+        return resultList;
+    }
+
     public List<Follows> findByFollowerId(Integer id) {
         return em.createQuery("select f from Follows f where f.follower.id = :id", Follows.class).setParameter("id", id).getResultList();
     }
