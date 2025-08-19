@@ -7,6 +7,7 @@ import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class ChatMessagesController {
 
     private SimpMessagingTemplate messagingTemplate;
@@ -32,6 +34,7 @@ public class ChatMessagesController {
         Users user = (Users) auth.getPrincipal();
 
         try {
+            log.debug("{}이 방송 채널에 참가 신청하였습니다", user.getNickname());
             // 1. 참가자 목록에 추가 (비즈니스 로직)
             viewersService.save(streamKey, user);
 
@@ -40,6 +43,7 @@ public class ChatMessagesController {
 
             // 3. 스트리머에게만 최신 참가자 목록 전송
             updateAndSendParticipantList(streamKey);
+            log.debug("{}이 방송 채널에 참가 완료되었습니다", user.getNickname());
         } catch (ExceptionApi404 e) {
             // 나중에 추가해야함 TODO
             System.out.println("이미 참가중입니다");
@@ -54,6 +58,7 @@ public class ChatMessagesController {
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
+        log.debug("{}이 채팅을 보냈습니다", user.getNickname());
         chatMessagesService.save(streamKey, user, reqDTO);
         List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
 

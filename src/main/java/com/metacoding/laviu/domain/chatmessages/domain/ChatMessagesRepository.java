@@ -48,5 +48,12 @@ public class ChatMessagesRepository {
         query.setMaxResults(30);
         return query.getResultList();
     }
+
+    public List<ChatMessages> findLatest30ByStreamIdJoinFetchUserAndStream(Integer streamId) {
+        Query query = em.createQuery("select c from ChatMessages c join fetch c.user join fetch c.stream where c.stream.id = :streamId order by c.id desc", ChatMessages.class);
+        query.setParameter("streamId", streamId);
+        query.setMaxResults(30);
+        return query.getResultList();
+    }
 }
 
