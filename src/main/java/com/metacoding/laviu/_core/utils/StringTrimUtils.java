@@ -11,7 +11,7 @@ package com.metacoding.laviu._core.utils;
  * @param "input" 입력 문자열
  * @return 공백이 정규화된 문자열
  */
-public class StringTrim {
+public class StringTrimUtils {
 
     public static String normalizeSpaces(String input) {
         if (input == null) {

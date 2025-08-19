@@ -5,7 +5,7 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi400;
 import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
-import com.metacoding.laviu._core.utils.StringTrim;
+import com.metacoding.laviu._core.utils.StringTrimUtils;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
@@ -127,7 +127,7 @@ public class StreamsService {
         List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtagList())
                 .orElseGet(List::of)
                 .stream()
-                .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
+                .map(StringTrimUtils::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
                 .filter(tag -> tag != null && !tag.isEmpty()) // 빈값 제거
                 .distinct()                                   // 중복 제거
                 .toList();
@@ -257,7 +257,7 @@ public class StreamsService {
         List<String> normalizedHashtags = Optional.ofNullable(reqDTO.getHashtagList())
                 .orElseGet(List::of)
                 .stream()
-                .map(StringTrim::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
+                .map(StringTrimUtils::normalizeSpaces) // 앞뒤 공백 제거 -> utils로 빼놨음
                 .filter(tag -> tag != null && !tag.isEmpty()) // 빈값 제거
                 .distinct()                                   // 중복 제거
                 .toList();

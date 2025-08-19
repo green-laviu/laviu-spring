@@ -110,10 +110,15 @@ public enum ErrorEnum {
     ABUSEREPORTCATEGORYS_NOT_FOUND(404, "해당 신고 카테고리를 찾을 수 없습니다."),
 
     /**
+     * [신규 추가]
+     * 404 Not Found - 해당 신고를 찾을 수 없습니다.
+     */
+    REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다."),
+    
+    /**
      * 404 Not Found - 해당 알람을 찾을 수 없습니다.
      */
     NOTIFICATIONS_NOT_FOUND(404, "해당 알람을 찾을 수 없습니다."),
-
 
     /**
      * 500 Internal Server Error - 알 수 없는 오류 발생 시 기본 메시지입니다.
