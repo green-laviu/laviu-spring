@@ -66,7 +66,6 @@ public class AuthControllerTest {
         when(mockUsers.getEmail()).thenReturn("ssar@example.com");
         when(mockUsers.getProfileImageUrl()).thenReturn("http://profile.image.url");
         when(mockUsers.getProvider()).thenReturn(UsersProvider.NAVER);
-        when(mockUsers.getRoles()).thenReturn("USER");
 
         // 서비스가 반환할 Mock LoginDTO 객체를 생성합니다.
         // 이 생성자에서 Mocking된 Users 객체를 사용합니다.
@@ -99,7 +98,6 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.data.email").value("ssar@example.com"))
                 .andExpect(jsonPath("$.data.profileUrl").value("http://profile.image.url"))
                 .andExpect(jsonPath("$.data.providerType").value("NAVER"))
-                .andExpect(jsonPath("$.data.userRole").value("USER"))
                 .andExpect(jsonPath("$.data.token").value("mock-jwt-token-from-auth-service"))
                 .andExpect(jsonPath("$.data.isNewUser").value(false));
 
@@ -125,8 +123,6 @@ public class AuthControllerTest {
         when(mockUsers.getEmail()).thenReturn("newuser@example.com");
         when(mockUsers.getProfileImageUrl()).thenReturn("http://new.profile.image.url");
         when(mockUsers.getProvider()).thenReturn(UsersProvider.NAVER);
-        when(mockUsers.getRoles()).thenReturn("USER");
-
         // 서비스가 반환할 Mock LoginDTO 객체를 생성합니다.
         // 이 생성자에서 Mocking된 Users 객체를 사용하고, isNewUser를 true로 설정합니다.
         UsersResponse.LoginDTO mockLoginDto = new UsersResponse.LoginDTO(
@@ -158,7 +154,6 @@ public class AuthControllerTest {
                 .andExpect(jsonPath("$.data.email").value("newuser@example.com"))
                 .andExpect(jsonPath("$.data.profileUrl").value("http://new.profile.image.url"))
                 .andExpect(jsonPath("$.data.providerType").value("NAVER"))
-                .andExpect(jsonPath("$.data.userRole").value("USER"))
                 .andExpect(jsonPath("$.data.token").value("mock-jwt-token-from-auth-service-new"))
                 .andExpect(jsonPath("$.data.isNewUser").value(true)); // true로 검증
 
