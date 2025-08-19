@@ -34,5 +34,18 @@ public class UsersRepository {
                 .getResultList();
     }
 
+    // 이메일 존재 확인
+    public Optional<Users> getByEmail(String email) {
+        String q = "select u from Users u where u.email = :email";
+        return em.createQuery(q, Users.class)
+                .setParameter("email", email)
+                .getResultList()
+                .stream() // 리스트를 스트림으로 변환
+                .findFirst(); // 첫 번째 요소를 Optional로 반환 (없으면 empty)
+    }
 
+    public Users save(Users user) {
+        em.persist(user);
+        return user;
+    }
 }

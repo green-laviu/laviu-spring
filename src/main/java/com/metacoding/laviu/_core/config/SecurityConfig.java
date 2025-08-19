@@ -166,6 +166,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll() // 웹소켓 핸드셰이크 허용
                         .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 (개발용)
                         .requestMatchers("/rtmp/**").permitAll() // ✅ nginx RTMP 콜백 허용
+                        .requestMatchers("/oauth/login").permitAll()
                         .anyRequest().authenticated()
                 );
 

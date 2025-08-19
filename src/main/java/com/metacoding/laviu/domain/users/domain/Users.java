@@ -75,4 +75,8 @@ public class Users implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 }

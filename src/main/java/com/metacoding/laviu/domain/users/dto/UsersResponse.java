@@ -64,4 +64,47 @@ public class UsersResponse {
             this.isFollowing = isFollowing;
         }
     }
+
+    @Data
+    public static class NaverVerifyDTO {
+        private String resultcode;
+        private String message;
+        private NaverUserInfo response;
+
+        @Data
+        public static class NaverUserInfo {
+            private String id;
+            private String nickname;
+            private String profile_image;
+            private String age;
+            private String gender;
+            private String email;
+            private String mobile;
+            private String mobile_e164;
+            private String name;
+            private String birthday;
+            private String birthyear;
+        }
+    }
+
+    @Data
+    public static class LoginDTO {
+        private Integer userId;
+        private String nickname;
+        private String email;
+        private String profileUrl;
+        private String providerType;
+        private String token;
+        private Boolean isNewUser;
+
+        public LoginDTO(Users user, String token, Boolean isNewUser) {
+            this.userId = user.getId();
+            this.nickname = user.getNickname();
+            this.email = user.getEmail();
+            this.profileUrl = user.getProfileImageUrl();
+            this.providerType = user.getProvider().name();
+            this.token = token;
+            this.isNewUser = isNewUser;
+        }
+    }
 }
