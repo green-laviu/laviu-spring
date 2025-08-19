@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.controller;
 
 import com.metacoding.laviu._core.utils.Resp;
+import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.FollowsResponse;
 import com.metacoding.laviu.domain.users.service.FollowsService;
@@ -8,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RequiredArgsConstructor
-@RequestMapping("/s/api/v1/")
+@RequestMapping("/s/api/v1/follows/")
 @RestController
 public class FollowsController {
 
@@ -18,7 +21,7 @@ public class FollowsController {
 
     //follows save
     //request로 안받고 id로 받아오는 body
-    @PostMapping("follows/user/{followerId}/following/{followingId}")
+    @PostMapping("user/{followerId}/following/{followingId}")
     public ResponseEntity<?> save(@PathVariable("followingId") Integer followingId) {
 
         //1. 유저정보
@@ -31,7 +34,7 @@ public class FollowsController {
     }
 
     //follows delete
-    @DeleteMapping("follows/{followId}")
+    @DeleteMapping("{followId}")
     public ResponseEntity<?> delete(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -43,7 +46,7 @@ public class FollowsController {
 
     }
 
-    @PutMapping("follows/{followId}/notify-on")
+    @PutMapping("{followId}/notify-on")
     public ResponseEntity<?> notifyOn(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -55,7 +58,7 @@ public class FollowsController {
         return Resp.ok(respDTO);
     }
 
-    @PutMapping("follows/{followId}/notify-off")
+    @PutMapping("{followId}/notify-off")
     public ResponseEntity<?> notifyOff(@PathVariable("followId") Integer followId) {
 
         //1. 유저정보
@@ -64,6 +67,26 @@ public class FollowsController {
         //2.save
         FollowsResponse.UpdateDTO respDTO = followsService.notifyOff(user, followId);
 
+        return Resp.ok(respDTO);
+    }
+
+    // 현재 팔로우 하고 있는 유저의 목록 조회
+    @GetMapping
+    public ResponseEntity<?> followList() {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+        List<FollowsResponse.FollowDTO> respDTO = followsService.followList(user);
+        return Resp.ok(respDTO);
+    }
+
+    // 현재 팔로우 하고있는 유저의 방송 목록 조회
+    @GetMapping("live")
+    public ResponseEntity<?> liveList() {
+
+        //1. 유저정보
+        Users user = Users.builder().id(2).build();
+        List<StreamsResponse.StreamDTO> respDTO = followsService.followliveList(user);
         return Resp.ok(respDTO);
     }
 
