@@ -14,6 +14,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 public class ChatMessagesController {
@@ -22,7 +24,7 @@ public class ChatMessagesController {
     private ViewersService viewersService;
     private ChatMessagesService chatMessagesService;
 
-    // [변경] 사용자가 채팅방에 참여했을 때 호출
+    // 사용자가 채팅방에 참여했을 때 호출
     @MessageMapping("/streams/{streamKey}/join")
     public void handleJoin(@DestinationVariable String streamKey, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
@@ -45,14 +47,15 @@ public class ChatMessagesController {
 
     }
 
-    // [변경] 채팅 메시지 처리
+    // 채팅 메시지 처리
     @MessageMapping("/streams/{streamKey}/chats")
     public void handleChatMessage(@DestinationVariable String streamKey, ChatMessagesRequest.wsSaveDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
         // Users 객체 전체 꺼내기
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        ChatMessagesResponse.wsBroadcastDTO respDTO = chatMessagesService.save(streamKey, user, reqDTO);
+        chatMessagesService.save(streamKey, user, reqDTO);
+        List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
 
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
     }

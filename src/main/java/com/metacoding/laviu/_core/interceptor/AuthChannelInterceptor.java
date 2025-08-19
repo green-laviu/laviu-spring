@@ -72,6 +72,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                 }
             }
             // 2-B. 채팅 채널은 사용자 인증만 있으면 구독 가능(추가 검사 없음)
+            // TODO -> join 을 통해서 viewers 테이블에 존재하면 채팅 구독 가능하게 변경
         }
         System.out.println("=== 인터셉터 통과 ===");
         return message;

@@ -14,9 +14,9 @@ public class TokenTest {
     public void create_test() {
         // given
         Users user = Users.builder()
-                .id(1)
-                .email("ssar@nate.com")
-                .nickname("ssar")
+                .id(6)
+                .email("testViewer@nate.com")
+                .nickname("testViewer")
                 .build();
 
         // when
