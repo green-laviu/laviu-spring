@@ -166,7 +166,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll() // 웹소켓 핸드셰이크 허용
                         .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 (개발용)
                         .requestMatchers("/rtmp/**").permitAll() // ✅ nginx RTMP 콜백 허용
-                        .requestMatchers("/oauth/login").permitAll()
+                        .requestMatchers("/oauth/login").permitAll() // 네이버 OAuth 로그인은 인증 없이 접근 가능하도록 허용 (로그인 전이므로)
                         .anyRequest().authenticated()
                 );
 
