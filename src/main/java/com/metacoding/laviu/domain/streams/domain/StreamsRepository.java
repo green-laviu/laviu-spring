@@ -6,6 +6,7 @@ import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +72,13 @@ public class StreamsRepository {
         return Optional.ofNullable(em.find(Streams.class, streamId));
     }
 
+    public List<Streams> findAllByUserIdsAndStatus(Collection<Integer> userIds, StreamsStatus streamsStatus) {
+        Query query = em.createQuery("select s from Streams s where s.streamer.id in :userIds and s.status = :status", Streams.class);
+        query.setParameter("userIds", userIds);
+        query.setParameter("status", streamsStatus);
+        return query.getResultList();
+    }
+
     //스트림 검색
     public List<Streams> findAllByQuery(String query) {
 
@@ -105,6 +113,15 @@ public class StreamsRepository {
             // 결과가 없거나 다른 예외 발생 시 false 반환
             return false;
         }
+    }
+
+
+    // 관리자 페이지에서 사용할 모든 스트림 목록 조회 (LIVE 상태만)
+    public List<Streams> findAllLiveStreamsWithStreamer() {
+        return em.createQuery(
+                        "select s from Streams s join fetch s.streamer where s.status = :status order by s.startedAt desc", Streams.class
+                ).setParameter("status", StreamsStatus.LIVE)
+                .getResultList();
     }
 
 }

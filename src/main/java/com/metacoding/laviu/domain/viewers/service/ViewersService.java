@@ -74,7 +74,7 @@ public class ViewersService {
         streamsPS.downViewerCount();
     }
 
-    public List<ViewersResponse.ViewersDetailDTO> getList(String streamKey) {
+    public List<ViewersResponse.wsBroadcastDTO> getList(String streamKey) {
         // 1. 방송 조회
         Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
@@ -83,7 +83,7 @@ public class ViewersService {
         List<Viewers> viewerList = viewersRepository.findAllByStreamId(streamPS.getId());
 
         // 3. DTO 응답
-        return ViewersResponse.ViewersDetailDTO.fromList(viewerList);
+        return ViewersResponse.wsBroadcastDTO.fromList(viewerList);
     }
 
 }

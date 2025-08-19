@@ -1,16 +1,21 @@
 package com.metacoding.laviu.domain.users.domain;
 
+import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 
 @Getter
 @Table(name = "users_tb")
@@ -40,6 +45,14 @@ public class Users implements UserDetails {
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
 
+    //FK(Foreign Key) part
+    @OneToMany(mappedBy = "follower")
+    private List<Follows> followsList;
+    @OneToMany(mappedBy = "following")
+    private List<Follows> followingList;
+    @OneToMany(mappedBy = "streamer")
+    private List<Streams> streamsList;
+
     // 기본생성자 사용금지
     protected Users() {
     }
@@ -60,15 +73,13 @@ public class Users implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-
-        String[] roleList = this.roles.split(",");
-
-        for (String role : roleList) {
-            authorities.add(() -> "ROLE_" + role); // ROLE_ 접두사 필수
+        if (this.roles == null || this.roles.isEmpty()) {
+            return Collections.emptyList();
         }
-
-        return authorities;
+        // "USER,ADMIN" 같은 문자열을 쉼표로 분리하고, 각 역할에 "ROLE_" 접두사를 붙여 SimpleGrantedAuthority 객체로 변환
+        return Arrays.stream(this.roles.split(","))
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.trim()))
+                .toList();
     }
 
     @Override
@@ -78,5 +89,11 @@ public class Users implements UserDetails {
 
     public void updateFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
+    }
+
+    public void updateProfile(String username, String channelDescription, String profileImageUrl) {
+        this.nickname = username;
+        this.bio = channelDescription;
+        this.profileImageUrl = profileImageUrl;
     }
 }

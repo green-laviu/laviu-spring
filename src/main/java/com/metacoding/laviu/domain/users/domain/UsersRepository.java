@@ -1,6 +1,7 @@
 package com.metacoding.laviu.domain.users.domain;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -14,6 +15,10 @@ public class UsersRepository {
 
     public Optional<Users> findById(Integer userId) {
         return Optional.ofNullable(em.find(Users.class, userId));
+    }
+
+    public void delete(Users users) {
+        em.remove(users);
     }
 
     //유저 검색
@@ -44,8 +49,31 @@ public class UsersRepository {
                 .findFirst(); // 첫 번째 요소를 Optional로 반환 (없으면 empty)
     }
 
+    public Optional<Users> getByEmailAndType(String email, UsersType type) {
+        try {
+            return Optional.ofNullable(em.createQuery(
+                            "select u from Users u where u.email = :email and u.type = :type", Users.class)
+                    .setParameter("email", email)
+                    .setParameter("type", type)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * 모든 유저 목록을 조회하는 메서드.
+     *
+     * @return 모든 유저 엔티티 리스트
+     */
+    public List<Users> getAllUsers() {
+        return em.createQuery("select u from Users u order by u.createdAt desc", Users.class)
+                .getResultList();
+    }
+
     public Users save(Users user) {
         em.persist(user);
         return user;
     }
+
 }

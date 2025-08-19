@@ -6,58 +6,59 @@ import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/s/api/v1/streams")
+@Slf4j
 public class StreamsController {
 
     private final StreamsService streamsService;
 
     //방송시작(준비) stream save
     @PostMapping("/start")
-    public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO) {
-
-        //1.세션에서  id 꺼내기
-        Users user = Users.builder().id(2).build();
-        //2. UUID로 스트림 키 생성 및 저장
-        StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, user);
+    public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO, @AuthenticationPrincipal Users principal) {
+        log.debug("방송-준비 요청");
+        StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, principal);
+        log.debug("방송-준비 결과 : {}", respDTO.toString());
         return Resp.ok(respDTO);
-
     }
 
     //방송보기(datail화면 조회)
     @GetMapping("/{streamId}")
-    public ResponseEntity<?> get(@PathVariable Integer streamId) {
-        //1.뷰어의 id 꺼내기
-
-        Users user = Users.builder().id(3).build();
-
-        //조회
-        StreamsResponse.DetailDTO respDTO = streamsService.getLiveStreamDetails(streamId, user);
+    public ResponseEntity<?> get(@PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
+        log.debug("방송-상세정보 요청");
+        StreamsResponse.DetailDTO respDTO = streamsService.getLiveStreamDetails(streamId, principal);
+        log.debug("방송-상세정보 결과 : {}", respDTO.toString());
         return Resp.ok(respDTO);
     }
 
 
     @PutMapping("/{streamId}/end")
-    public ResponseEntity<?> end(@PathVariable Integer streamId) {
-        Integer userId = 1; // token으로 조회 후 사용
-        streamsService.delete(streamId, userId);
+    public ResponseEntity<?> end(@PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
+        log.debug("방송-종료 요청");
+        streamsService.end(streamId, principal);
+        log.debug("방송-종료 결과: {}", "null");
         return Resp.ok(null);
     }
 
     @GetMapping
     public ResponseEntity<?> getStreamsList() {
+        log.debug("방송-목록 요청");
         StreamsResponse.StreamListDTO respDTO = streamsService.findAll();
+        log.debug("방송-목록 결과 : {}", respDTO.toString());
         return Resp.ok(respDTO);
     }
 
     @PutMapping("/{streamId}/setting")
-    public ResponseEntity<?> update(@PathVariable Integer streamId, @RequestBody StreamsRequest.UpdateDTO reqDTO) {
-        Integer userId = 1; // token으로 조회 후 사용
-        StreamsResponse.UpdateDTO respDTO = streamsService.update(streamId, userId, reqDTO);
+    public ResponseEntity<?> update(@PathVariable Integer streamId, @RequestBody StreamsRequest.UpdateDTO reqDTO, @AuthenticationPrincipal Users principal) {
+        log.debug("방송-수정 요청");
+        StreamsResponse.UpdateDTO respDTO = streamsService.update(streamId, principal, reqDTO);
+        log.debug("방송-수정 결과 : {}", respDTO.toString());
         return Resp.ok(respDTO);
     }
 }

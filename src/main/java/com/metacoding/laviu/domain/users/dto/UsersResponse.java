@@ -1,10 +1,78 @@
 package com.metacoding.laviu.domain.users.dto;
 
+import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
+import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
+import lombok.Builder;
 import lombok.Data;
 
 public class UsersResponse {
 
+    @Data
+    public static class MeDTO {
+        private Me me;
+        private StreamsResponse.UserInfoStreamsDTO live;
+
+        @Data
+        public static class Me {
+            private Integer userId;
+            private String nickname;
+            private String profileImageUrl;
+            private Long followerCount;
+            private Boolean isLive;
+            private String bio;
+
+            @Builder
+            public Me(Users user, Long followerCount, Boolean isLive) {
+                this.userId = user.getId();
+                this.nickname = user.getNickname();
+                this.profileImageUrl = user.getProfileImageUrl();
+                this.followerCount = followerCount;
+                this.isLive = isLive;
+                this.bio = user.getBio();
+            }
+        }
+
+        public MeDTO(Me me, StreamsResponse.UserInfoStreamsDTO live) {
+            this.me = me;
+            this.live = live;
+        }
+    }
+
+    @Data
+    public static class StreamerDTO {
+        private Streamer streamer;
+        private StreamsResponse.UserInfoStreamsDTO liveStream;
+
+        @Data
+        public static class Streamer {
+            private Integer userId;
+            private String nickname;
+            private String profileImageUrl;
+            private Long followerCount;
+            private String bio;
+            private Boolean isFollowing;
+            private Boolean isNotified;
+            private StreamsStatus streamStatus;
+            private Boolean isLive;
+
+            public Streamer(Users user, Long followerCount, Boolean isFollowing, StreamsStatus streamStatus) {
+                this.userId = user.getId();
+                this.nickname = user.getNickname();
+                this.profileImageUrl = user.getProfileImageUrl();
+                this.followerCount = followerCount;
+                this.bio = user.getBio();
+                this.isFollowing = isFollowing;
+                this.streamStatus = streamStatus;
+                this.isLive = streamStatus.name().equals(StreamsStatus.LIVE.name()); // TODO : 여긴 me 처럼 안되어 있어서 임시로 넣음. 수정 바람
+            }
+        }
+
+        public StreamerDTO(Streamer streamer, StreamsResponse.UserInfoStreamsDTO liveStream) {
+            this.streamer = streamer;
+            this.liveStream = liveStream;
+        }
+    }
 
     @Data
     public static class ChannelInfoDTO {
@@ -105,6 +173,20 @@ public class UsersResponse {
             this.providerType = user.getProvider().name();
             this.token = token;
             this.isNewUser = isNewUser;
+        }
+    }
+
+    public static class UpdateDTO {
+        private Integer userId;
+        private String nickname;
+        private String profileImageUrl;
+        private String bio;
+
+        public UpdateDTO(Users user) {
+            this.userId = user.getId();
+            this.nickname = user.getNickname();
+            this.profileImageUrl = user.getProfileImageUrl();
+            this.bio = user.getBio();
         }
     }
 }

@@ -14,8 +14,9 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @RequiredArgsConstructor
 public class StompDisconnectEvent implements ApplicationListener<SessionDisconnectEvent> {
 
-    private ChatMessagesController chatMessagesController;
-    private ViewersService viewersService;
+    private final ChatMessagesController chatMessagesController;
+    private final ViewersService viewersService;
+
 
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
