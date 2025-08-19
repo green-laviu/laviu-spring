@@ -139,4 +139,9 @@ public class UsersService {
         }
         return searchResultList;
     }
+
+    public Users findById(Integer sanctionedUserId) {
+        return usersRepository.findById(sanctionedUserId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
+    }
 }

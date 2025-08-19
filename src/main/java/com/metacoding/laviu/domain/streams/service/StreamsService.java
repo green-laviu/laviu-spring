@@ -177,7 +177,6 @@ public class StreamsService {
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
         return new StreamsResponse.DetailDTO(live, chatMessageListPS);
-
     }
 
 
