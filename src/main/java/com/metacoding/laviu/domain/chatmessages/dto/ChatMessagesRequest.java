@@ -5,7 +5,7 @@ import lombok.Data;
 public class ChatMessagesRequest {
 
     @Data
-    public static class saveDTO {
+    public static class wsSaveDTO {
         private String content;
     }
 }

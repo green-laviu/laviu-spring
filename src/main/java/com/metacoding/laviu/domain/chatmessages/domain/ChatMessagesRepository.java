@@ -42,7 +42,7 @@ public class ChatMessagesRepository {
         return chatMessages;
     }
 
-    public List<ChatMessages> findLatest30ByStreamKey(String streamKey) {
+    public List<ChatMessages> findLatest30ByStreamKeyJoinFetchUser(String streamKey) {
         Query query = em.createQuery("select c from ChatMessages c join fetch c.user where c.stream.streamKey = :streamKey order by c.id desc", ChatMessages.class);
         query.setParameter("streamKey", streamKey);
         query.setMaxResults(30);

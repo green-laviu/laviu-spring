@@ -22,9 +22,9 @@ public class TokenTest {
         // when
         String jwt = JWT.create()
                 .withSubject("laviu") // 토큰 이름 필수!
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 7)) // 만료시간
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 만료시간
                 .withClaim("id", user.getId()) // 넣고 싶은 정보
-                .withClaim("username", user.getUsername()) // 넣고 싶은 정보
+                .withClaim("nickname", user.getNickname()) // 넣고 싶은 정보
                 .withClaim("email", user.getEmail()) // 넣고 싶은 정보
                 .sign(Algorithm.HMAC512("메타코딩시크릿키")); // 마지막 해쉬생성
 
@@ -44,7 +44,7 @@ public class TokenTest {
         // when
         String jwt = JWT.create()
                 .withSubject("laviu") // 토큰 이름 필수!
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 만료시간
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 만료시간
                 .withClaim("id", user.getId()) // 넣고 싶은 정보
                 .withClaim("username", user.getUsername()) // 넣고 싶은 정보
                 .withClaim("email", user.getEmail()) // 넣고 싶은 정보

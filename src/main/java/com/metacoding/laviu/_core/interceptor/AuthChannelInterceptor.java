@@ -4,7 +4,7 @@ import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu._core.utils.StreamKeyUtil;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -17,10 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
-    @Autowired
-    private StreamsService streamService; // 스트림 소유권 확인 서비스
+    private final StreamsService streamService; // 스트림 소유권 확인 서비스
 
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
