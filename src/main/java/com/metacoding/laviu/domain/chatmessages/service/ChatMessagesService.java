@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ChatMessagesService {
@@ -20,7 +22,7 @@ public class ChatMessagesService {
     private final StreamsRepository streamsRepository;
 
     @Transactional
-    public ChatMessagesResponse.ChatBroadcastRespDTO save(String streamKey, Users user, ChatMessagesRequest.saveDTO reqDTO) {
+    public List<ChatMessagesResponse.ChatBroadcastRespDTO> save(String streamKey, Users user, ChatMessagesRequest.saveDTO reqDTO) {
         // 1. 방송 조회
         Streams streamPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
@@ -35,14 +37,18 @@ public class ChatMessagesService {
         // 3. 채팅 저장
         ChatMessages chatMessagePS = chatMessagesRepository.save(chatMessages);
 
-        // 4. 시간 등록
-        return ChatMessagesResponse.ChatBroadcastRespDTO.builder()
-                .authorId(user.getId())
-                .authorNickname(user.getNickname())
-                .emailId(user.getEmail()) // 또는 getUsername()
-                .isStreamer(streamPS.getStreamer().getId().equals(user.getId()))
-                .content(reqDTO.getContent()) // ◀ 클라이언트가 보낸 content 사용
-                .timestamp(chatMessagePS.getCreatedAt())
-                .build();
+        // 4. 채팅 목록 조회 (최신 30개)
+        List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamKey(streamKey);
+
+        return chatMessageList.stream()
+                .map(chatMessage -> ChatMessagesResponse.ChatBroadcastRespDTO.builder()
+                        .authorId(user.getId())
+                        .authorNickname(user.getNickname())
+                        .emailId(user.getEmail()) // 또는 getUsername()
+                        .isStreamer(streamPS.getStreamer().getId().equals(user.getId()))
+                        .content(reqDTO.getContent()) // ◀ 클라이언트가 보낸 content 사용
+                        .timestamp(chatMessagePS.getCreatedAt())
+                        .build())
+                .toList();
     }
 }
