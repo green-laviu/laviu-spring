@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.chatmessages.domain;
 
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -34,6 +35,25 @@ public class ChatMessagesRepository {
                 .getResultList();
 
         return list;
+    }
+
+    public ChatMessages save(ChatMessages chatMessages) {
+        em.persist(chatMessages);
+        return chatMessages;
+    }
+
+    public List<ChatMessages> findLatest30ByStreamKeyJoinFetchUserAndStream(String streamKey) {
+        Query query = em.createQuery("select c from ChatMessages c join fetch c.user join fetch c.stream where c.stream.streamKey = :streamKey order by c.id desc", ChatMessages.class);
+        query.setParameter("streamKey", streamKey);
+        query.setMaxResults(30);
+        return query.getResultList();
+    }
+
+    public List<ChatMessages> findLatest30ByStreamIdJoinFetchUserAndStream(Integer streamId) {
+        Query query = em.createQuery("select c from ChatMessages c join fetch c.user join fetch c.stream where c.stream.id = :streamId order by c.id desc", ChatMessages.class);
+        query.setParameter("streamId", streamId);
+        query.setMaxResults(30);
+        return query.getResultList();
     }
 }
 

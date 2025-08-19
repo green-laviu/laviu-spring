@@ -6,6 +6,8 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu._core.utils.StringTrimUtils;
+import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
+import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
@@ -20,7 +22,6 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
-import com.metacoding.laviu.domain.viewers.domain.Viewers;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,7 @@ public class StreamsService {
     private final UsersRepository usersRepository;
     private final HashtagsService hashtagsService;
     private final NotificationsService notificationsService;
+    private final ChatMessagesRepository chatMessagesRepository;
 
     @Transactional
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
@@ -155,34 +157,26 @@ public class StreamsService {
     public StreamsResponse.DetailDTO getLiveStreamDetails(Integer streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
 
-
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
         Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
-        // 2.viewer 테이블 추가
-        Viewers viewerPS = viewersService.save(streamPS, user);
-
-        //3. 스트림 테이블 뷰업테이트 (+1씩 올라가는 함수)
-        streamPS.upViewerCount();
-
-        //4.팔로워수 팔로워 여부 , 채널dto 생성
+        //2.팔로워수 팔로워 여부 , 채널dto 생성
         Long followerCount = followsRepository.countByFollowingId(streamPS.getStreamer().getId());
         Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(streamPS.getStreamer().getId(), user.getId());
         UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
-        //5.채팅 테이블 목록
-//        List<ChatMessages> chatListPS = chatMessagesRepository.findAllByStreamIdJoinUser(streamPS.getId());
-//        List<ChatMessagesResponse.ChatDetailDTO> chatResultList = ChatMessagesResponse.ChatDetailDTO.fromList(chatListPS);
+        //3.채팅 테이블 목록
+        List<ChatMessages> chatMessageListPS = chatMessagesRepository.findLatest30ByStreamIdJoinFetchUserAndStream(streamId);
 
-        //6.hlsUrl
+        //4.hlsUrl
         String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
 
-        //9.라이브정보 합치기
+        //5.라이브정보 합치기
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(live, viewerPS);
+        return new StreamsResponse.DetailDTO(live, chatMessageListPS);
 
     }
 
@@ -191,12 +185,12 @@ public class StreamsService {
      * 방송 종료하는 서비스
      */
     @Transactional
-    public void delete(Integer streamsId, Integer usersId) {
+    public void end(Integer streamsId, Users user) {
         // 방송 없으면 터짐
         Streams streamsPS = streamsRepository.findById(streamsId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 권한 없음
-        checkStreamerPermission(streamsPS, usersId);
+        checkStreamerPermission(streamsPS, user.getId());
         // 이미 종료된 방송
         if (streamsPS.getStatus() == StreamsStatus.ENDED)
             throw new ExceptionApi400(ErrorEnum.STREAM_ALREADY_ENDED);
@@ -216,6 +210,7 @@ public class StreamsService {
     public StreamsResponse.StreamListDTO findAll() {
         List<Streams> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
 
+        if (liveStreamsList.isEmpty()) return null;
         int liveStreamsListSize = liveStreamsList.size();
         int carouselMaxSize = 3;
         int twinMinSize = Math.min(liveStreamsListSize, carouselMaxSize);
@@ -241,7 +236,7 @@ public class StreamsService {
     }
 
     @Transactional
-    public StreamsResponse.UpdateDTO update(Integer streamId, Integer userId, StreamsRequest.UpdateDTO reqDTO) {
+    public StreamsResponse.UpdateDTO update(Integer streamId, Users user, StreamsRequest.UpdateDTO reqDTO) {
         // 유저 조회
 
         // 방송 조회
@@ -249,7 +244,7 @@ public class StreamsService {
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 수정 권한 체크
-        checkStreamerPermission(streamPS, userId);
+        checkStreamerPermission(streamPS, user.getId());
 
         // 수정
         // 해시태그 저장
@@ -298,5 +293,10 @@ public class StreamsService {
                 .toList();
 
         return respDTO;
+    }
+
+    // 방송 주인 확인
+    public Boolean isStreamOwner(String streamKey, Integer userId) {
+        return streamsRepository.existsByStreamKeyAndUserId(streamKey, userId);
     }
 }

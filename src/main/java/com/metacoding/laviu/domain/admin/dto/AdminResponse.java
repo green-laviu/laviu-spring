@@ -83,20 +83,18 @@ public class AdminResponse {
             private String lastLoginAt;                 // 마지막 로그인 시간 (yyyy-MM-dd HH:mm 형식, 정보가 없으면 "-")
             private String provider;                    // OAuth2 제공자 (예: GOOGLE)
             private String bio;                         // 자기소개
-            private String type;                        // 유저 타입 (예: USER, ADMIN)
 
             public User(Users user) {
                 this.id = user.getId();
                 this.email = user.getEmail();
                 this.nickname = user.getNickname();
-                this.role = user.getType().name();
+                this.role = user.getRoles();
                 // DateTimeUtils를 사용해 포맷팅
                 this.createdAt = DateTimeUtils.format(user.getCreatedAt());
                 this.updatedAt = DateTimeUtils.format(user.getUpdatedAt());
                 this.lastLoginAt = DateTimeUtils.format(user.getLastLoginAt());
                 this.provider = (user.getProvider() != null) ? user.getProvider().name() : "-";
                 this.bio = (user.getBio() != null) ? user.getBio() : "-";
-                this.type = user.getType().name();
             }
         }
     }
