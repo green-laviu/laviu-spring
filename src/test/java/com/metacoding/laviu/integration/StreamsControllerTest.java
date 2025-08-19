@@ -124,6 +124,6 @@ public class StreamsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
-        
+
     }
 }

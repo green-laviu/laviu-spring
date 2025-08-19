@@ -216,6 +216,7 @@ public class StreamsService {
     public StreamsResponse.StreamListDTO findAll() {
         List<Streams> liveStreamsList = streamsRepository.findByStatusOrderByViewerCountDesc(StreamsStatus.LIVE);
 
+        if (liveStreamsList.isEmpty()) return null;
         int liveStreamsListSize = liveStreamsList.size();
         int carouselMaxSize = 3;
         int twinMinSize = Math.min(liveStreamsListSize, carouselMaxSize);

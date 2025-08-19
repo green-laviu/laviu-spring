@@ -21,7 +21,7 @@ public class SearchControllerTest extends MyRestDoc {
     @Test
     public void get_search_users_test() throws Exception {
         //given
-        String query = "cos";
+        String query = "love";
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
