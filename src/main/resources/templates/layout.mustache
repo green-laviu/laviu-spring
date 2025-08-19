@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{$title}}관리자 페이지{{/title}}</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 200px;
+            background: #f8f8f8;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 1px solid #ccc;
+            height: 100vh;
+
+            /* 하단 고정용 */
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .nav-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            flex: 1; /* 남는 공간 차지해서 footer를 아래로 밀기 */
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-area {
+            margin-top: auto; /* 항상 맨 아래로 */
+            padding-top: 12px;
+            border-top: 1px solid #ddd;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 10px 0;
+            border: none;
+            border-radius: 6px;
+            background: #e74c3c;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+        }
+
+        h2 {
+            margin: 0 0 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            text-align: center;
+            padding: 8px;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+
+        .end-btn {
+            padding: 5px 10px;
+            background: #ff4d4d;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .end-btn:hover {
+            background: #e60000;
+        }
+
+        /* 기존 action-btn 스타일은 삭제 */
+
+        /* 새로운 수락 버튼 스타일 */
+        .accept-btn {
+            padding: 5px 10px;
+            background: #3498db; /* 파란색 */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .accept-btn:hover {
+            background: #2980b9; /* 더 진한 파란색 */
+        }
+
+        /* 새로운 거절 버튼 스타일 */
+        .reject-btn {
+            padding: 5px 10px;
+            background: #e74c3c; /* 빨간색 */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .reject-btn:hover {
+            background: #c0392b; /* 더 진한 빨간색 */
+        }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+
+    <div class="nav-area">
+        <div class="menu-item">
+            <input type="radio" id="menu-broadcast" name="menu"
+                   {{#model.menu.broadcast}}checked{{/model.menu.broadcast}}>
+            <label for="menu-broadcast" data-href="/v1/admin/streams">실시간 방송 관리</label>
+        </div>
+        <div class="menu-item">
+            <input type="radio" id="menu-user" name="menu" {{#model.menu.user}}checked{{/model.menu.user}}>
+            <label for="menu-user" data-href="/v1/admin/users">유저 목록</label>
+        </div>
+        <div class="menu-item">
+            <input type="radio" id="menu-report" name="menu" {{#model.menu.report}}checked{{/model.menu.report}}>
+            <label for="menu-report" data-href="/s/api/v1/admin/abusereports">신고 내역</label>
+        </div>
+    </div>
+
+    <div class="logout-area">
+        <form action="/s/v1/auth/admin/logout" method="post">
+            <button type="submit" class="logout-btn">로그아웃</button>
+        </form>
+    </div>
+</div>
+
+<div class="content">
+    {{$body}}{{/body}}
+</div>
+
+<script>
+    // 사이드바 클릭 시 해당 페이지로 이동
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.menu-item label').forEach(function (label) {
+            label.addEventListener('click', function () {
+                var href = label.getAttribute('data-href');
+                if (href) window.location.href = href;
+            });
+        });
+        ['menu-broadcast', 'menu-user', 'menu-report'].forEach(function (id) {
+            var input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('change', function () {
+                    var label = document.querySelector('label[for="' + id + '"]');
+                    var href = label && label.getAttribute('data-href');
+                    if (href) window.location.href = href;
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

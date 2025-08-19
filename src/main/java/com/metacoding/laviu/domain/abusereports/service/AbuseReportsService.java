@@ -31,13 +31,12 @@ public class AbuseReportsService {
         Streams streamPS = streamsRepository.findById(streamId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
-
         //2. LIVE 방송 인지 확인
         if (streamPS.getStatus() != StreamsStatus.LIVE) {
             throw new ExceptionApi400(ErrorEnum.STREAM_NOT_LIVE);
         }
         //3.카테고리 검증 (존재하는지)
-        AbuseReportCategorys AbuseReportcategoryPS = abuseReportsRepository.findById(reqDTO.getCategoryId())
+        AbuseReportCategorys AbuseReportcategoryPS = abuseReportsRepository.findByCategoryIdId(reqDTO.getCategoryId())
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.ABUSEREPORTCATEGORYS_NOT_FOUND));
 
         //3.엔티티 생성
