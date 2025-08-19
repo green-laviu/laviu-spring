@@ -6,6 +6,7 @@ import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,15 +21,11 @@ public class NotificationsController {
 
     //알림 수신함 목록
     @GetMapping
-    public ResponseEntity<?> getNotificationList() {
+    public ResponseEntity<?> getNotificationList(@AuthenticationPrincipal Users principal) {
 
-        //1.유저 정보 검색
-        Users user = Users.builder().id(2).build();
-
-        //list 조회
-        List<NotificationsResponse.NotificationsListDTO> respDTO = notificationsService.findAll(user);
-
+        List<NotificationsResponse.NotificationsListDTO> respDTO = notificationsService.findAll(principal);
         return Resp.ok(respDTO);
+
     }
 
     //알림클릭시 is read =ture 로 update

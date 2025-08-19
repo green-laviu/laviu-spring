@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacoding.laviu.MyRestDoc;
 import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu.domain.notifications.dto.NotificationsResponse;
 import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,20 +38,30 @@ public class NotificationsControllerTest extends MyRestDoc {
     @Autowired
     private NotificationsService notificationsService;
 
+    private String accessToken;
+
     @BeforeEach
     public void setUp() {
-        System.out.println("토큰 만들었다");
+        // 테스트 시작 전에 실행할 코드
+        System.out.println("setUp");
+        Users cos = Users.builder()
+                .id(2)
+                .nickname("cos")
+                .email("cos@nate.com")
+                .roles("USER")
+                .build();
+        accessToken = JwtUtil.create(cos);
     }
 
     @Test
     public void get_notification_list_test() throws Exception {
         //given
 
-
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/s/api/v1/notifications")
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -82,6 +94,7 @@ public class NotificationsControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/notifications/{notificationId}", notificationId)
+                        .header("Authorization", "Bearer " + accessToken)
         );
 
         //eye

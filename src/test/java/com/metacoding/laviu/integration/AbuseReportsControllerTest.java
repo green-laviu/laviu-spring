@@ -2,8 +2,11 @@ package com.metacoding.laviu.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacoding.laviu.MyRestDoc;
+import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu.domain.abusereports.dto.AbuseReportsRequest;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,6 +24,21 @@ import static org.hamcrest.Matchers.matchesPattern;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
 @Slf4j
 public class AbuseReportsControllerTest extends MyRestDoc {
+
+    private String accessToken;
+
+    @BeforeEach
+    public void setUp() {
+        // 테스트 시작 전에 실행할 코드
+        System.out.println("setUp");
+        Users cos = Users.builder()
+                .id(2)
+                .nickname("cos")
+                .email("cos@nate.com")
+                .roles("USER")
+                .build();
+        accessToken = JwtUtil.create(cos);
+    }
 
     @Autowired
     private ObjectMapper om;
@@ -42,6 +60,7 @@ public class AbuseReportsControllerTest extends MyRestDoc {
                         .post("/s/api/v1/streams/{streamId}/abusereports", streamId)
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -51,7 +70,7 @@ public class AbuseReportsControllerTest extends MyRestDoc {
         // then
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.snapshotStreamTitle").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.snapshotStreamerNickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.details").value("신고사유"));
@@ -60,7 +79,7 @@ public class AbuseReportsControllerTest extends MyRestDoc {
                 matchesPattern("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.processedAt").isEmpty());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReporterId").value(2));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReporterNickname").value("testname"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReporterNickname").value("cos"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamerId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamerNickname").value("ssar"));
