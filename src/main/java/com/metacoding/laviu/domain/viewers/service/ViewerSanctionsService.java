@@ -15,6 +15,7 @@ import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsRepository;
 import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,6 +25,7 @@ public class ViewerSanctionsService {
     private final StreamsRepository streamsRepository;
 
     // 재제를 추가하는 외부 연동 로직
+    @Transactional
     public SanctionResponseDTO save(String streamKey, Users streamer, SanctionRequestDTO reqDTO) {
         // 방송 존재 여부 확인
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
