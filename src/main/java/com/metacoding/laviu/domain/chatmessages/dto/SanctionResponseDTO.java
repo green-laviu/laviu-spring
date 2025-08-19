@@ -6,10 +6,12 @@ import lombok.Data;
 
 @Data
 public class SanctionResponseDTO {
+    // TODO : [창호] 제재 응답 노션보고 수정 바람
     private String sanctionedUserNaverId;
     private String sanctionedUserNickname;
     private String type; // chatBan, kick
     private Integer offenseCount;
+
 
     @Builder
 
