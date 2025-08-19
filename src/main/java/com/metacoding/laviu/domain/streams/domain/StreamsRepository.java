@@ -115,7 +115,6 @@ public class StreamsRepository {
         }
     }
 
-
     // 관리자 페이지에서 사용할 모든 스트림 목록 조회 (LIVE 상태만)
     public List<Streams> findAllLiveStreamsWithStreamer() {
         return em.createQuery(

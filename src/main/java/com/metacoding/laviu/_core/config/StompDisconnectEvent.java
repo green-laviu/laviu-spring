@@ -17,7 +17,6 @@ public class StompDisconnectEvent implements ApplicationListener<SessionDisconne
     private final ChatMessagesController chatMessagesController;
     private final ViewersService viewersService;
 
-
     @Override
     public void onApplicationEvent(SessionDisconnectEvent event) {
         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.wrap(event.getMessage());
