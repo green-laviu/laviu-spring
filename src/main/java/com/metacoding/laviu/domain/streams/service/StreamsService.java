@@ -9,6 +9,7 @@ import com.metacoding.laviu._core.utils.StringTrim;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
+import com.metacoding.laviu.domain.notifications.dto.NotificationsResponse;
 import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
@@ -74,7 +75,7 @@ public class StreamsService {
         streamsPS.startLive();
 
         //팔로워에게 알림저장
-        notificationsService.save(streamsPS);
+        List<NotificationsResponse.DTO> notificationList = notificationsService.save(streamsPS);
     }
 
     private Map<String, String> parseQueryString(String query) {

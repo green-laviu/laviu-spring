@@ -10,7 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.Matchers.matchesPattern;
 
 
 @Transactional
@@ -44,7 +48,26 @@ public class AbuseReportsControllerTest extends MyRestDoc {
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
 
-        //then
+        // then
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.snapshotStreamTitle").value("자바 기초 강의"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.snapshotStreamerNickname").value("ssar"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.details").value("신고사유"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value("PENDING"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.createdAt",
+                matchesPattern("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.processedAt").isEmpty());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReporterId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReporterNickname").value("testname"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamerId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.abuseReportedStreamerNickname").value("ssar"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.categoryId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.categoryTitle").value("불법성 콘텐츠입니다."));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+
     }
 
 

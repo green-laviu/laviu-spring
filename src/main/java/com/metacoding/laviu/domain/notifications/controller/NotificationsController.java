@@ -26,7 +26,7 @@ public class NotificationsController {
         Users user = Users.builder().id(2).build();
 
         //list 조회
-        List<NotificationsResponse.NotificationsListDto> respDTO = notificationsService.findAll(user);
+        List<NotificationsResponse.NotificationsListDTO> respDTO = notificationsService.findAll(user);
 
         return Resp.ok(respDTO);
     }
@@ -36,7 +36,7 @@ public class NotificationsController {
     ResponseEntity<?> updateIsRead(@PathVariable Integer notificationId) {
 
         //read로 변경 메소드
-        NotificationsResponse.UpdateIsReadDTO respDTO = notificationsService.markAsRead(notificationId);
+        NotificationsResponse.DTO respDTO = notificationsService.markAsRead(notificationId);
 
         return Resp.ok(respDTO);
     }

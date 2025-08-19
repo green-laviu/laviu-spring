@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -35,6 +37,14 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isFollowing").value(true));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isNotificationsEnabled").value(true));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @Test
@@ -53,6 +63,10 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty()); //null or 빈배열
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @Test
