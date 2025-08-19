@@ -111,5 +111,28 @@ public class StreamsResponse {
         }
     }
 
+    @Data
+    public static class UserInfoStreamsDTO {
+        private Integer streamId;
+        private String streamKey;
+        private String title;
+        private Integer viewerCount;
+        private String thumbnailUrl;
+        private StreamsStatus status;
+        private List<HashtagsResponse.DTO> hashtagList;
+        private Boolean isLive;
 
+        public UserInfoStreamsDTO(Streams stream) {
+            this.streamId = stream.getId();
+            this.streamKey = stream.getStreamKey();
+            this.title = stream.getTitle();
+            this.viewerCount = stream.getViewerCount();
+            this.thumbnailUrl = stream.getThumbnailUrl();
+            this.status = stream.getStatus();
+            this.hashtagList = stream.getStreamHashtagList().stream()
+                    .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
+                    .toList();
+            this.isLive = stream.getStatus() == StreamsStatus.LIVE;
+        }
+    }
 }

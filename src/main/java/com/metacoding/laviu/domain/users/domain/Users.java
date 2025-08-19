@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.users.domain;
 
+import com.metacoding.laviu.domain.streams.domain.Streams;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Getter
 @Table(name = "users_tb")
@@ -41,6 +43,14 @@ public class Users implements UserDetails {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
+
+    //FK(Foreign Key) part
+    @OneToMany(mappedBy = "follower")
+    private List<Follows> followsList;
+    @OneToMany(mappedBy = "following")
+    private List<Follows> followingList;
+    @OneToMany(mappedBy = "streamer")
+    private List<Streams> streamsList;
 
     // 기본생성자 사용금지
     protected Users() {
@@ -74,5 +84,11 @@ public class Users implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public void updateProfile(String username, String channelDescription, String profileImageUrl) {
+        this.nickname = username;
+        this.bio = channelDescription;
+        this.profileImageUrl = profileImageUrl;
     }
 }
