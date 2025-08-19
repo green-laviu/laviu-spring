@@ -33,7 +33,7 @@ public class UsersService {
     @Transactional
     public UsersResponse.UpdateDTO update(UsersRequest.updateDTO updateDTO, Integer userId, Integer tokenUserId) {
         Users users = getUsersAndUserPermissionCheck(userId, tokenUserId);
-        users.updataProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
+        users.updateProfile(updateDTO.getUsername(), updateDTO.getChannelDescription(), updateDTO.getProfileImageUrl());
 
         return new UsersResponse.UpdateDTO(users);
     }

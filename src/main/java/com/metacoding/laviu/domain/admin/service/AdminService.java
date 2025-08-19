@@ -48,7 +48,7 @@ public class AdminService {
         }
 
         // 3. 유저의 타입이 ADMIN인지 다시 한 번 확인합니다. (getByEmailAndType에서 이미 확인했지만, 방어적 코드)
-        if (!user.getType().equals(UsersType.ADMIN)) {
+        if (!user.getRoles().contains(UsersType.ADMIN.name())) {
             throw new ExceptionApi401(ErrorEnum.ADMIN_PRIVILEGE_REQUIRED);
         }
 

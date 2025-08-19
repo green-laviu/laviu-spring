@@ -7,6 +7,7 @@ import com.metacoding.laviu.domain.abusereports.service.AbuseReportsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,15 +20,10 @@ public class AbuseReportsController {
 
     //신고 save
     @PostMapping("/streams/{streamId}/abusereports")
-    public ResponseEntity<?> save(@RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId) {
+    public ResponseEntity<?> save(@RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
 
-        //1.유저 인증
-        Users viewer = Users.builder().id(2).nickname("testname").build();
-        //2. 서비스에 넘기기
-        AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, viewer, streamId);
-
+        AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, principal, streamId);
 
         return Resp.ok(respDTO);
-
     }
 }
