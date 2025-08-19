@@ -20,7 +20,6 @@ public class ViewerSanctionsService {
     public SanctionResponseDTO create(String streamKey, Users user, SanctionRequestDTO reqDTO) {
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
-        save();
         return getDto();
     }
 

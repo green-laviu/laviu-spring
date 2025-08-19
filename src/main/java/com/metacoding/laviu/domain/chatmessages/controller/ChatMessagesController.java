@@ -70,7 +70,7 @@ public class ChatMessagesController {
         Users user = (Users) auth.getPrincipal();
 
         // 제재 테이블 저장
-        SanctionResponseDTO respDTO = viewerSanctionsService.create(user, reqDTO);
+        SanctionResponseDTO respDTO = viewerSanctionsService.create(streamKey, user, reqDTO);
         // 응답 데이터 반환
         Users sanctionedUser = usersService.findById(reqDTO.getSanctionedUserId());
         String destination = " ";
