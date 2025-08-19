@@ -36,14 +36,14 @@ public class ViewerSanctionsService {
         }
         // 기존 재제 존재 유무 확인
         ViewerSanctions sanctionsPS = viewerSanctionsRepository
-                .findByStreamIdAndSanctionedUserId(streamsPS.getId(), reqDTO.getSanctionedUserId())
+                .findByStreamIdAndSanctionedUserIdJoinFetchSanctionedUser(streamsPS.getId(), reqDTO.getSanctionedUserId())
                 .orElse(null);
         // 없을 시 새로 생성
         if (sanctionsPS == null) {
             sanctionsPS = create(streamsPS, reqDTO);
         } else {
             // 존재할 시 마지막 제재와 비슷하지만 타입과 offenseCount가 증가된 새로운 재제 인스텐스 추가
-            sanctionsPS = copyCreate(sanctionsPS, reqDTO.getType());
+            sanctionsPS = copyCreate(sanctionsPS, reqDTO.getSanctionType());
         }
         // dto로 return
         return new SanctionResponseDTO(sanctionsPS);
@@ -54,7 +54,7 @@ public class ViewerSanctionsService {
         Users sanctionedUserPS = usersRepository.findById(reqDTO.getSanctionedUserId())
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
 
-        ViewerSanctionsType type = getSanctionType(reqDTO.getType());
+        ViewerSanctionsType type = getSanctionType(reqDTO.getSanctionType());
         ViewerSanctions newViewerSanctions = new ViewerSanctions(type, streams, streams.getStreamer(), sanctionedUserPS);
         return viewerSanctionsRepository.save(newViewerSanctions);
     }

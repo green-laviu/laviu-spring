@@ -22,6 +22,9 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctions;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsRepository;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsType;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,6 +44,7 @@ public class StreamsService {
     private final HashtagsService hashtagsService;
     private final NotificationsService notificationsService;
     private final ChatMessagesRepository chatMessagesRepository;
+    private final ViewerSanctionsRepository viewerSanctionsRepository;
 
     @Transactional
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
@@ -156,6 +160,11 @@ public class StreamsService {
     @Transactional
     public StreamsResponse.DetailDTO getLiveStreamDetails(Integer streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
+        Optional<ViewerSanctions> viewerSanctionOP = viewerSanctionsRepository.findByStreamIdAndSanctionedUserIdAndTypeAndIsActive(streamId, user.getId(), ViewerSanctionsType.KICK, true);
+
+        if (viewerSanctionOP.isPresent()) {
+            throw new ExceptionApi403(ErrorEnum.STREAM_VIEWING_FORBIDDEN);
+        }
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
         Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)

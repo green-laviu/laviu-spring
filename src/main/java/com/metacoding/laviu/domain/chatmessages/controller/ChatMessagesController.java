@@ -1,10 +1,10 @@
 package com.metacoding.laviu.domain.chatmessages.controller;
 
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesRequest;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
+import com.metacoding.laviu.domain.chatmessages.dto.*;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
+import com.metacoding.laviu.domain.viewers.service.ViewerSanctionsService;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +22,7 @@ import java.util.List;
 @Slf4j
 public class ChatMessagesController {
 
+    private final ViewerSanctionsService viewerSanctionsService;
     private SimpMessagingTemplate messagingTemplate;
     private ViewersService viewersService;
     private ChatMessagesService chatMessagesService;
@@ -63,6 +64,23 @@ public class ChatMessagesController {
         List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
 
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
+    }
+
+    // 제재 메시지 처리
+    @MessageMapping("/streams/{streamKey}/sanctions")
+    public void handleSanction(@DestinationVariable String streamKey, SanctionRequestDTO reqDTO, SimpMessageHeaderAccessor headerAccessor) {
+        // Users 객체 전체 꺼내기
+        Authentication auth = (Authentication) headerAccessor.getUser();
+        Users user = (Users) auth.getPrincipal();
+
+        log.debug("{}이 유저 id{}에게 {} 제재를 했습니다", user.getNickname(), reqDTO.getSanctionedUserId(), reqDTO.getSanctionType());
+        SanctionResponseDTO sanctionResponseDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
+        WsNotificationResponseDTO respDTO = new WsNotificationResponseDTO("SANCTIONS", sanctionResponseDTO);
+
+        // 제재 대상에게
+        messagingTemplate.convertAndSendToUser(respDTO.getData().getSanctionedUserEmail(), "/queue/notifications", respDTO);
+        // 스트리머에게
+        messagingTemplate.convertAndSendToUser(user.getEmail(), "/queue/notifications", respDTO);
     }
 
     // [변경] 참가자 목록을 보내는 헬퍼 메서드

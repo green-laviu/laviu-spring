@@ -24,7 +24,7 @@ public class ViewerSanctions {
 
     //Date part
     @CreationTimestamp
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     //FK(Foreign Key) part
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,7 +70,7 @@ public class ViewerSanctions {
         this.offenseCount = viewerSanctions.getOffenseCount();
         this.isActive = viewerSanctions.getIsActive();
         this.type = viewerSanctions.getType();
-        this.createAt = viewerSanctions.getCreateAt();
+        this.createdAt = viewerSanctions.getCreatedAt();
         this.stream = viewerSanctions.getStream();
         this.streamer = viewerSanctions.getStreamer();
         this.sanctionedUser = viewerSanctions.getSanctionedUser();
