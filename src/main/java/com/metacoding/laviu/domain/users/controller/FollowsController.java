@@ -1,12 +1,15 @@
 package com.metacoding.laviu.domain.users.controller;
 
 import com.metacoding.laviu._core.utils.Resp;
+import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.FollowsResponse;
 import com.metacoding.laviu.domain.users.service.FollowsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RequiredArgsConstructor
@@ -67,22 +70,24 @@ public class FollowsController {
         return Resp.ok(respDTO);
     }
 
+    // 현재 팔로우 하고 있는 유저의 목록 조회
     @GetMapping
     public ResponseEntity<?> followList() {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-
-        return Resp.ok(null);
+        List<FollowsResponse.FollowDTO> respDTO = followsService.followList(user);
+        return Resp.ok(respDTO);
     }
 
+    // 현재 팔로우 하고있는 유저의 방송 목록 조회
     @GetMapping("live")
     public ResponseEntity<?> liveList() {
 
         //1. 유저정보
         Users user = Users.builder().id(2).build();
-
-        return Resp.ok(null);
+        List<StreamsResponse.StreamDTO> respDTO = followsService.followliveList(user);
+        return Resp.ok(respDTO);
     }
 
 }
