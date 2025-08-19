@@ -228,4 +228,5 @@ public class WebSocketControllerTest {
 
         log.info("✅ 스트리머 전용 채널 권한 테스트 완료");
     }
+
 }

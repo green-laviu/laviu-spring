@@ -69,15 +69,14 @@ public class ChatMessagesController {
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        // 제재 테이블 저장
-        SanctionResponseDTO respDTO = viewerSanctionsService.create(streamKey, user, reqDTO);
-        // 응답 데이터 반환
+        // 제재 테이블 저장 및 응답 데이터 반환
+        SanctionResponseDTO respDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
         Users sanctionedUser = usersService.findById(reqDTO.getSanctionedUserId());
-        String destination = " ";
+        String destination = "/queue/notifications";
         // 응답 전송
-        //
-        messagingTemplate.convertAndSendToUser(sanctionedUser.getEmail(), "/queue/" + destination, respDTO);
-        messagingTemplate.convertAndSendToUser(user.getEmail(), "/sub/" + streamKey + "/sanction", respDTO);
+        System.out.println(respDTO.toString());
+        messagingTemplate.convertAndSendToUser(sanctionedUser.getEmail(), destination, respDTO);
+        messagingTemplate.convertAndSendToUser(user.getEmail(), destination, respDTO);
     }
 
     // [변경] 참가자 목록을 보내는 헬퍼 메서드
