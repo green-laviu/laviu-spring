@@ -30,7 +30,7 @@ public class NotificationsService {
     public void save(Streams stream) {
 
         //follow list 만들기 (알림이 true인것만)
-        List<Follows> followList = followsRepository.findAllByIdAndNotify(stream.getId());
+        List<Follows> followList = followsRepository.findAllByIdAndNotify(stream.getStreamer().getId());
 
         //팔로워들 마다 인서트 실행
         for (Follows follow : followList) {
