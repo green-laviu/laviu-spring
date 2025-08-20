@@ -24,7 +24,7 @@ public class RtmpControllerTest extends MyRestDoc {
     public void on_publish_test() throws Exception {
         // given
         String token = "123";
-        String name = "cfy/aDktqoqESx6g1DGBEw==";
+        String name = "cfy_aDktqoqESx6g1DGBEw==";
         String app = "live";
         String addr = "192.168.0.5";
         String clientid = "4";
@@ -57,7 +57,7 @@ public class RtmpControllerTest extends MyRestDoc {
     public void change_thumbnails_test() throws Exception {
         //given
         String thumbnailsUrl = "testUrl";
-        String streamKey = "cfy/aDktqoqESx6g1DGBEw==";
+        String streamKey = "cfy_aDktqoqESx6g1DGBEw==";
         StreamsRequest.ThumbnailUpdateDTO reqDTO = new StreamsRequest.ThumbnailUpdateDTO();
         reqDTO.setThumbnailUrl(thumbnailsUrl);
 
