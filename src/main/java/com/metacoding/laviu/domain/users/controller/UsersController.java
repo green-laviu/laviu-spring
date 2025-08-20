@@ -4,6 +4,7 @@ import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.users.dto.UsersRequest;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import com.metacoding.laviu.domain.users.service.UsersService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class UsersController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUsers(@PathVariable Integer userId, @RequestBody UsersRequest.updateDTO updateDTO) {
+    public ResponseEntity<?> updateUsers(@PathVariable Integer userId, @Valid @RequestBody UsersRequest.updateDTO updateDTO) {
         // TODO 업데이트에는 유저의 정보만 응답 한다. 방송 정보 필요없다
         UsersResponse.UpdateDTO respDTO = usersService.update(updateDTO, userId, tokenUserId);
         return Resp.ok(respDTO);

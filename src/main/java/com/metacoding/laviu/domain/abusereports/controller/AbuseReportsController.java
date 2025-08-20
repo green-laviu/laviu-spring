@@ -5,6 +5,7 @@ import com.metacoding.laviu.domain.abusereports.dto.AbuseReportsRequest;
 import com.metacoding.laviu.domain.abusereports.dto.AbuseReportsResponse;
 import com.metacoding.laviu.domain.abusereports.service.AbuseReportsService;
 import com.metacoding.laviu.domain.users.domain.Users;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +21,7 @@ public class AbuseReportsController {
 
     //신고 save
     @PostMapping("/streams/{streamId}/abusereports")
-    public ResponseEntity<?> save(@RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
+    public ResponseEntity<?> save(@Valid @RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
 
         AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, principal, streamId);
 
