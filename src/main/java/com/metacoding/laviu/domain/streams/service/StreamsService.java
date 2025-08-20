@@ -5,6 +5,7 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi400;
 import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
+import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu._core.utils.StringTrimUtils;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
@@ -23,8 +24,12 @@ import com.metacoding.laviu.domain.users.domain.FollowsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctions;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsRepository;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsType;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +37,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class StreamsService {
@@ -42,34 +48,30 @@ public class StreamsService {
     private final HashtagsService hashtagsService;
     private final NotificationsService notificationsService;
     private final ChatMessagesRepository chatMessagesRepository;
+    private final ViewerSanctionsRepository viewerSanctionsRepository;
 
     @Transactional
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
-        /*
-             혹여나 문제가 생길 시, 존재하는 키의 에 대한 값 확인용
-        System.out.print("[onPublish 요청]");
-        for (String key : params.keySet()) {
-            System.out.println(key + " : " + params.get(key));
-        }
-        */
-
         String streamKey = reqDTO.getName();
+        log.debug("streamKey: {}", streamKey);
         String args = reqDTO.getArgs();
+        log.debug("args: {}", args);
         Map<String, String> queryMap = parseQueryString(args);
         String token = queryMap.get("token");
+        log.debug("token: {}", token);
+        Users user = JwtUtil.verify(token);
+
         // 키와 토큰 조회
-        if (streamKey == null || token == null)
-            throw new ExceptionApi400(ErrorEnum.INVALID_TOKEN_FORMAT);
-
-        Integer usersId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
-
+        if (token == null) throw new ExceptionApi400(ErrorEnum.TOKEN_IS_MISSING);
+        if (streamKey == null) throw new ExceptionApi400(ErrorEnum.STREAM_KEY_IS_MISSING);
+        
         // Entity 확인
-        usersRepository.findById(usersId)
+        usersRepository.findById(user.getId())
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 유저 정보와 조회
-        if (!streamsPS.getStreamer().getId().equals(usersId))
+        if (!streamsPS.getStreamer().getId().equals(user.getId()))
             throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
         // 연결이 끊어졌다가 다시 스트림 하면 아래의 조건이 실행됨
@@ -89,25 +91,6 @@ public class StreamsService {
                 .filter(kv -> kv.length == 2)
                 .collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
     }
-//    private Long getUserId(String token) {
-//        try {
-//            Claims claims = Jwts.parser()
-//                    .setSigningKey(SECRET_KEY.getBytes())   // secret_key 설정 요망
-//                    .parseClaimsJws(token)
-//                    .getBody();
-//            isExpired(claims);
-//            return claims.get("userId", Long.class);
-//        } catch (Exception e) {
-//            System.out.println("JWT 파싱 실패: " + e.getMessage());
-//            throw new ExceptionApi401(ErrorEnum.INVALID_TOKEN_FORMAT);
-//        }
-//    }
-//
-//    private void isExpired(Claims claims) throws RuntimeException {
-//        if (claims.getExpiration() != null && claims.getExpiration().before(new Date())) {
-//            throw new ExceptionApi401(ErrorEnum.TOKEN_EXPIRED);
-//        }
-//    }
 
     /**
      * 방송 저장 (스트리머)
@@ -160,6 +143,11 @@ public class StreamsService {
     @Transactional
     public StreamsResponse.DetailDTO getLiveStreamDetails(Integer streamId, Users user) {
         //0. 제재상태면 못봄 - 강퇴 TODO
+        Optional<ViewerSanctions> viewerSanctionOP = viewerSanctionsRepository.findByStreamIdAndSanctionedUserIdAndTypeAndIsActive(streamId, user.getId(), ViewerSanctionsType.KICK, true);
+
+        if (viewerSanctionOP.isPresent()) {
+            throw new ExceptionApi403(ErrorEnum.STREAM_VIEWING_FORBIDDEN);
+        }
 
         // 1.streams 테이블 조회 및 인증 체크 (STREAMID면서 LIVE인게 있는지 확인)
         Streams streamPS = streamsRepository.findByIdJoinStreamer(streamId)
@@ -181,7 +169,6 @@ public class StreamsService {
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
         return new StreamsResponse.DetailDTO(live, chatMessageListPS);
-
     }
 
 
