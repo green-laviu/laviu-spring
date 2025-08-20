@@ -14,11 +14,6 @@ public class StreamsRequest {
         private String app;
         @NotNull(message = "streamKey가 전달되지 못했습니다. 다시시도 해주십시오.")
         private String name;
-        @NotNull(message = "인증 절차가 이루어질 수 없는 구조입니다. 다시시도 해주십시오.")
-        private String args;
-        private String addr;
-        private String clientid;
-        private String tcurl;
     }
 
     @Data
@@ -33,9 +28,8 @@ public class StreamsRequest {
         private String title;
         private List<String> hashtagList;
 
-        public Streams toEntity(Users user, String streamKey) {
+        public Streams toEntity(Users user) {
             return Streams.builder()
-                    .streamKey(streamKey)
                     .title(title)
                     .status(StreamsStatus.PENDING) // 기본값
                     .streamer(user)
