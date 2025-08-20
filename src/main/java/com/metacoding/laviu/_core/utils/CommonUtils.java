@@ -4,13 +4,12 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-
 public class CommonUtils {
 
     private CommonUtils() {
-    } // 인스턴스 생성 방지
+    }
 
-    private static final String SECRET_KEY = "메타코딩시크릿키"; // 16자리 비밀키
+    private static final String SECRET_KEY = "메타코딩시크릿키";
 
     // 📌 이메일 로컬 파트 추출
     public static String localPart(String email) {
@@ -29,7 +28,9 @@ public class CommonUtils {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 
             byte[] encrypted = cipher.doFinal(data.getBytes());
-            return Base64.getEncoder().encodeToString(encrypted);
+
+            // Base64.getUrlEncoder() 사용
+            return Base64.getUrlEncoder().encodeToString(encrypted);
 
         } catch (Exception e) {
             throw new RuntimeException("스트림 키 생성 실패", e);
@@ -43,7 +44,8 @@ public class CommonUtils {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
-            byte[] decoded = Base64.getDecoder().decode(streamKey);
+            // Base64.getUrlDecoder() 사용
+            byte[] decoded = Base64.getUrlDecoder().decode(streamKey);
             byte[] decrypted = cipher.doFinal(decoded);
 
             String data = new String(decrypted);
