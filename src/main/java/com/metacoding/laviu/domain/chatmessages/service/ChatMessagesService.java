@@ -42,7 +42,7 @@ public class ChatMessagesService {
     public List<ChatMessagesResponse.wsBroadcastDTO> getChatList(String streamKey) {
         // 1. 채팅 목록 조회 (최신 30개)
         List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamKeyJoinFetchUserAndStream(streamKey);
-        
+
         // 다시 역순으로
         Collections.reverse(chatMessageList);
 

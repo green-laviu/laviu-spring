@@ -14,9 +14,10 @@ public class TokenTest {
     public void create_test() {
         // given
         Users user = Users.builder()
-                .id(6)
-                .email("testViewer@nate.com")
-                .nickname("testViewer")
+                .id(5)
+                .email("testStreamer@nate.com")
+                .roles("USER")
+                .nickname("testStreamer")
                 .build();
 
         // when
