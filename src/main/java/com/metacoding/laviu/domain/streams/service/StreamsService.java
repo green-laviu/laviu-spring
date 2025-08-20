@@ -146,7 +146,7 @@ public class StreamsService {
         UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
         //4.hlsUrl
-        String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
+        String hlsUrl = "/hls/" + streamPS.getStreamKey() + ".m3u8";
 
         //5.라이브정보 합치기
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
