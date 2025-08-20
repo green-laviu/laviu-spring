@@ -5,6 +5,7 @@ import com.metacoding.laviu.domain.streams.dto.StreamsRequest;
 import com.metacoding.laviu.domain.streams.dto.StreamsResponse;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class StreamsController {
 
     //방송시작(준비) stream save
     @PostMapping("/start")
-    public ResponseEntity<?> save(@RequestBody StreamsRequest.SaveDTO reqDTO, @AuthenticationPrincipal Users principal) {
+    public ResponseEntity<?> save(@Valid @RequestBody StreamsRequest.SaveDTO reqDTO, Error error, @AuthenticationPrincipal Users principal) {
         log.debug("방송-준비 요청");
         StreamsResponse.SaveDTO respDTO = streamsService.save(reqDTO, principal);
         log.debug("방송-준비 결과 : {}", respDTO.toString());
@@ -55,7 +56,7 @@ public class StreamsController {
     }
 
     @PutMapping("/{streamId}/setting")
-    public ResponseEntity<?> update(@PathVariable Integer streamId, @RequestBody StreamsRequest.UpdateDTO reqDTO, @AuthenticationPrincipal Users principal) {
+    public ResponseEntity<?> update(@PathVariable Integer streamId, @Valid @RequestBody StreamsRequest.UpdateDTO reqDTO, Error error, @AuthenticationPrincipal Users principal) {
         log.debug("방송-수정 요청");
         StreamsResponse.UpdateDTO respDTO = streamsService.update(streamId, principal, reqDTO);
         log.debug("방송-수정 결과 : {}", respDTO.toString());

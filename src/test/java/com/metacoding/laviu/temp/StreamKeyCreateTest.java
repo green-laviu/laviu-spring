@@ -1,13 +1,12 @@
-package com.metacoding.laviu._core.utils;
+package com.metacoding.laviu.temp;
+
+import org.junit.jupiter.api.Test;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-public class CommonUtils {
-
-    private CommonUtils() {
-    }
+public class StreamKeyCreateTest {
 
     private static final String SECRET_KEY = "메타코딩시크릿키";
 
@@ -59,5 +58,13 @@ public class CommonUtils {
         } catch (Exception e) {
             throw new RuntimeException("잘못된 스트림 키", e);
         }
+    }
+
+    @Test
+    public void generateStreamKeyTest() {
+        Integer userId = 1;
+        Integer streamId = 1;
+        String streamKey = generateStreamKey(userId, streamId);
+        System.out.println(streamKey);
     }
 }
