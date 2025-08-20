@@ -101,7 +101,6 @@ public class StreamsRepository {
                 .getResultList();
     }
 
-
     public boolean existsByStreamKeyAndUserId(String streamKey, Integer userId) {
         Query query = em.createQuery("select s from Streams s where s.streamKey = :streamKey and s.streamer.id = :userId");
         query.setParameter("streamKey", streamKey);
@@ -116,7 +115,6 @@ public class StreamsRepository {
         }
     }
 
-
     // 관리자 페이지에서 사용할 모든 스트림 목록 조회 (LIVE 상태만)
     public List<Streams> findAllLiveStreamsWithStreamer() {
         return em.createQuery(
@@ -124,6 +122,5 @@ public class StreamsRepository {
                 ).setParameter("status", StreamsStatus.LIVE)
                 .getResultList();
     }
-
 }
 
