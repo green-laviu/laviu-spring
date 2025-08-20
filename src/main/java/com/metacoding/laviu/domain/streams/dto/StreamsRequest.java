@@ -12,10 +12,6 @@ public class StreamsRequest {
     public static class StreamsVerifyDTO {
         private String app;
         private String name;
-        private String args;
-        private String addr;
-        private String clientid;
-        private String tcurl;
     }
 
     @Data
@@ -29,9 +25,8 @@ public class StreamsRequest {
         private String title;
         private List<String> hashtagList;
 
-        public Streams toEntity(Users user, String streamKey) {
+        public Streams toEntity(Users user) {
             return Streams.builder()
-                    .streamKey(streamKey)
                     .title(title)
                     .status(StreamsStatus.PENDING) // 기본값
                     .streamer(user)
@@ -46,7 +41,7 @@ public class StreamsRequest {
         private String title;
         private List<String> hashtagList;
     }
-    
+
     @Data
     public static class SearchDTO {
         private String query;

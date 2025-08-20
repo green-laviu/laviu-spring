@@ -5,9 +5,7 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi400;
 import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
-import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu._core.utils.StringTrimUtils;
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
@@ -32,8 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 
 @Slf4j
@@ -53,24 +52,26 @@ public class StreamsService {
     public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
         String streamKey = reqDTO.getName();
         log.debug("streamKey: {}", streamKey);
-        String args = reqDTO.getArgs();
-        log.debug("args: {}", args);
-        Map<String, String> queryMap = parseQueryString(args);
-        String token = queryMap.get("token");
-        log.debug("token: {}", token);
-        Users user = JwtUtil.verify(token);
+//        String token = reqDTO.getToken();
+//        log.debug("token: {}", token);
+//        Users user = JwtUtil.verify(token);
 
         // 키와 토큰 조회
-        if (token == null) throw new ExceptionApi400(ErrorEnum.TOKEN_IS_MISSING);
+//        if (token == null) throw new ExceptionApi400(ErrorEnum.TOKEN_IS_MISSING);
         if (streamKey == null) throw new ExceptionApi400(ErrorEnum.STREAM_KEY_IS_MISSING);
 
+        // 파싱
+        Integer[] data = CommonUtils.parseStreamKey(streamKey);
+        Integer userId = data[0];
+        Integer streamId = data[1];
+
         // Entity 확인
-        usersRepository.findById(user.getId())
+        usersRepository.findById(userId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         // 유저 정보와 조회
-        if (!streamsPS.getStreamer().getId().equals(user.getId()))
+        if (!streamsPS.getStreamer().getId().equals(userId))
             throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
         // 연결이 끊어졌다가 다시 스트림 하면 아래의 조건이 실행됨
@@ -80,15 +81,6 @@ public class StreamsService {
 
         //팔로워에게 알림저장
         notificationsService.save(streamsPS);
-    }
-
-    private Map<String, String> parseQueryString(String query) {
-        if (query == null || query.isBlank()) return Map.of();
-
-        return Arrays.stream(query.split("&"))
-                .map(kv -> kv.split("=", 2))
-                .filter(kv -> kv.length == 2)
-                .collect(Collectors.toMap(kv -> kv[0], kv -> kv[1]));
     }
 
     //save
@@ -101,12 +93,14 @@ public class StreamsService {
         // 2. live 데이터가 존재하면 예외
         if (streamOP.isPresent()) throw new ExceptionApi400(ErrorEnum.STREAM_IS_ALREADY_LIVE);
 
-        // 3. streamKey 생성
-        String streamKey = CommonUtils.generateStreamKey();
-
-        // 4. 스트림 저장(엔티티 반환 후 저장)
-        Streams stream = reqDTO.toEntity(user, streamKey);
+        // 3. 스트림 저장(엔티티 반환 후 저장)
+        Streams stream = reqDTO.toEntity(user);
         Streams streamPS = streamsRepository.save(stream);
+
+        // 4. streamKey 생성
+        String streamKey = CommonUtils.generateStreamKey(user.getId(), streamPS.getId());
+
+        streamPS.setStreamKey(streamKey);
 
         // 5. 해시태그 저장
         // 5-1 해시태그에서 앞뒤 공백 제거 및 내부 공백 1개로 변경
@@ -155,9 +149,6 @@ public class StreamsService {
         Boolean isFollowing = followsRepository.existsByFollowerIdAndFollowingId(streamPS.getStreamer().getId(), user.getId());
         UsersResponse.ChannelInfoDTO channel = new UsersResponse.ChannelInfoDTO(streamPS.getStreamer(), followerCount, isFollowing);
 
-        //3.채팅 테이블 목록
-        List<ChatMessages> chatMessageListPS = chatMessagesRepository.findLatest30ByStreamIdJoinFetchUserAndStream(streamId);
-
         //4.hlsUrl
         String hlsUrl = "http://host/hls/" + streamPS.getStreamKey() + ".m3u8";
 
@@ -165,7 +156,7 @@ public class StreamsService {
         LiveDetailDTO live = new LiveDetailDTO(streamPS, channel, hlsUrl);
 
         //전체 maindetaildto에 담기 (라이브정보 +채팅정보 + 뷰어리스트)
-        return new StreamsResponse.DetailDTO(live, chatMessageListPS);
+        return new StreamsResponse.DetailDTO(live);
     }
 
 
