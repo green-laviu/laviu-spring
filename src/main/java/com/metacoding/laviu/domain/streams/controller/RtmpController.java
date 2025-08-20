@@ -4,7 +4,6 @@ import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.streams.dto.StreamsRequest;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -49,7 +48,7 @@ public class RtmpController {
     }
 
     @PutMapping("/{streamKey}/thumbnails")
-    public ResponseEntity<?> changeThumbnails(@PathVariable String streamKey, @Valid @RequestBody StreamsRequest.ThumbnailUpdateDTO reqDTO, Error error) {
+    public ResponseEntity<?> changeThumbnails(@PathVariable String streamKey, @RequestBody StreamsRequest.ThumbnailUpdateDTO reqDTO) {
         log.debug("방송-썸네일저장 요청");
         streamsService.updateThumbnail(streamKey, reqDTO);
         log.debug("방송-썸네일저장 결과 : {}", "null");
