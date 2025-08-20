@@ -8,7 +8,14 @@ import java.util.Base64;
 
 public class StreamKeyCreateTest {
 
-    private static final String SECRET_KEY = "메타코딩시크릿키"; // 16자리 비밀키
+    private static final String SECRET_KEY = "메타코딩시크릿키";
+
+    // 📌 이메일 로컬 파트 추출
+    public static String localPart(String email) {
+        if (email == null) return null;
+        int at = email.indexOf('@');
+        return (at > 0) ? email.substring(0, at) : email;
+    }
 
     // 📌 스트림 키 생성 (AES 암호화)
     public static String generateStreamKey(Integer userId, Integer streamId) {
@@ -20,7 +27,9 @@ public class StreamKeyCreateTest {
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
 
             byte[] encrypted = cipher.doFinal(data.getBytes());
-            return Base64.getEncoder().encodeToString(encrypted);
+
+            // Base64.getUrlEncoder() 사용
+            return Base64.getUrlEncoder().encodeToString(encrypted);
 
         } catch (Exception e) {
             throw new RuntimeException("스트림 키 생성 실패", e);
@@ -34,7 +43,8 @@ public class StreamKeyCreateTest {
             Cipher cipher = Cipher.getInstance("AES");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
 
-            byte[] decoded = Base64.getDecoder().decode(streamKey);
+            // Base64.getUrlDecoder() 사용
+            byte[] decoded = Base64.getUrlDecoder().decode(streamKey);
             byte[] decrypted = cipher.doFinal(decoded);
 
             String data = new String(decrypted);
@@ -52,8 +62,8 @@ public class StreamKeyCreateTest {
 
     @Test
     public void generateStreamKeyTest() {
-        Integer userId = 4;
-        Integer streamId = 4;
+        Integer userId = 1;
+        Integer streamId = 1;
         String streamKey = generateStreamKey(userId, streamId);
         System.out.println(streamKey);
     }
