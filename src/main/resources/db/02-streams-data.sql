@@ -6,4 +6,6 @@ VALUES ('abc123', '자바 기초 강의', 'https://example.com/thumb1.jpg', 100,
        ('a1b2c3', '파이썬 기초 강의', 'https://example.com/thumb3.jpg', 50, 'LIVE',
         NOW(), null, NULL, 3),
        ('1a2b3c', '코덱 기초 강의', 'https://example.com/thumb4.jpg', 10, 'LIVE',
-        NOW(), null, NULL, 4);
+        NOW(), null, NULL, 4),
+       ('1a2b3c2', '토큰 기초 강의', 'https://example.com/thumb5.jpg', 100, 'PENDING',
+        NOW(), null, NULL, 8);

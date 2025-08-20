@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
@@ -45,8 +47,8 @@ public class RtmpControllerTest extends MyRestDoc {
     @Test
     public void on_publish_test() throws Exception {
         // given
-        String token = "123";
-        String name = "abc123";
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsYXZpdSIsIm5pY2tuYW1lIjoidGVzdFN0cmVhbWVyIiwiaWQiOjgsImV4cCI6MTc1NjI3NzMwMSwiZW1haWwiOiJ0ZXN0VG9rZW5AbmF0ZS5jb20ifQ.a6catVhJTNpv81K0GUJumps-tGb4TudCa2u5LCw32s9FVliezWnCa6jFb9TXnLi2M_6k6ZAvkGqMjRjcS_jOhA";
+        String name = "1a2b3c2";
         String app = "live";
         String addr = "192.168.0.5";
         String clientid = "4";
@@ -73,6 +75,12 @@ public class RtmpControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+        actions.andDo(MockMvcResultHandlers.print()); //TODO  DOC을 생성시 파라메타 형식으로 arg = 안에 token= 형태가 되기 때문에 에러가 발생함
+
     }
 
     @Test
@@ -99,5 +107,10 @@ public class RtmpControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 }

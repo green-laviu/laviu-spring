@@ -16,4 +16,7 @@ VALUES ('ssar', 'ssar@nate.com', '1234', 'https://nate.com/profile1.jpg', '안�
         'NAVER', 'USER',
         NOW(), null, NOW()),
        ('admin', 'admin@nate.com', '1234', NULL, NULL, NULL, NULL, 'ADMIN',
+        NOW(), null, NOW()),
+       ('testToken', 'testToken@nate.com', '1234', 'https://nate.com/profile7.jpg', '안녕하세요', 'token7',
+        'NAVER', 'USER',
         NOW(), null, NOW());
