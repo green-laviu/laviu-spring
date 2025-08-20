@@ -39,6 +39,16 @@ public class UsersRepository {
                 .getResultList();
     }
 
+    // 이메일 존재 확인
+    public Optional<Users> getByEmail(String email) {
+        String q = "select u from Users u where u.email = :email";
+        return em.createQuery(q, Users.class)
+                .setParameter("email", email)
+                .getResultList()
+                .stream() // 리스트를 스트림으로 변환
+                .findFirst(); // 첫 번째 요소를 Optional로 반환 (없으면 empty)
+    }
+
     public Optional<Users> getByEmailAndType(String email, UsersType type) {
         try {
             return Optional.ofNullable(em.createQuery(
@@ -61,15 +71,11 @@ public class UsersRepository {
                 .getResultList();
     }
 
-    /**
-     * 테스트용 save
-     */
     public Users save(Users user) {
         em.persist(user);
         return user;
     }
 
-    public void deleteAll() {
-        em.createQuery("delete from Users").executeUpdate();
+    public findByEmail(String email) {
     }
 }

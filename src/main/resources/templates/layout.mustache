@@ -133,20 +133,20 @@
         <div class="menu-item">
             <input type="radio" id="menu-broadcast" name="menu"
                    {{#model.menu.broadcast}}checked{{/model.menu.broadcast}}>
-            <label for="menu-broadcast" data-href="/v1/admin/streams">실시간 방송 관리</label>
+            <label for="menu-broadcast" data-href="/s/v1/admin/streams">실시간 방송 관리</label>
         </div>
         <div class="menu-item">
             <input type="radio" id="menu-user" name="menu" {{#model.menu.user}}checked{{/model.menu.user}}>
-            <label for="menu-user" data-href="/v1/admin/users">유저 목록</label>
+            <label for="menu-user" data-href="/s/v1/admin/users">유저 목록</label>
         </div>
         <div class="menu-item">
             <input type="radio" id="menu-report" name="menu" {{#model.menu.report}}checked{{/model.menu.report}}>
-            <label for="menu-report" data-href="/s/api/v1/admin/abusereports">신고 내역</label>
+            <label for="menu-report" data-href="/s/v1/admin/abusereports">신고 내역</label>
         </div>
     </div>
 
     <div class="logout-area">
-        <form action="/s/v1/auth/admin/logout" method="post">
+        <form action="/v1/auth/admin/logout" method="post">
             <button type="submit" class="logout-btn">로그아웃</button>
         </form>
     </div>

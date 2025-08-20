@@ -15,6 +15,10 @@ import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.domain.UsersType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +26,25 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AdminService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final StreamsRepository streamsRepository;
     private final AbuseReportsRepository abusereportsRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        // ⭐ 핵심: UsersRepository를 사용해서 DB에서 Users 정보를 조회합니다! ⭐
+        // email은 곧 user.getEmail()이 되겠죠!
+        Users userPS = usersRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일의 사용자를 찾을 수 없습니다: " + email));
+
+        // ⭐ userPS(찾은 사용자)는 Users 엔티티인데, 이 Users 엔티티가 UserDetails 인터페이스를
+        // 구현하고 있기 때문에 바로 UserDetails 타입으로 반환할 수 있습니다!
+        // 이 때 Users 엔티티에 UserDetails의 필수 메소드들이 제대로 구현되어 있는지 확인해야 합니다.
+        // (getAuthorities(), getPassword(), getUsername(), isAccountNonExpired(), 등)
+        return userPS;
+    }
 
     /**
      * 관리자 로그인 기능을 처리하는 메서드.
@@ -42,8 +60,10 @@ public class AdminService {
         Users user = usersRepository.getByEmailAndType(reqDTO.getEmail(), UsersType.ADMIN)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
 
+        boolean isSame = BCrypt.checkpw(reqDTO.getPassword(), user.getPassword());
+
         // 2. 요청 비밀번호와 DB에 저장된 비밀번호를 비교
-        if (!user.getPassword().equals(reqDTO.getPassword())) {
+        if (!isSame) {
             throw new ExceptionApi404(ErrorEnum.USER_NOT_FOUND);
         }
 
@@ -156,5 +176,11 @@ public class AdminService {
 
         // 3. 엔티티의 상태를 변경하는 메서드 호출
         abuseReports.updateStatus(updateStatus);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usersRepository.getByEmail(username)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
     }
 }

@@ -36,7 +36,7 @@ public class SecurityConfig {
     public SecurityFilterChain adminSecurityFilterChain(HttpSecurity http) throws Exception {
         http
                 // 관리자 경로만 이 필터체인에서 처리
-                .securityMatcher("/v1/admin/**")
+                .securityMatcher("/s/v1/admin/**", "/v1/admin/**", "/v1/auth/admin/**")
 
                 // H2 콘솔 iframe 허용 (개발 환경용 - 운영에서는 제거)
                 .headers(headers -> headers
@@ -53,17 +53,17 @@ public class SecurityConfig {
 
                 // Form 로그인 설정
                 .formLogin(form -> form
-                        .loginPage("/admin/login-form")        // 커스텀 로그인 페이지
-                        .loginProcessingUrl("/v1/admin/login")     // 로그인 처리 URL
-                        .defaultSuccessUrl("/admin/dashboard")  // 로그인 성공 후 이동할 페이지
-                        .failureUrl("/admin/login-form?error")  // 로그인 실패 시 이동할 페이지
+                        .loginPage("/v1/admin/login-form")        // 커스텀 로그인 페이지
+                        .loginProcessingUrl("/v1/auth/admin/login")     // 로그인 처리 URL
+                        .defaultSuccessUrl("/s/v1/admin/streams")  // 로그인 성공 후 이동할 페이지
+                        .failureUrl("/v1/admin/login-form")  // 로그인 실패 시 이동할 페이지
                         .permitAll()
                 )
 
                 // 로그아웃 설정
                 .logout(logout -> logout
-                        .logoutUrl("/v1/admin/logout")
-                        .logoutSuccessUrl("/admin/login-form?logout")
+                        .logoutUrl("/v1/auth/admin/logout")
+                        .logoutSuccessUrl("/v1/admin/login-form")
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID")
                 )
@@ -71,10 +71,10 @@ public class SecurityConfig {
                 // 관리자 경로 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         // 1. 인증 없이 접근 가능한 경로들 (구체적인 패턴 먼저)
-                        .requestMatchers("/v1/admin/login-form", "/v1/admin/login", "/v1/admin/logout").permitAll() // 로그아웃도 인증 없이 허용
+                        .requestMatchers("/v1/admin/login-form", "/v1/auth/admin/login", "/v1/auth/admin/logout").permitAll() // 로그아웃도 인증 없이 허용
 
                         // 2. 관리자 권한이 필요한 나머지 경로들 (포괄적인 패턴 나중에)
-                        .requestMatchers("/v1/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/s/v1/admin/**").hasRole("ADMIN")
 
                         // 3. 이 필터체인에서 처리하지 않는 요청 거부
                         .anyRequest().denyAll()
@@ -166,6 +166,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll() // 웹소켓 핸드셰이크 허용
                         .requestMatchers("/h2-console/**").permitAll() // H2 콘솔 (개발용)
                         .requestMatchers("/rtmp/**").permitAll() // ✅ nginx RTMP 콜백 허용
+                        .requestMatchers("/oauth/login").permitAll() // 네이버 OAuth 로그인은 인증 없이 접근 가능하도록 허용 (로그인 전이므로)
                         .anyRequest().authenticated()
                 );
 

@@ -17,26 +17,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AdminController {
 
     private final AdminService adminService;
+    private final HttpSession session;
 
     // 로그인 페이지
-    @GetMapping("/admin/login")
+    @GetMapping("/v1/admin/login-form")
     public String adminLoginForm() {
         return "admin-login";
     }
 
     // 관리자 로그인
     @PostMapping("/v1/auth/admin/login")
-    public String login(@RequestBody AdminRequest.LoginDTO reqDTO, HttpSession session) {
+    public String login(@RequestBody AdminRequest.LoginDTO reqDTO) {
         AdminResponse.LoginDTO admin = adminService.login(reqDTO);
         session.setAttribute("ADMIN", admin);
-        return "redirect:/v1/admin/streams";
-    }
-
-    // 관리자 로그아웃
-    @PostMapping("/s/v1/auth/admin/logout")
-    public String logout(HttpSession session) {
-        if (session != null) session.invalidate();
-        return "redirect:/admin/login";
+        return "redirect:/s/v1/admin/streams";
     }
 
     // 실시간 방송 관리
@@ -67,6 +61,6 @@ public class AdminController {
     @PostMapping("/s/v1/admin/abusereports/{id}")
     public String processAbuseReport(@PathVariable("id") Integer id, @RequestBody AdminRequest.ProcessReportDTO reqDTO) {
         adminService.processAbuseReport(id, reqDTO.getStatus());
-        return "redirect:/s/api/v1/admin/abusereports";
+        return "redirect:/s/v1/admin/abusereports";
     }
 }
