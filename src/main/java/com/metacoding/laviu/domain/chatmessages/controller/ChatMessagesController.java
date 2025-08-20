@@ -1,6 +1,5 @@
 package com.metacoding.laviu.domain.chatmessages.controller;
 
-import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu.domain.chatmessages.dto.*;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -45,9 +44,9 @@ public class ChatMessagesController {
             // 3. 스트리머에게만 최신 참가자 목록 전송
             updateAndSendParticipantList(streamKey);
             log.debug("{}이 방송 채널에 참가 완료되었습니다", user.getNickname());
-        } catch (ExceptionApi404 e) {
+        } catch (Exception e) {
             // 나중에 추가해야함 TODO
-            System.out.println("이미 참가중입니다");
+            log.debug("채팅 참가 에러 ➡️ {}", e.getMessage());
         }
 
     }
@@ -60,10 +59,15 @@ public class ChatMessagesController {
         Users user = (Users) auth.getPrincipal();
 
         log.debug("{}이 채팅을 보냈습니다", user.getNickname());
-        chatMessagesService.save(streamKey, user, reqDTO);
-        List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
 
-        messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
+        try {
+            chatMessagesService.save(streamKey, user, reqDTO);
+            List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
+
+            messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
+        } catch (Exception e) {
+            log.debug("채팅 메시지 보내기 에러 ➡️ {}", e.getMessage());
+        }
     }
 
     // 제재 메시지 처리
@@ -73,17 +77,23 @@ public class ChatMessagesController {
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        log.debug("{}이 유저 id{}에게 {} 제재를 했습니다", user.getNickname(), reqDTO.getSanctionedUserId(), reqDTO.getSanctionType());
-        SanctionResponseDTO sanctionResponseDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
-        WsNotificationResponseDTO respDTO = new WsNotificationResponseDTO("SANCTIONS", sanctionResponseDTO);
+        log.debug("{}이 유저 id{}에게 {} 제재를 요청했습니다", user.getNickname(), reqDTO.getSanctionedUserId(), reqDTO.getSanctionType());
 
-        // 제재 대상에게
-        messagingTemplate.convertAndSendToUser(respDTO.getData().getSanctionedUserEmail(), "/queue/notifications", respDTO);
-        // 스트리머에게
-        messagingTemplate.convertAndSendToUser(user.getEmail(), "/queue/notifications", respDTO);
+        try {
+            SanctionResponseDTO sanctionResponseDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
+            WsNotificationResponseDTO respDTO = new WsNotificationResponseDTO("SANCTIONS", sanctionResponseDTO);
+
+            // 제재 대상에게
+            messagingTemplate.convertAndSendToUser(respDTO.getData().getSanctionedUserEmail(), "/queue/notifications", respDTO);
+            // 스트리머에게
+            messagingTemplate.convertAndSendToUser(user.getEmail(), "/queue/notifications", respDTO);
+        } catch (Exception e) {
+            log.debug("제재 요청 에러 ➡️ {}", e.getMessage());
+        }
+
     }
 
-    // [변경] 참가자 목록을 보내는 헬퍼 메서드
+    // 참가자 목록을 보내는 헬퍼 메서드
     public void updateAndSendParticipantList(String streamKey) {
         var participantList = viewersService.getList(streamKey);
         // 스트리머 전용 구독 주소로 메시지 전송
