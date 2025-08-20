@@ -1,11 +1,11 @@
 -- streams_tb 더미 데이터
 INSERT INTO streams_tb (stream_key, title, thumbnail_url, viewer_count, status,
                         started_at, updated_at, ended_at, streamer_id)
-VALUES ('abc123', '자바 기초 강의', 'https://example.com/thumb1.jpg', 100, 'LIVE',
+VALUES ('cfy/aDktqoqESx6g1DGBEw==', '자바 기초 강의', 'https://example.com/thumb1.jpg', 100, 'LIVE',
         NOW(), null, NULL, 1),
-       ('123abc', 'C언어 기초 강의', 'https://example.com/thumb2.jpg', 200, 'LIVE',
+       ('/qfje4Qw3Urq2WZTeFLXmA==', 'C언어 기초 강의', 'https://example.com/thumb2.jpg', 200, 'LIVE',
         NOW(), null, NULL, 2),
-       ('a1b2c3', '파이썬 기초 강의', 'https://example.com/thumb3.jpg', 50, 'LIVE',
+       ('vi8AP2rknBM800YI0l9Bog==', '파이썬 기초 강의', 'https://example.com/thumb3.jpg', 50, 'LIVE',
         NOW(), null, NULL, 3),
-       ('1a2b3c', '코덱 기초 강의', 'https://example.com/thumb4.jpg', 10, 'LIVE',
+       ('PtFBBAJ//eTCrIkPunEaVg==', '코덱 기초 강의', 'https://example.com/thumb4.jpg', 10, 'LIVE',
         NOW(), null, NULL, 4);
