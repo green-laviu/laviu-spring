@@ -3,6 +3,7 @@ package com.metacoding.laviu.domain.streams.dto;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import com.metacoding.laviu.domain.users.domain.Users;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -41,16 +42,14 @@ public class StreamsRequest {
 
     @Data
     public static class UpdateDTO {
-        @NotNull(message = "제목을 입력해주십시오.")
+        @NotBlank(message = "제목은 공백으로 바꿀 수 없습니다.")
         private String title;
         private List<String> hashtagList;
     }
 
     @Data
     public static class SearchDTO {
+        @NotBlank(message = "검색어는 필수 입력값입니다.")
         private String query;
-
     }
-
-
 }

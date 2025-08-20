@@ -5,6 +5,7 @@ import com.metacoding.laviu.domain.users.domain.Users;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -84,7 +85,7 @@ public class Streams {
     }
 
     public void updateInfo(String title, List<StreamHashtags> streamHashtagList) {
-        this.title = title;
+        this.title = StringUtils.hasText(title) ? title : this.title;
         this.streamHashtagList.clear();
         this.streamHashtagList.addAll(streamHashtagList);
         this.updatedAt = LocalDateTime.now();
