@@ -29,7 +29,7 @@ public class SearchController {
     //유저검색
     //빈문자열 검색시 -> 값이 없음
     @GetMapping("/users")
-    public ResponseEntity<?> getSearchUsers(@Valid UsersRequest.SearchDTO reqDTO) {
+    public ResponseEntity<?> getSearchUsers(@Valid UsersRequest.SearchDTO reqDTO, Error error) {
 
         //1. 유저확인( 팔로잉 확인 용으로 사용예정)
         Users user = Users.builder().id(2).build();
@@ -42,7 +42,7 @@ public class SearchController {
     //스트림 검색
     //빈문자열 검색시 -> 값이 없음
     @GetMapping("/streams")
-    public ResponseEntity<?> getSearchStreams(@Valid StreamsRequest.SearchDTO reqDTO) {
+    public ResponseEntity<?> getSearchStreams(@Valid StreamsRequest.SearchDTO reqDTO, Error error) {
 
 
         //1. 유저확인 (라이브방송 검색하는데 유저 검증이 필요한가요? )

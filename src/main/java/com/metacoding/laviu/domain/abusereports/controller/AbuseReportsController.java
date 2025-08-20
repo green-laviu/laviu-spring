@@ -21,7 +21,7 @@ public class AbuseReportsController {
 
     //신고 save
     @PostMapping("/streams/{streamId}/abusereports")
-    public ResponseEntity<?> save(@Valid @RequestBody AbuseReportsRequest.saveDTO reqDTO, @PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
+    public ResponseEntity<?> save(@Valid @RequestBody AbuseReportsRequest.saveDTO reqDTO, Error error, @PathVariable Integer streamId, @AuthenticationPrincipal Users principal) {
 
         AbuseReportsResponse.saveDTO respDTO = abuseReportsService.save(reqDTO, principal, streamId);
 
