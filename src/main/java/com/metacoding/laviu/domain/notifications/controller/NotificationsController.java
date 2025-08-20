@@ -22,10 +22,10 @@ public class NotificationsController {
     //알림 수신함 목록
     @GetMapping
     public ResponseEntity<?> getNotificationList(@AuthenticationPrincipal Users principal) {
-        
-        List<NotificationsResponse.NotificationsListDto> respDTO = notificationsService.findAll(principal);
 
+        List<NotificationsResponse.NotificationsListDTO> respDTO = notificationsService.findAll(principal);
         return Resp.ok(respDTO);
+
     }
 
     //알림클릭시 is read =ture 로 update
@@ -33,7 +33,7 @@ public class NotificationsController {
     ResponseEntity<?> updateIsRead(@PathVariable Integer notificationId) {
 
         //read로 변경 메소드
-        NotificationsResponse.UpdateIsReadDTO respDTO = notificationsService.markAsRead(notificationId);
+        NotificationsResponse.DTO respDTO = notificationsService.markAsRead(notificationId);
 
         return Resp.ok(respDTO);
     }
