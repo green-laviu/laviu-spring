@@ -12,7 +12,6 @@ public class StreamsRequest {
     public static class StreamsVerifyDTO {
         private String app;
         private String name;
-        private String token;
     }
 
     @Data
