@@ -1,11 +1,8 @@
 package com.metacoding.laviu.domain.streams.dto;
 
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
-import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import lombok.Data;
 
@@ -72,23 +69,9 @@ public class StreamsResponse {
     @Data
     public static class DetailDTO {
         private LiveDetailDTO live;
-        private List<ChatMessagesResponse.wsBroadcastDTO> chatList;
 
-        public DetailDTO(LiveDetailDTO live, List<ChatMessages> chatMessageList) {
+        public DetailDTO(LiveDetailDTO live) {
             this.live = live;
-            this.chatList = chatMessageList.stream()
-                    .map(chatMessage -> {
-                        Users author = chatMessage.getUser();
-                        return ChatMessagesResponse.wsBroadcastDTO.builder()
-                                .authorId(author.getId())
-                                .authorNickname(author.getNickname())
-                                .emailId(author.getEmail()) // 또는 getUsername()
-                                .isStreamer(chatMessage.getStream().getStreamer().getId().equals(author.getId()))
-                                .content(chatMessage.getContent()) // ◀ 클라이언트가 보낸 content 사용
-                                .timestamp(chatMessage.getCreatedAt())
-                                .build();
-                    })
-                    .toList();
         }
     }
 

@@ -89,4 +89,8 @@ public class Streams {
         this.streamHashtagList.addAll(streamHashtagList);
         this.updatedAt = LocalDateTime.now();
     }
+
+    public void setStreamKey(String streamKey) {
+        this.streamKey = streamKey;
+    }
 }
