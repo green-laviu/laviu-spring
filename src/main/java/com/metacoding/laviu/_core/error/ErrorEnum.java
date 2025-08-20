@@ -39,6 +39,11 @@ public enum ErrorEnum {
     ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
 
     /**
+     * 400 Bad Request - 이미 참여하고 있는 방송입니다.
+     */
+    BAD_REQUEST_SANCTION_TYPE(400, "올바르지 않은 재제 방식입니다."),
+
+    /**
      * 401 Unauthorized - 로그인이 필요합니다.
      */
     LOGIN_REQUIRED(401, "로그인이 필요합니다"),
@@ -84,6 +89,11 @@ public enum ErrorEnum {
     NOT_THE_STREAMER_OF_THIS_STREAM(403, "해당 방송을 하는 방송인이 아닙니다."),
 
     /**
+     * 403 Forbidden - 강제퇴장 되어 방송을 볼 수 없습니다.
+     */
+    STREAM_VIEWING_FORBIDDEN(403, "강제퇴장 되어 방송을 볼 수 없습니다."),
+
+    /**
      * 404 Not Found - 팔로잉 중이 아닙니다.
      */
     NOT_FOLLOWING(404, "팔로잉 중이 아닙니다."),
@@ -114,7 +124,7 @@ public enum ErrorEnum {
      * 404 Not Found - 해당 신고를 찾을 수 없습니다.
      */
     REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다."),
-    
+
     /**
      * 404 Not Found - 해당 알람을 찾을 수 없습니다.
      */

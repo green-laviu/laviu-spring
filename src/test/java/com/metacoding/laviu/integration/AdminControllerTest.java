@@ -5,7 +5,6 @@ import com.metacoding.laviu.MyRestDoc;
 import com.metacoding.laviu.domain.admin.dto.AdminRequest;
 import com.metacoding.laviu.domain.admin.dto.AdminResponse;
 import com.metacoding.laviu.domain.users.domain.Users;
-import com.metacoding.laviu.domain.users.domain.UsersType;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ public class AdminControllerTest extends MyRestDoc {
         Users admin = Users.builder()
                 .id(1)
                 .email("admin@nate.com")
-                .type(UsersType.ADMIN)
+                .roles("ADMIN")
                 .build();
         AdminResponse.LoginDTO adminUser = new AdminResponse.LoginDTO(admin);
         session = new MockHttpSession();
