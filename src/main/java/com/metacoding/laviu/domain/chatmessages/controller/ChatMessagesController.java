@@ -5,26 +5,28 @@ import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.viewers.service.ViewerSanctionsService;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Slf4j
 public class ChatMessagesController {
 
     private final ViewerSanctionsService viewerSanctionsService;
-    private SimpMessagingTemplate messagingTemplate;
-    private ViewersService viewersService;
-    private ChatMessagesService chatMessagesService;
+    private final SimpMessagingTemplate messagingTemplate;
+    private final ViewersService viewersService;
+    private final ChatMessagesService chatMessagesService;
 
     // 사용자가 채팅방에 참여했을 때 호출
     @MessageMapping("/streams/{streamKey}/join")
@@ -62,7 +64,7 @@ public class ChatMessagesController {
 
         try {
             chatMessagesService.save(streamKey, user, reqDTO);
-            List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatList(streamKey);
+            List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamKey(streamKey);
 
             messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
         } catch (Exception e) {
@@ -98,5 +100,10 @@ public class ChatMessagesController {
         var participantList = viewersService.getList(streamKey);
         // 스트리머 전용 구독 주소로 메시지 전송
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/participants", participantList);
+    }
+
+    @GetMapping("/streams/{streamId}/chats")
+    public void getChatList(@PathVariable Integer streamId) {
+//        chatMessagesService.getChatListWithStreamId(streamId);
     }
 }
