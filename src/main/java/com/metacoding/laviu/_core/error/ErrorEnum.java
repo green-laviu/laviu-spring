@@ -4,6 +4,16 @@ public enum ErrorEnum {
     // 나중에 수정해서 사용함
 
     /**
+     * 400 Bad Request - 토큰이 누락되었습니다.
+     */
+    TOKEN_IS_MISSING(400, "토큰이 누락되었습니다."),
+
+    /**
+     * 400 Bad Request - 스트림 키가 누락되었습니다.
+     */
+    STREAM_KEY_IS_MISSING(400, "스트림 키가 누락되었습니다."),
+
+    /**
      * 400 Bad Request - 이미 참여하고 있는 방송입니다.
      */
     ALREADY_PARTICIPATING_IN_STREAM(400, "이미 참여하고 있는 방송입니다"),
@@ -64,11 +74,6 @@ public enum ErrorEnum {
     BEARER_PREFIX_IS_MISSING(401, "Authorization 헤더에 'Bearer'가 누락되었습니다"),
 
     /**
-     * 401 Unauthorized - 토큰이 존재하지 않습니다.
-     */
-    TOKEN_IS_MISSING(401, "토큰이 존재하지 않습니다"),
-
-    /**
      * 403 Forbidden - 팔로잉 관계의 소유자가 아닙니다.
      */
     NOT_THE_OWNER_OF_FOLLOWING(403, "팔로잉 관계의 소유자가 아닙니다."),
@@ -114,7 +119,7 @@ public enum ErrorEnum {
      * 404 Not Found - 해당 신고를 찾을 수 없습니다.
      */
     REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다."),
-    
+
     /**
      * 404 Not Found - 해당 알람을 찾을 수 없습니다.
      */
