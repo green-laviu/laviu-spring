@@ -36,7 +36,7 @@ public class AdminControllerTest extends MyRestDoc {
         Users admin = Users.builder()
                 .id(1)
                 .email("admin@nate.com")
-                .type(UsersType.ADMIN)
+                .roles(UsersType.ADMIN.name())
                 .build();
         AdminResponse.LoginDTO adminUser = new AdminResponse.LoginDTO(admin);
         session = new MockHttpSession();
