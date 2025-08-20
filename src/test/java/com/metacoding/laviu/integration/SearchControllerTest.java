@@ -25,7 +25,7 @@ public class SearchControllerTest extends MyRestDoc {
     private String accessToken;
 
     /**
-     * streamer =1번user , viewer =2번user로 설정되었습니다.
+     * viewer =2번user로 설정되었습니다.
      */
     @BeforeEach
     public void setUp() {

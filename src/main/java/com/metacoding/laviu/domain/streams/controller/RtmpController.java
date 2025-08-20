@@ -18,7 +18,7 @@ public class RtmpController {
 
     // 방송 가능 여부 확인(StreamKey와 Jwt 확인)
     @PostMapping("/on-publish")
-    public ResponseEntity<?> onPublish(StreamsRequest.StreamsVerifyDTO reqDTO) {
+    public ResponseEntity<?> onPublish(@ModelAttribute StreamsRequest.StreamsVerifyDTO reqDTO) {
         log.debug("방송-검증 요청");
         streamsService.verify(reqDTO);
         log.debug("방송-검증 결과 : {}", "null");

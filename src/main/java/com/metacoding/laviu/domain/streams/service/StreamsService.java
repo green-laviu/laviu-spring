@@ -62,6 +62,7 @@ public class StreamsService {
             throw new ExceptionApi400(ErrorEnum.INVALID_TOKEN_FORMAT);
 
         Integer usersId = 1; // getUserId(token); 추후 사용 예정 로직 밑에 구현 되어있음
+
         // Entity 확인
         usersRepository.findById(usersId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
@@ -108,7 +109,9 @@ public class StreamsService {
 //        }
 //    }
 
-    //save
+    /**
+     * 방송 저장 (스트리머)
+     */
     @Transactional
     public StreamsResponse.SaveDTO save(StreamsRequest.SaveDTO reqDTO, Users user) {
 

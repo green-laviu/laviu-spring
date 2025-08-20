@@ -27,6 +27,9 @@ public class AbuseReportsControllerTest extends MyRestDoc {
 
     private String accessToken;
 
+    /**
+     * viewer =2번user로 user가 설정되었습니다.
+     */
     @BeforeEach
     public void setUp() {
         // 테스트 시작 전에 실행할 코드

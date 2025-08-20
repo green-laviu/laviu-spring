@@ -2,8 +2,11 @@ package com.metacoding.laviu.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacoding.laviu.MyRestDoc;
+import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu.domain.streams.dto.StreamsRequest;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +22,25 @@ public class RtmpControllerTest extends MyRestDoc {
 
     @Autowired
     private ObjectMapper om;
+    private String accessToken;
+
+    /**
+     * streamer =1번user
+     */
+    @BeforeEach
+    public void setUp() {
+        // 테스트 시작 전에 실행할 코드
+        System.out.println("setUp");
+
+        Users ssar = Users.builder()
+                .id(1)
+                .nickname("ssar")
+                .email("ssar@nate.com")
+                .roles("USER")
+                .build();
+        accessToken = JwtUtil.create(ssar);
+
+    }
 
     @Test
     public void on_publish_test() throws Exception {

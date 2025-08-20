@@ -27,7 +27,7 @@ public class FollowsControllerTest extends MyRestDoc {
     private String accessToken;
 
     /**
-     * streamer =1번user , viewer =2번user로 설정되었습니다.
+     * viewer =2번user로 설정되었습니다.
      */
     @BeforeEach
     public void setUp() {
@@ -99,11 +99,12 @@ public class FollowsControllerTest extends MyRestDoc {
     public void notify_on_test() throws Exception {
 
         //given
-        Integer followId = 1;
+        Integer followId = 3;
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/follows/{followId}/notify-on", followId)
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -111,6 +112,15 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isFollowing").value(true));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isNotificationsEnabled").value(true));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @Test
@@ -122,6 +132,7 @@ public class FollowsControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/follows/{followId}/notify-off", followId)
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -129,16 +140,27 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isFollowing").value(true));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isNotificationsEnabled").value(false));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
     @Test
     public void follow_list_test() throws Exception {
         //given
-        Integer followId = 1;
+
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/s/api/v1/follows/")
+                        .header("Authorization", accessToken)
+
         );
 
         //eye
@@ -146,6 +168,20 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.userId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.nickname").value("ssar"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.profileImageUrl")
+                .value("https://nate.com/profile1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.email").value("ssar@nate.com"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.bio").value("안녕하세요"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].isFollowing").value(true));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].isLive").value(true));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+
+
     }
 
     @Test
@@ -156,6 +192,7 @@ public class FollowsControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .get("/s/api/v1/follows/live")
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -163,5 +200,23 @@ public class FollowsControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
+        actions.andExpect(MockMvcResultMatchers.status().isOk());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamKey").value("abc123"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.userId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.nickname").value("ssar"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.profileImageUrl")
+                .value("https://nate.com/profile1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.email").value("ssar@nate.com"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.bio").value("안녕하세요"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title").value("자바 기초 강의"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].viewerCount").value(100));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].status").value("LIVE"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagName").value("게임"));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 }

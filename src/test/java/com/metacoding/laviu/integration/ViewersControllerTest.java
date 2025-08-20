@@ -2,7 +2,10 @@ package com.metacoding.laviu.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.metacoding.laviu.MyRestDoc;
+import com.metacoding.laviu._core.utils.JwtUtil;
+import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +20,24 @@ public class ViewersControllerTest extends MyRestDoc {
 
     @Autowired
     private ObjectMapper om;
+    private String accessToken;
+
+    /**
+     * viewer =2번user로 설정되었습니다.
+     */
+    @BeforeEach
+    public void setUp() {
+        // 테스트 시작 전에 실행할 코드
+        System.out.println("setUp");
+        Users cos = Users.builder()
+                .id(2)
+                .nickname("cos")
+                .email("cos@nate.com")
+                .roles("USER")
+                .build();
+        accessToken = JwtUtil.create(cos);
+
+    }
 
     @Test
     public void delete_test() throws Exception {
@@ -26,6 +47,7 @@ public class ViewersControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .delete("/s/api/v1/viewers/" + viewerId)
+                        .header("Authorization", accessToken)
         );
 
         //eye
