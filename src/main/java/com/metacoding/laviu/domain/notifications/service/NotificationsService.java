@@ -27,11 +27,12 @@ public class NotificationsService {
     private final FollowsRepository followsRepository;
 
     @Transactional
-    public void save(Streams stream) {
+    public List<NotificationsResponse.DTO> save(Streams stream) {
 
         //follow list 만들기 (알림이 true인것만)
         List<Follows> followList = followsRepository.findAllByIdAndNotify(stream.getStreamer().getId());
 
+        List<NotificationsResponse.DTO> respDTO = new ArrayList<>();
         //팔로워들 마다 인서트 실행
         for (Follows follow : followList) {
 
@@ -43,19 +44,21 @@ public class NotificationsService {
                     .build();
 
             Notifications notificationPS = notificationsRepository.save(notification);
+            respDTO.add(new NotificationsResponse.DTO(notificationPS));
         }
+        return respDTO;
 
 
     }
 
     //전체 목록조회
-    public List<NotificationsResponse.NotificationsListDto> findAll(Users user) {
+    public List<NotificationsResponse.NotificationsListDTO> findAll(Users user) {
 
         //1.list 목록 조회
         List<Notifications> NotificationList = notificationsRepository.findAll(user.getId());
 
         //2. 미리 인스턴스 생성
-        List<NotificationsResponse.NotificationsListDto> respDTO = new ArrayList<>();
+        List<NotificationsResponse.NotificationsListDTO> respDTO = new ArrayList<>();
 
         for (Notifications notification : NotificationList) {
             //스트리머 정보 조회
@@ -63,8 +66,8 @@ public class NotificationsService {
                     .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
             //dto 변환
-            NotificationsResponse.NotificationsListDto notificationDto = new NotificationsResponse.NotificationsListDto(notification, streamPS);
-            respDTO.add(notificationDto);
+            NotificationsResponse.NotificationsListDTO notificationDTO = new NotificationsResponse.NotificationsListDTO(notification, streamPS);
+            respDTO.add(notificationDTO);
 
         }
         return respDTO;
@@ -74,7 +77,7 @@ public class NotificationsService {
 
     //알림 isRead 변경
     @Transactional
-    public NotificationsResponse.UpdateIsReadDTO markAsRead(Integer notificationId) {
+    public NotificationsResponse.DTO markAsRead(Integer notificationId) {
 
         // 알림 조회
         Notifications NotificationPS = notificationsRepository.findById(notificationId)
@@ -83,6 +86,6 @@ public class NotificationsService {
         // 알림 isRead = true로 변경
         NotificationPS.markAsRead();
 
-        return new NotificationsResponse.UpdateIsReadDTO(NotificationPS);
+        return new NotificationsResponse.DTO(NotificationPS);
     }
 }

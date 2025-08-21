@@ -9,6 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -87,8 +88,8 @@ public class Users implements UserDetails {
     }
 
     public void updateProfile(String username, String channelDescription, String profileImageUrl) {
-        this.nickname = username;
-        this.bio = channelDescription;
-        this.profileImageUrl = profileImageUrl;
+        this.nickname = StringUtils.hasText(username) ? username : this.nickname;
+        this.bio = StringUtils.hasText(channelDescription) ? channelDescription : this.bio;
+        this.profileImageUrl = StringUtils.hasText(profileImageUrl) ? profileImageUrl : this.profileImageUrl;
     }
 }

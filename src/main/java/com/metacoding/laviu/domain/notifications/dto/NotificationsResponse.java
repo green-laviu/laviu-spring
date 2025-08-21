@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class NotificationsResponse {
 
     @Data
-    public static class NotificationsListDto {
+    public static class NotificationsListDTO {
 
         private Integer notificationId;
         private StreamerDTO streamer;
@@ -19,7 +19,7 @@ public class NotificationsResponse {
         private String content;
         private LocalDateTime receivedAt;
 
-        public NotificationsListDto(Notifications notification, Streams streamPS) {
+        public NotificationsListDTO(Notifications notification, Streams streamPS) {
             this.notificationId = notification.getId();
             this.streamer = new StreamerDTO(streamPS.getStreamer());
             this.content = notification.getContent();
@@ -42,7 +42,7 @@ public class NotificationsResponse {
     }
 
     @Data
-    public static class UpdateIsReadDTO {
+    public static class DTO {
 
         private Integer notificationId;
         private Integer userId;
@@ -53,7 +53,7 @@ public class NotificationsResponse {
         private NotificationsType type;
 
 
-        public UpdateIsReadDTO(Notifications notification) {
+        public DTO(Notifications notification) {
             this.notificationId = notification.getId();
             this.userId = notification.getUser().getId();
             this.relatedEntityId = notification.getRelatedEntityId();
@@ -63,5 +63,6 @@ public class NotificationsResponse {
             this.type = notification.getType();
         }
     }
+
 
 }

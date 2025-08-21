@@ -12,6 +12,7 @@ import com.metacoding.laviu.domain.users.service.UsersService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,12 +30,9 @@ public class SearchController {
     //유저검색
     //빈문자열 검색시 -> 값이 없음
     @GetMapping("/users")
-    public ResponseEntity<?> getSearchUsers(@Valid UsersRequest.SearchDTO reqDTO, Error error) {
+    public ResponseEntity<?> getSearchUsers(@Valid UsersRequest.SearchDTO reqDTO, Error error, @AuthenticationPrincipal Users principal) {
 
-        //1. 유저확인( 팔로잉 확인 용으로 사용예정)
-        Users user = Users.builder().id(2).build();
-        //2.get
-        List<UsersResponse.SearchDTO> respDTO = usersService.getSearchUsers(reqDTO.getQuery(), user);
+        List<UsersResponse.SearchDTO> respDTO = usersService.getSearchUsers(reqDTO.getQuery(), principal);
 
         return Resp.ok(respDTO);
     }
@@ -44,11 +42,6 @@ public class SearchController {
     @GetMapping("/streams")
     public ResponseEntity<?> getSearchStreams(@Valid StreamsRequest.SearchDTO reqDTO, Error error) {
 
-
-        //1. 유저확인 (라이브방송 검색하는데 유저 검증이 필요한가요? )
-        Users user = Users.builder().id(2).build();
-
-        //2.get
         List<StreamsResponse.StreamDTO> respDTO = streamsService.getSearchStreams(reqDTO.getQuery());
 
         return Resp.ok(respDTO);

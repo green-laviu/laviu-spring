@@ -62,8 +62,8 @@ public class StreamKeyCreateTest {
 
     @Test
     public void generateStreamKeyTest() {
-        Integer userId = 1;
-        Integer streamId = 1;
+        Integer userId = 8;
+        Integer streamId = 5;
         String streamKey = generateStreamKey(userId, streamId);
         System.out.println(streamKey);
     }
