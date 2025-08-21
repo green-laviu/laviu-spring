@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.chatmessages.controller;
 
+import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.chatmessages.dto.*;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -7,6 +8,7 @@ import com.metacoding.laviu.domain.viewers.service.ViewerSanctionsService;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -102,8 +104,11 @@ public class ChatMessagesController {
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/participants", participantList);
     }
 
-    @GetMapping("/streams/{streamId}/chats")
-    public void getChatList(@PathVariable Integer streamId) {
-//        chatMessagesService.getChatListWithStreamId(streamId);
+    @GetMapping("/s/api/v1/streams/{streamId}/chats")
+    public ResponseEntity<?> getChatList(@PathVariable Integer streamId) {
+        log.debug("채팅목록 요청");
+        List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamId(streamId);
+        log.debug("채팅목록 응답");
+        return Resp.ok(respDTO);
     }
 }
