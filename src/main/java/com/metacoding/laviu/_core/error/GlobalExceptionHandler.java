@@ -46,7 +46,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> exUnKnown(Exception e) {
         log.error("스택 트레이스 시작");
-        log.error("알 수 없는 오류 발생: {}", e);
+//        log.error("알 수 없는 오류 발생: {}", e);
+        e.printStackTrace();
         log.error("스택 트레이스 끝");
         return Resp.fail(HttpStatus.INTERNAL_SERVER_ERROR, ErrorEnum.UNKNOWN_SERVER_ERROR.getMessage());
     }

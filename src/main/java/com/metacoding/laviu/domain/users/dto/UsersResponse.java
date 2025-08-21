@@ -176,6 +176,7 @@ public class UsersResponse {
         }
     }
 
+    @Data
     public static class UpdateDTO {
         private Integer userId;
         private String nickname;

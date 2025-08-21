@@ -166,7 +166,7 @@ public class AdminControllerTest extends MyRestDoc {
 
         // when
         ResultActions actions = mvc.perform(
-                post("/s/v1/admin/abusereports/{id}", reportId)
+                post("/s/v1/admin/abusereports/{reportId}", reportId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestBody)
                         .session(session)
@@ -174,7 +174,7 @@ public class AdminControllerTest extends MyRestDoc {
 
         // then - 정상적으로 처리되면 redirect
         actions.andExpect(status().isFound())
-                .andExpect(header().string("Location", "/s/v1/admin/abusereports"))
+                .andExpect(header().string("Location", "/s/api/v1/admin/abusereports"))
                 .andDo(print())
                 .andDo(document);
     }

@@ -12,15 +12,6 @@ public class UsersRequest {
         private String username;
         private String channelDescription;
         private String profileImageUrl;
-
-        public updateDTO(String username, String channelDescription, String profileImageUrl) {
-            this.username = username;
-            this.channelDescription = channelDescription;
-            this.profileImageUrl = profileImageUrl;
-        }
-
-        public updateDTO() {
-        }
     }
 
     @Data
