@@ -15,6 +15,10 @@ import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.domain.UsersType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +26,12 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+public class AdminService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final StreamsRepository streamsRepository;
     private final AbuseReportsRepository abusereportsRepository;
+
 
     /**
      * 관리자 로그인 기능을 처리하는 메서드.
@@ -42,8 +47,10 @@ public class AdminService {
         Users user = usersRepository.getByEmailAndType(reqDTO.getEmail(), UsersType.ADMIN)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
 
+        boolean isSame = BCrypt.checkpw(reqDTO.getPassword(), user.getPassword());
+
         // 2. 요청 비밀번호와 DB에 저장된 비밀번호를 비교
-        if (!user.getPassword().equals(reqDTO.getPassword())) {
+        if (!isSame) {
             throw new ExceptionApi404(ErrorEnum.USER_NOT_FOUND);
         }
 
@@ -156,5 +163,11 @@ public class AdminService {
 
         // 3. 엔티티의 상태를 변경하는 메서드 호출
         abuseReports.updateStatus(updateStatus);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usersRepository.getByEmail(username)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
     }
 }

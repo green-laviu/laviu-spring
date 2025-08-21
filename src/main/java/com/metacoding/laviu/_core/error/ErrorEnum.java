@@ -46,7 +46,12 @@ public enum ErrorEnum {
     /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
-    ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
+    ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
+
+    /**
+     * 400 Bad Request - 이미 존재하는 유저 입니다.
+     */
+    USER_ALREADY_EXISTS(400, "이미 존재하는 유저 입니다."),
 
     /**
      * 400 Bad Request - 올바르지 않은 재제 type 입니다.
