@@ -4,6 +4,16 @@ public enum ErrorEnum {
     // 나중에 수정해서 사용함
 
     /**
+     * 400 Bad Request - 토큰이 누락되었습니다.
+     */
+    TOKEN_IS_MISSING(400, "토큰이 누락되었습니다."),
+
+    /**
+     * 400 Bad Request - 스트림 키가 누락되었습니다.
+     */
+    STREAM_KEY_IS_MISSING(400, "스트림 키가 누락되었습니다."),
+
+    /**
      * 400 Bad Request - 이미 참여하고 있는 방송입니다.
      */
     ALREADY_PARTICIPATING_IN_STREAM(400, "이미 참여하고 있는 방송입니다"),
@@ -36,7 +46,17 @@ public enum ErrorEnum {
     /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
-    ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
+    ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
+
+    /**
+     * 400 Bad Request - 이미 존재하는 유저 입니다.
+     */
+    USER_ALREADY_EXISTS(400, "이미 존재하는 유저 입니다."),
+
+    /**
+     * 400 Bad Request - 올바르지 않은 재제 type 입니다.
+     */
+    BAD_REQUEST_SANCTION_TYPE(400, "올바르지 않은 재제 type 입니다."),
 
     /**
      * 401 Unauthorized - 로그인이 필요합니다.
@@ -64,11 +84,6 @@ public enum ErrorEnum {
     BEARER_PREFIX_IS_MISSING(401, "Authorization 헤더에 'Bearer'가 누락되었습니다"),
 
     /**
-     * 401 Unauthorized - 토큰이 존재하지 않습니다.
-     */
-    TOKEN_IS_MISSING(401, "토큰이 존재하지 않습니다"),
-
-    /**
      * 403 Forbidden - 팔로잉 관계의 소유자가 아닙니다.
      */
     NOT_THE_OWNER_OF_FOLLOWING(403, "팔로잉 관계의 소유자가 아닙니다."),
@@ -79,9 +94,19 @@ public enum ErrorEnum {
     ACCESS_IS_DENIED(403, "접근 권한이 없습니다."),
 
     /**
+     * 403 Forbidden - 스트리머 권한이 필요합니다.
+     */
+    STREAMER_PRIVILEGE_REQUIRED(403, "스트리머 권한이 필요합니다."),
+
+    /**
      * 403 Forbidden - 해당 방송을 하는 방송인이 아닙니다.
      */
     NOT_THE_STREAMER_OF_THIS_STREAM(403, "해당 방송을 하는 방송인이 아닙니다."),
+
+    /**
+     * 403 Forbidden - 강제퇴장 되어 방송을 볼 수 없습니다.
+     */
+    STREAM_VIEWING_FORBIDDEN(403, "강제퇴장 되어 방송을 볼 수 없습니다."),
 
     /**
      * 404 Not Found - 팔로잉 중이 아닙니다.
@@ -114,7 +139,7 @@ public enum ErrorEnum {
      * 404 Not Found - 해당 신고를 찾을 수 없습니다.
      */
     REPORT_NOT_FOUND(404, "해당 신고를 찾을 수 없습니다."),
-    
+
     /**
      * 404 Not Found - 해당 알람을 찾을 수 없습니다.
      */

@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.metacoding.laviu.domain.users.domain.Users;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Date;
 
@@ -14,20 +15,19 @@ public class TokenTest {
     public void create_test() {
         // given
         Users user = Users.builder()
-                .id(5)
-                .email("testStreamer@nate.com")
-                .nickname("testStreamer")
+                .id(8)
+                .email("testToken@nate.com")
                 .roles("USER")
+                .nickname("testStreamer")
                 .build();
 
         // when
         String jwt = JWT.create()
                 .withSubject("laviu") // 토큰 이름 필수!
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 7)) // 만료시간
+                .withExpiresAt(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * 7)) // 만료시간
                 .withClaim("id", user.getId()) // 넣고 싶은 정보
                 .withClaim("nickname", user.getNickname()) // 넣고 싶은 정보
                 .withClaim("email", user.getEmail()) // 넣고 싶은 정보
-                .withClaim("roles", user.getRoles()) // 넣고 싶은 정보
                 .sign(Algorithm.HMAC512("메타코딩시크릿키")); // 마지막 해쉬생성
 
         // eye
@@ -58,5 +58,13 @@ public class TokenTest {
 
         System.out.println(id);
         System.out.println(username);
+    }
+
+    @Test
+    public void encode_test() {
+        String password = "1234";
+
+        String encPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        System.out.println(encPassword);
     }
 }
