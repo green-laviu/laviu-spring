@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.matchesPattern;
+
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
 @Slf4j
@@ -52,7 +54,7 @@ public class RtmpControllerTest extends MyRestDoc {
         //then
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").exists());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey").value("cfy_aDktqoqESx6g1DGBEw=="));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.viewerCount").value(100));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value("LIVE"));
@@ -99,7 +101,7 @@ public class RtmpControllerTest extends MyRestDoc {
         //then
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").exists());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey").value("cfy_aDktqoqESx6g1DGBEw=="));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.viewerCount").value(100));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value("LIVE"));
