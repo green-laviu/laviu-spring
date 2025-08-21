@@ -6,10 +6,10 @@ import com.metacoding.laviu._core.error.ex.ExceptionApi403;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu._core.utils.StringTrimUtils;
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.hashtags.domain.Hashtags;
 import com.metacoding.laviu.domain.hashtags.domain.StreamHashtags;
 import com.metacoding.laviu.domain.hashtags.service.HashtagsService;
+import com.metacoding.laviu.domain.notifications.dto.NotificationsResponse;
 import com.metacoding.laviu.domain.notifications.service.NotificationsService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
@@ -24,7 +24,6 @@ import com.metacoding.laviu.domain.users.dto.UsersResponse;
 import com.metacoding.laviu.domain.viewers.domain.ViewerSanctions;
 import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsRepository;
 import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsType;
-import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -41,11 +40,9 @@ import java.util.Optional;
 public class StreamsService {
     private final StreamsRepository streamsRepository;
     private final FollowsRepository followsRepository;
-    private final ViewersService viewersService;
     private final UsersRepository usersRepository;
     private final HashtagsService hashtagsService;
     private final NotificationsService notificationsService;
-    private final ChatMessagesRepository chatMessagesRepository;
     private final ViewerSanctionsRepository viewerSanctionsRepository;
 
     @Transactional
@@ -80,10 +77,9 @@ public class StreamsService {
         streamsPS.startLive();
 
         //팔로워에게 알림저장
-        notificationsService.save(streamsPS);
+        List<NotificationsResponse.DTO> notificationList = notificationsService.save(streamsPS);
     }
 
-    //save
     @Transactional
     public StreamsResponse.SaveDTO save(StreamsRequest.SaveDTO reqDTO, Users user) {
 

@@ -17,6 +17,7 @@ public class LiveDetailDTO {
     private Integer viewerCount;               // 시청자 수
     private List<HashtagsResponse.DTO> hashtagList;         // 태그
     private LocalDateTime startedAt;          // 방송 시작 시각 (2025-08-12T14:00:00)
+    private String streamKey;
 
 
     public LiveDetailDTO(Streams stream, UsersResponse.ChannelInfoDTO channel, String hlsUrl) {
@@ -29,5 +30,6 @@ public class LiveDetailDTO {
                 .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
                 .toList();
         this.startedAt = stream.getStartedAt();
+        this.streamKey = stream.getStreamKey();
     }
 }

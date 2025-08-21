@@ -3,6 +3,8 @@ package com.metacoding.laviu.domain.streams.dto;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
 import com.metacoding.laviu.domain.users.domain.Users;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
@@ -11,6 +13,7 @@ public class StreamsRequest {
     @Data
     public static class StreamsVerifyDTO {
         private String app;
+        @NotNull(message = "streamKey가 전달되지 못했습니다. 다시시도 해주십시오.")
         private String name;
     }
 
@@ -22,6 +25,7 @@ public class StreamsRequest {
     //저장용으로 처음 요청받는 용도
     @Data
     public static class SaveDTO {
+        @NotNull(message = "방송 제목을 입력해주십시오.")
         private String title;
         private List<String> hashtagList;
 
@@ -38,15 +42,14 @@ public class StreamsRequest {
 
     @Data
     public static class UpdateDTO {
+        @NotBlank(message = "제목은 공백으로 바꿀 수 없습니다.")
         private String title;
         private List<String> hashtagList;
     }
 
     @Data
     public static class SearchDTO {
+        @NotBlank(message = "검색어는 필수 입력값입니다.")
         private String query;
-
     }
-
-
 }
