@@ -46,7 +46,7 @@ public class StreamsService {
     private final ViewerSanctionsRepository viewerSanctionsRepository;
 
     @Transactional
-    public void verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
+    public StreamsResponse.RtmpResponseDTO verify(StreamsRequest.StreamsVerifyDTO reqDTO) {
         String streamKey = reqDTO.getName();
         log.debug("streamKey: {}", streamKey);
 //        String token = reqDTO.getToken();
@@ -72,12 +72,13 @@ public class StreamsService {
             throw new ExceptionApi403(ErrorEnum.NOT_THE_STREAMER_OF_THIS_STREAM);
 
         // 연결이 끊어졌다가 다시 스트림 하면 아래의 조건이 실행됨
-        if (streamsPS.getStatus() == StreamsStatus.LIVE) return;
+        if (streamsPS.getStatus() == StreamsStatus.LIVE) return new StreamsResponse.RtmpResponseDTO(streamsPS);
 
         streamsPS.startLive();
 
         //팔로워에게 알림저장
         List<NotificationsResponse.DTO> notificationList = notificationsService.save(streamsPS);
+        return new StreamsResponse.RtmpResponseDTO(streamsPS);
     }
 
     @Transactional
@@ -174,12 +175,14 @@ public class StreamsService {
     }
 
     @Transactional
-    public void updateThumbnail(String streamKey, StreamsRequest.ThumbnailUpdateDTO reqDTO) {
+    public StreamsResponse.RtmpResponseDTO updateThumbnail(String streamKey, StreamsRequest.ThumbnailUpdateDTO reqDTO) {
         Streams streamsPS =
                 streamsRepository.findByStreamKey(streamKey)
                         .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
         streamsPS.updateThumbnailUrl(
                 reqDTO.getThumbnailUrl() + "?date=" + System.currentTimeMillis());
+
+        return new StreamsResponse.RtmpResponseDTO(streamsPS);
     }
 
     public StreamsResponse.StreamListDTO findAll() {
