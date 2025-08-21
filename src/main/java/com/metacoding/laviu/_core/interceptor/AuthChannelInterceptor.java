@@ -1,5 +1,9 @@
 package com.metacoding.laviu._core.interceptor;
 
+import com.metacoding.laviu._core.error.ErrorEnum;
+import com.metacoding.laviu._core.error.ex.StompException400;
+import com.metacoding.laviu._core.error.ex.StompException401;
+import com.metacoding.laviu._core.error.ex.StompException403;
 import com.metacoding.laviu._core.utils.JwtUtil;
 import com.metacoding.laviu._core.utils.StreamKeyUtil;
 import com.metacoding.laviu.domain.streams.service.StreamsService;
@@ -12,7 +16,6 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -36,22 +39,17 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             log.debug("받은 토큰: {}", token);
 
             Users user = safelyVerifyToken(token);
-            if (user != null) {
-                log.debug("토큰 검증 성공, id: {}", user.getId());
-                log.debug("세션에 저장 중");
-                accessor.setUser(new UsernamePasswordAuthenticationToken(
-                        user, null, user.getAuthorities()
-                ));
-                log.debug("세션에 저장 성공");
-            } else {
-                log.debug("토큰 검증 실패!");
-                throw new AccessDeniedException("유효하지 않은 토큰입니다. 연결을 거부합니다.");
-            }
+            log.debug("토큰 검증 성공, id: {}", user.getId());
+            log.debug("세션에 저장 중");
+            accessor.setUser(new UsernamePasswordAuthenticationToken(
+                    user, null, user.getAuthorities()
+            ));
+            log.debug("세션에 저장 성공");
         } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
             log.debug("구독 요청 처리 중...");
             if (accessor.getUser() == null) {
                 log.debug("인증 정보 없음!");
-                throw new AccessDeniedException("인증되지 않은 사용자입니다.");
+                throw new StompException401(ErrorEnum.LOGIN_REQUIRED);
             }
 
             Users user = (Users) ((Authentication) accessor.getUser()).getPrincipal();
@@ -63,7 +61,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             if (destination != null && destination.contains("/participants")) {
                 if (!streamService.isStreamOwner(streamKey, user.getId())) {
                     log.warn("스트리머가 아닌 사용자가 전용 채널에 접근 시도: {}", user.getId());
-                    throw new AccessDeniedException("스트리머만 구독할 수 있는 채널입니다.");
+                    throw new StompException403(ErrorEnum.STREAMER_PRIVILEGE_REQUIRED);
                 }
             }
         }
@@ -74,14 +72,15 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
     // --- JWT 토큰 실제 검증 및 객체 변환 ---
     private Users safelyVerifyToken(String token) {
         if (token == null || !token.startsWith(JwtUtil.TOKEN_PREFIX)) {
-            return null;
+            log.debug("토큰 검증 실패!");
+            throw new StompException400(ErrorEnum.INVALID_TOKEN_FORMAT);
         }
         try {
             String pureToken = token.substring(JwtUtil.TOKEN_PREFIX.length());
             return JwtUtil.verify(pureToken); // 서명·만료 검증 및 클레임 추출
         } catch (Exception e) {
-            log.debug("JWT 검증 실패: {}", e.getMessage());
-            return null;
+            log.debug("토큰 검증 실패!");
+            throw new StompException400(ErrorEnum.INVALID_TOKEN_FORMAT);
         }
     }
 }
