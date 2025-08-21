@@ -66,6 +66,9 @@ public class AuthControllerTest extends MyRestDoc {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅ 기존 유저 로그인 응답 바디: " + responseBody);
+
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
@@ -79,8 +82,7 @@ public class AuthControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.providerType").value("NAVER"))
                 .andDo(document);
 
-        String responseBody = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("✅ 기존 유저 로그인 응답 바디: " + responseBody);
+
     }
 
     // 시나리오 2: 신규 유저 로그인
@@ -114,6 +116,9 @@ public class AuthControllerTest extends MyRestDoc {
                         .contentType(MediaType.APPLICATION_JSON)
         );
 
+        String responseBody = actions.andReturn().getResponse().getContentAsString();
+        System.out.println("✅ 신규 유저 로그인 응답 바디: " + responseBody);
+
         // then
         actions.andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
@@ -127,7 +132,5 @@ public class AuthControllerTest extends MyRestDoc {
                 .andExpect(jsonPath("$.data.providerType").value("NAVER"))
                 .andDo(document);
 
-        String responseBody = actions.andReturn().getResponse().getContentAsString();
-        System.out.println("✅ 신규 유저 로그인 응답 바디: " + responseBody);
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,6 +64,7 @@ public class ChatMessagesControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].authorId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].authorNickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].content").value("오늘 저녁 뭐 드셨어요?"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer").value(true));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].isStreamer").value(true));
+        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 }
