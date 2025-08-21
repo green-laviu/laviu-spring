@@ -31,9 +31,8 @@ public class UsersController {
     }
 
     @PutMapping("/{userId}")
-    public ResponseEntity<?> updateUsers(@PathVariable Integer userId, @Valid @RequestBody UsersRequest.updateDTO updateDTO, Error error, @AuthenticationPrincipal Users principal) {
-        // TODO 업데이트에는 유저의 정보만 응답 한다. 방송 정보 필요없다
-        UsersResponse.UpdateDTO respDTO = usersService.update(updateDTO, userId, principal.getId());
+    public ResponseEntity<?> updateUsers(@PathVariable Integer userId, @Valid @RequestBody UsersRequest.updateDTO reqDTO, Error error, @AuthenticationPrincipal Users principal) {
+        UsersResponse.UpdateDTO respDTO = usersService.update(reqDTO, userId, principal.getId());
         return Resp.ok(respDTO);
     }
 

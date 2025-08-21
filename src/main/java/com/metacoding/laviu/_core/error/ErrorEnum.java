@@ -46,12 +46,17 @@ public enum ErrorEnum {
     /**
      * 400 Bad Request - 이미 팔로잉 중입니다.
      */
-    ALREADY_FOLLOWING(400, "이미 팔로잉중입니다."),
+    ALREADY_FOLLOWING(400, "이미 팔로잉 중입니다."),
 
     /**
-     * 400 Bad Request - 이미 참여하고 있는 방송입니다.
+     * 400 Bad Request - 이미 존재하는 유저 입니다.
      */
-    BAD_REQUEST_SANCTION_TYPE(400, "올바르지 않은 재제 방식입니다."),
+    USER_ALREADY_EXISTS(400, "이미 존재하는 유저 입니다."),
+
+    /**
+     * 400 Bad Request - 올바르지 않은 재제 type 입니다.
+     */
+    BAD_REQUEST_SANCTION_TYPE(400, "올바르지 않은 재제 type 입니다."),
 
     /**
      * 401 Unauthorized - 로그인이 필요합니다.
@@ -87,6 +92,11 @@ public enum ErrorEnum {
      * 403 Forbidden - 접근 권한이 없습니다.
      */
     ACCESS_IS_DENIED(403, "접근 권한이 없습니다."),
+
+    /**
+     * 403 Forbidden - 스트리머 권한이 필요합니다.
+     */
+    STREAMER_PRIVILEGE_REQUIRED(403, "스트리머 권한이 필요합니다."),
 
     /**
      * 403 Forbidden - 해당 방송을 하는 방송인이 아닙니다.

@@ -87,6 +87,10 @@ public class Users implements UserDetails {
         return this.email;
     }
 
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
     public void updateProfile(String username, String channelDescription, String profileImageUrl) {
         this.nickname = StringUtils.hasText(username) ? username : this.nickname;
         this.bio = StringUtils.hasText(channelDescription) ? channelDescription : this.bio;
