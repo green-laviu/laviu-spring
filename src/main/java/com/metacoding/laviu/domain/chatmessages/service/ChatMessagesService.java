@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.chatmessages.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesRequest;
@@ -62,17 +63,23 @@ public class ChatMessagesService {
                 .toList();
     }
 
-//    public List<ChatMessagesResponse.wsBroadcastDTO> getChatListWithStreamId(Integer streamId) {
-//        List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamIdJoinFetchUserAndStream(streamId);
-////
-////        return chatMessageList.stream()
-////                .map(chatMessages -> ChatMessagesResponse.wsBroadcastDTO
-////                        .builder()
-////                        .authorId(chatMessages.getUser().getId())
-////                        .authorNickname(chatMessages.getUser().getNickname())
-////                        .emailId(CommonUtils.localPart(chatMessages.getUser().getEmail()))
-////                        .
-////                        .build())
-////                .toList();
-//    }
+    public List<ChatMessagesResponse.wsBroadcastDTO> getChatListWithStreamId(Integer streamId) {
+
+        List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamIdJoinFetchUserAndStream(streamId);
+
+        // 다시 역순으로
+        Collections.reverse(chatMessageList);
+
+        return chatMessageList.stream()
+                .map(chatMessages -> ChatMessagesResponse.wsBroadcastDTO
+                        .builder()
+                        .authorId(chatMessages.getUser().getId())
+                        .authorNickname(chatMessages.getUser().getNickname())
+                        .emailId(CommonUtils.localPart(chatMessages.getUser().getEmail()))
+                        .timestamp(chatMessages.getCreatedAt())
+                        .isStreamer(chatMessages.getStream().getStreamer().getId().equals(chatMessages.getUser().getId()))
+                        .content(chatMessages.getContent())
+                        .build())
+                .toList();
+    }
 }
