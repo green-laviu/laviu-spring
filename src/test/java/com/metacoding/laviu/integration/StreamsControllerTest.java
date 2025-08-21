@@ -123,7 +123,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("방송타이틀"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value("PENDING"));
 
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagId").value(5));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagName").value("게임1"));
 
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);

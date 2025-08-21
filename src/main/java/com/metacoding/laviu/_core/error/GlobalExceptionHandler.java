@@ -2,7 +2,6 @@ package com.metacoding.laviu._core.error;
 
 import com.metacoding.laviu._core.error.ex.*;
 import com.metacoding.laviu._core.utils.Resp;
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,9 +45,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> exUnKnown(Exception e) {
-        log.error("알 수 없는 오류 발생: {}", e.getMessage());
         log.error("스택 트레이스 시작");
-        e.printStackTrace();
+        log.error("알 수 없는 오류 발생: {}", e);
         log.error("스택 트레이스 끝");
         return Resp.fail(HttpStatus.INTERNAL_SERVER_ERROR, ErrorEnum.UNKNOWN_SERVER_ERROR.getMessage());
     }
@@ -63,16 +61,6 @@ public class GlobalExceptionHandler {
         // e.getName()을 통해 어떤 파라미터에서 오류가 났는지 알 수 있습니다. (예: "page", "year")
         // e.getValue()를 통해 클라이언트가 보낸 잘못된 값을 알 수 있습니다. (예: "abc")
         String errorMessage = String.format("'%s' 파라미터에 잘못된 값 '%s'이(가) 입력되었습니다. 유효한 타입을 입력해주세요.", e.getName(), e.getValue());
-
-        // 직접 만드신 Resp 유틸리티를 사용하여 일관된 에러 응답을 보냅니다.
-        return Resp.fail(HttpStatus.BAD_REQUEST, errorMessage);
-    }
-
-    // ConstraintViolationException 예외를 잡아서 처리하는 핸들러
-    @ExceptionHandler(ConstraintViolationException.class)
-    public ResponseEntity<?> handleConstraintViolationException(ConstraintViolationException e) {
-        // 유효성 검사 실패 시 발생한 에러 메시지를 추출합니다.
-        String errorMessage = e.getConstraintViolations().iterator().next().getMessage();
 
         // 직접 만드신 Resp 유틸리티를 사용하여 일관된 에러 응답을 보냅니다.
         return Resp.fail(HttpStatus.BAD_REQUEST, errorMessage);
