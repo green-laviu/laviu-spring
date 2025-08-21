@@ -64,7 +64,7 @@ public class FollowsControllerTest extends MyRestDoc {
         //then
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(4));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(3));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isFollowing").value(true));

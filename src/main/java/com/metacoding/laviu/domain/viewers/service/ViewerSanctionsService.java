@@ -1,9 +1,9 @@
 package com.metacoding.laviu.domain.viewers.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
-import com.metacoding.laviu._core.error.ex.ExceptionApi400;
-import com.metacoding.laviu._core.error.ex.ExceptionApi403;
-import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu._core.error.ex.StompException400;
+import com.metacoding.laviu._core.error.ex.StompException403;
+import com.metacoding.laviu._core.error.ex.StompException404;
 import com.metacoding.laviu.domain.chatmessages.dto.SanctionRequestDTO;
 import com.metacoding.laviu.domain.chatmessages.dto.SanctionResponseDTO;
 import com.metacoding.laviu.domain.streams.domain.Streams;
@@ -29,10 +29,10 @@ public class ViewerSanctionsService {
     public SanctionResponseDTO save(String streamKey, Users streamer, SanctionRequestDTO reqDTO) {
         // 방송 존재 여부 확인
         Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
+                .orElseThrow(() -> new StompException404(ErrorEnum.STREAM_NOT_FOUND));
         // 권한 여부 확인
         if (!streamsPS.getStreamer().getId().equals(streamer.getId())) {
-            throw new ExceptionApi403(ErrorEnum.ACCESS_IS_DENIED);
+            throw new StompException403(ErrorEnum.ACCESS_IS_DENIED);
         }
         // 기존 재제 존재 유무 확인
         ViewerSanctions sanctionsPS = viewerSanctionsRepository
@@ -52,7 +52,7 @@ public class ViewerSanctionsService {
     // 새로운 재제를 만드는 내부 로직
     private ViewerSanctions create(Streams streams, SanctionRequestDTO reqDTO) {
         Users sanctionedUserPS = usersRepository.findById(reqDTO.getSanctionedUserId())
-                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
+                .orElseThrow(() -> new StompException404(ErrorEnum.USER_NOT_FOUND));
 
         ViewerSanctionsType type = getSanctionType(reqDTO.getSanctionType());
         ViewerSanctions newViewerSanctions = new ViewerSanctions(type, streams, streams.getStreamer(), sanctionedUserPS);
@@ -72,7 +72,7 @@ public class ViewerSanctionsService {
         try {
             return ViewerSanctionsType.valueOf(type);
         } catch (Exception e) {
-            throw new ExceptionApi400(ErrorEnum.BAD_REQUEST_SANCTION_TYPE);
+            throw new StompException400(ErrorEnum.BAD_REQUEST_SANCTION_TYPE);
         }
     }
 }
