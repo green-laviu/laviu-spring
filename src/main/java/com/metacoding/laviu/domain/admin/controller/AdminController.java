@@ -5,6 +5,7 @@ import com.metacoding.laviu.domain.admin.dto.AdminResponse;
 import com.metacoding.laviu.domain.admin.service.AdminService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,20 +18,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class AdminController {
 
     private final AdminService adminService;
-    private final HttpSession session;
 
     // 로그인 페이지
-    @GetMapping("/v1/admin/login-form")
+    @GetMapping("/admin/login")
     public String adminLoginForm() {
         return "admin-login";
     }
 
     // 관리자 로그인
     @PostMapping("/v1/auth/admin/login")
-    public String login(@RequestBody AdminRequest.LoginDTO reqDTO) {
+    public String login(@Valid @RequestBody AdminRequest.LoginDTO reqDTO, Error error, HttpSession session) {
         AdminResponse.LoginDTO admin = adminService.login(reqDTO);
         session.setAttribute("ADMIN", admin);
-        return "redirect:/s/v1/admin/streams";
+        return "redirect:/v1/admin/streams";
+    }
+
+    // 관리자 로그아웃
+    @PostMapping("/s/v1/auth/admin/logout")
+    public String logout(HttpSession session) {
+        if (session != null) session.invalidate();
+        return "redirect:/admin/login";
     }
 
     // 실시간 방송 관리
@@ -59,8 +66,8 @@ public class AdminController {
 
     // 신고 내역 수락/거절
     @PostMapping("/s/v1/admin/abusereports/{id}")
-    public String processAbuseReport(@PathVariable("id") Integer id, @RequestBody AdminRequest.ProcessReportDTO reqDTO) {
+    public String processAbuseReport(@PathVariable("id") Integer id, @Valid @RequestBody AdminRequest.ProcessReportDTO reqDTO, Error error) {
         adminService.processAbuseReport(id, reqDTO.getStatus());
-        return "redirect:/s/v1/admin/abusereports";
+        return "redirect:/s/api/v1/admin/abusereports";
     }
 }

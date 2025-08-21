@@ -1,14 +1,13 @@
 package com.metacoding.laviu.domain.streams.dto;
 
-import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
-import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.hashtags.dto.HashtagsResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsStatus;
-import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.dto.UsersResponse;
+import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class StreamsResponse {
@@ -72,23 +71,9 @@ public class StreamsResponse {
     @Data
     public static class DetailDTO {
         private LiveDetailDTO live;
-        private List<ChatMessagesResponse.wsBroadcastDTO> chatList;
 
-        public DetailDTO(LiveDetailDTO live, List<ChatMessages> chatMessageList) {
+        public DetailDTO(LiveDetailDTO live) {
             this.live = live;
-            this.chatList = chatMessageList.stream()
-                    .map(chatMessage -> {
-                        Users author = chatMessage.getUser();
-                        return ChatMessagesResponse.wsBroadcastDTO.builder()
-                                .authorId(author.getId())
-                                .authorNickname(author.getNickname())
-                                .emailId(author.getEmail()) // 또는 getUsername()
-                                .isStreamer(chatMessage.getStream().getStreamer().getId().equals(author.getId()))
-                                .content(chatMessage.getContent()) // ◀ 클라이언트가 보낸 content 사용
-                                .timestamp(chatMessage.getCreatedAt())
-                                .build();
-                    })
-                    .toList();
         }
     }
 
@@ -133,6 +118,38 @@ public class StreamsResponse {
                     .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
                     .toList();
             this.isLive = stream.getStatus() == StreamsStatus.LIVE;
+        }
+    }
+
+    @Data
+    public static class RtmpResponseDTO {
+        private Integer id;
+        private String streamKey;
+        private String title;
+        private String thumbnailUrl;
+        private Integer viewerCount;
+        private StreamsStatus status;
+        private LocalDateTime startedAt;
+        private LocalDateTime updatedAt;
+        private LocalDateTime endedAt;
+        private UsersResponse.DTO streamer;
+        private List<HashtagsResponse.DTO> streamHashtagList;
+
+        @Builder
+        public RtmpResponseDTO(Streams stream) {
+            this.id = stream.getId();
+            this.streamKey = stream.getStreamKey();
+            this.title = stream.getTitle();
+            this.thumbnailUrl = stream.getThumbnailUrl();
+            this.viewerCount = stream.getViewerCount();
+            this.status = stream.getStatus();
+            this.startedAt = stream.getStartedAt();
+            this.updatedAt = stream.getUpdatedAt();
+            this.endedAt = stream.getEndedAt();
+            this.streamer = new UsersResponse.DTO(stream.getStreamer());
+            this.streamHashtagList = stream.getStreamHashtagList().stream()
+                    .map(streamHashtags -> new HashtagsResponse.DTO(streamHashtags.getHashtag()))
+                    .toList();
         }
     }
 }

@@ -6,6 +6,7 @@ import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class AuthChannelInterceptor implements ChannelInterceptor {
 
     private final StreamsService streamService; // 스트림 소유권 확인 서비스
@@ -26,56 +28,47 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
+        log.debug("=== 인터셉터 진입 ===");
+        log.debug("Command: {}", accessor.getCommand());
+        log.debug("Destination: {}", accessor.getDestination());
 
-        // [디버깅] 명령어/대상 출력
-        System.out.println("=== 인터셉터 진입 ===");
-        System.out.println("Command: " + accessor.getCommand());
-        System.out.println("Destination: " + accessor.getDestination());
-
-        // 1. CONNECT 시: JWT 인증 및 세션에 사용자 정보 등록
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
             String token = accessor.getFirstNativeHeader(JwtUtil.HEADER);
-            System.out.println("받은 토큰: " + token);
+            log.debug("받은 토큰: {}", token);
 
             Users user = safelyVerifyToken(token);
             if (user != null) {
-                System.out.println("토큰 검증 성공, id: " + user.getId());
-                // 세션에 사용자 인증 정보 등록(권한 정보는 ROLE 문자열에서 필요시 파싱)
-                System.out.println("세션에 저장 중");
+                log.debug("토큰 검증 성공, id: {}", user.getId());
+                log.debug("세션에 저장 중");
                 accessor.setUser(new UsernamePasswordAuthenticationToken(
                         user, null, user.getAuthorities()
                 ));
-                System.out.println("세션에 저장 성공");
+                log.debug("세션에 저장 성공");
             } else {
-                System.out.println("토큰 검증 실패!");
+                log.debug("토큰 검증 실패!");
                 throw new AccessDeniedException("유효하지 않은 토큰입니다. 연결을 거부합니다.");
             }
-        }
-
-        // 2. SUBSCRIBE 시: 채널별 구독 권한 검사
-        else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-            System.out.println("구독 요청 처리 중...");
+        } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+            log.debug("구독 요청 처리 중...");
             if (accessor.getUser() == null) {
-                System.out.println("인증 정보 없음!");
+                log.debug("인증 정보 없음!");
                 throw new AccessDeniedException("인증되지 않은 사용자입니다.");
             }
 
             Users user = (Users) ((Authentication) accessor.getUser()).getPrincipal();
             String destination = accessor.getDestination();
-            System.out.println("사용자: " + user.getId() + ", 구독 대상: " + destination);
+            log.debug("사용자: {}, 구독 대상: {}", user.getId(), destination);
             String streamKey = StreamKeyUtil.extractStreamKeyFromDestination(destination);
-            System.out.println("스트림 키" + streamKey);
+            log.debug("스트림 키: {}", streamKey);
 
-            // 2-A. 스트리머 전용 채널('/participants') 구독 시 → 소유권 검사
             if (destination != null && destination.contains("/participants")) {
                 if (!streamService.isStreamOwner(streamKey, user.getId())) {
+                    log.warn("스트리머가 아닌 사용자가 전용 채널에 접근 시도: {}", user.getId());
                     throw new AccessDeniedException("스트리머만 구독할 수 있는 채널입니다.");
                 }
             }
-            // 2-B. 채팅 채널은 사용자 인증만 있으면 구독 가능(추가 검사 없음)
-            // TODO -> join 을 통해서 viewers 테이블에 존재하면 채팅 구독 가능하게 변경
         }
-        System.out.println("=== 인터셉터 통과 ===");
+        log.debug("=== 인터셉터 통과 ===");
         return message;
     }
 
@@ -88,7 +81,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             String pureToken = token.substring(JwtUtil.TOKEN_PREFIX.length());
             return JwtUtil.verify(pureToken); // 서명·만료 검증 및 클레임 추출
         } catch (Exception e) {
-            System.out.println("JWT 검증 실패: " + e.getMessage());
+            log.debug("JWT 검증 실패: {}", e.getMessage());
             return null;
         }
     }

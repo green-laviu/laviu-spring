@@ -18,6 +18,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.matchesPattern;
+
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
 @Slf4j
@@ -60,10 +63,12 @@ public class UsersControllerTest extends MyRestDoc {
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
 
-        //then
+        // then
         actions.andExpect(MockMvcResultMatchers.status().isOk());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+
+// Streamer 객체 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.userId").value(3));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.nickname").value("love"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile3.jpg"));
@@ -73,14 +78,20 @@ public class UsersControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.isNotified").value(Matchers.nullValue()));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.streamStatus").value("LIVE"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.isLive").value(true));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.streamId").value(2));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.streamKey").value("a1b2c3"));
+
+// LiveStream 객체 검증
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.streamId").value(3));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.title").value("파이썬 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.viewerCount").value(50));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.thumbnailUrl").value("https://example.com/thumb3.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.status").value("LIVE"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.hashtagList[0].hashtagId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.hashtagList[0].hashtagName").value("게임"));
+
+// hashtagList의 0번째 요소만 검증
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.hashtagList[0].hashtagId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.hashtagList[0].hashtagName").value("방송"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.hashtagList", hasSize(1)));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.isLive").value(true));
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
 
@@ -101,24 +112,31 @@ public class UsersControllerTest extends MyRestDoc {
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
 
-        //then
+        // then
         actions.andExpect(MockMvcResultMatchers.status().isOk());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+
+// me 객체 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.profileImageUrl").value("https://nate.com/profile1.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.followerCount").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.isLive").value(true));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.bio").value("안녕하세요"));
+
+// live 객체 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamKey").value("abc123"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.viewerCount").value(100));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.thumbnailUrl").value("https://example.com/thumb1.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.status").value("LIVE"));
+
+// hashtagList의 0번째 요소만 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hashtagList[0].hashtagName").value("게임"));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.isLive").value(true));
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
@@ -127,7 +145,7 @@ public class UsersControllerTest extends MyRestDoc {
     public void update_users_test() throws Exception {
         // given
         int userId = 1;
-        
+
         UsersRequest.updateDTO reqDTO = new UsersRequest.updateDTO();
         reqDTO.setUsername("testUser");
         reqDTO.setChannelDescription("tempChannelDescription");

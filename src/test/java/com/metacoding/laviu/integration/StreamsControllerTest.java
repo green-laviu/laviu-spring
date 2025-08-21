@@ -30,6 +30,7 @@ public class StreamsControllerTest extends MyRestDoc {
     @Autowired
     private ObjectMapper om;
     private String viewerToken;
+    private String viewer2Token;
     private String streamerToken;
 
     /**
@@ -56,6 +57,13 @@ public class StreamsControllerTest extends MyRestDoc {
                 .build();
         streamerToken = JwtUtil.create(ssar);
 
+        Users good = Users.builder()
+                .id(9)
+                .nickname("good")
+                .email("good@nate.com")
+                .roles("USER")
+                .build();
+        viewer2Token = JwtUtil.create(good);
 
     }
 
@@ -100,7 +108,7 @@ public class StreamsControllerTest extends MyRestDoc {
                         .post("/s/api/v1/streams/start")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", viewerToken)
+                        .header("Authorization", viewer2Token)
         );
 
         //eye
@@ -110,13 +118,14 @@ public class StreamsControllerTest extends MyRestDoc {
         //then
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamId").value(4));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey",
-                matchesPattern("^[0-9a-fA-F\\-]{36}$")));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamId").value(6));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("방송타이틀"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.status").value("PENDING"));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagId").value(3));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagName").value("게임1"));
+
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
@@ -140,8 +149,10 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.status().isOk());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.title").value("자바 기초 강의"));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.streamer.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.streamer.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.streamer.profileImageUrl")
@@ -150,13 +161,21 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.streamer.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.followerCount").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.channel.isFollowing").value(true));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hlsUrl").value("http://host/hls/abc123.m3u8"));
+
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hlsUrl",
+                matchesPattern("^/hls/[0-9a-zA-Z\\-_=]+\\.m3u8$"))); // Base64URL 패턴에 맞게 수정
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.viewerCount").value(99));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.startedAt",
-                matchesPattern("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")));
+
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.hashtagList[0].hashtagName").value("게임"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.chatList", hasSize(0)));
+
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.startedAt",
+                matchesPattern("\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}")));
+
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamKey",
+                matchesPattern("^[0-9a-zA-Z\\-_=]+$"))); // Base64URL 캐릭터셋에 맞게 수정
+
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
@@ -182,35 +201,40 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
 
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamKey").value("abc123"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.userId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.nickname").value("ssar"));
+// 캐러셀 배열 (Carousel Array) 검증
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel").isArray());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.userId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.nickname").value("cos"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.email").value("ssar@nate.com"));
+                .value("https://nate.com/profile2.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.email").value("cos@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.bio").value("안녕하세요"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].title").value("자바 기초 강의"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].viewerCount").value(100));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].title").value("C언어 기초 강의"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].viewerCount").value(200));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].thumbnailUrl").value("https://example.com/thumb2.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].status").value("LIVE"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList[0].hashtagName").value("게임"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList", hasSize(1)));
 
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamKey").value("abc123"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.userId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.nickname").value("ssar"));
+// 추천 배열 (Recommended Array) 검증
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended").isArray());
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamId").value(4));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.userId").value(4));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.nickname").value("hate"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.email").value("ssar@nate.com"));
+                .value("https://nate.com/profile4.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.email").value("hate@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].streamer.bio").value("안녕하세요"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].title").value("자바 기초 강의"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].viewerCount").value(100));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].title").value("코덱 기초 강의"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].viewerCount").value(10));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].thumbnailUrl").value("https://example.com/thumb4.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].status").value("LIVE"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].hashtagList[0].hashtagId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].hashtagList[0].hashtagName").value("게임"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended[0].hashtagList", hasSize(0)));
+
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
     }
 
@@ -244,7 +268,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey").value("abc123"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.title").value("방송타이틀5"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagId").value(3));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.hashtagList[0].hashtagName").value("게임5"));

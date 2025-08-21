@@ -80,6 +80,11 @@ public class FollowsService {
         Follows followPS = followsRepository.findById(followId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOLLOWING));
 
+        // 2. 권한 체크
+        if (!followPS.getFollower().getId().equals(user.getId())) {
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_OWNER_OF_FOLLOWING);
+        }
+
         followPS.enableNotifications();
 
         return new FollowsResponse.UpdateDTO(followPS);
@@ -90,6 +95,11 @@ public class FollowsService {
         //1. 조회
         Follows followPS = followsRepository.findById(followId)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.NOT_FOLLOWING));
+
+        // 2. 권한 체크
+        if (!followPS.getFollower().getId().equals(user.getId())) {
+            throw new ExceptionApi403(ErrorEnum.NOT_THE_OWNER_OF_FOLLOWING);
+        }
 
         followPS.disableNotifications();
 

@@ -28,9 +28,12 @@ VALUES ('ssar', 'ssar@nate.com', '$2a$10$FpS0L/H5Te23KLSIqdB2DOoYkpRqvPDs9YubWYN
         'https://nate.com/profile7.jpg', '안녕하세요', 'token7',
         'NAVER', 'USER',
         NOW(), null, NOW()),
+       ('good', 'good@nate.com', '1234', 'https://nate.com/profile7.jpg', '안녕하세요', 'token9',
+        'NAVER', 'USER',
+        NOW(), null, NOW()),
        ('testAdminLogin', 'testAdminLogin@nate.com', '$2a$10$FpS0L/H5Te23KLSIqdB2DOoYkpRqvPDs9YubWYNJoMl7I09NzOMEe',
         NULL,
         NULL,
         NULL,
-        NULL, 'ADMIN',
-        NOW(), null, NOW());
+        NULL, 'ADMIN', NOW(), null, NOW());
+

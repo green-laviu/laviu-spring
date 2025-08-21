@@ -99,7 +99,7 @@ public class FollowsControllerTest extends MyRestDoc {
     public void notify_on_test() throws Exception {
 
         //given
-        Integer followId = 3;
+        Integer followId = 1;
         //when
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
@@ -115,9 +115,9 @@ public class FollowsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.status().isOk());
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(3));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(3));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followerId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.followingId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isFollowing").value(true));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.isNotificationsEnabled").value(true));
         actions.andDo(MockMvcResultHandlers.print()).andDo(document);
@@ -204,7 +204,7 @@ public class FollowsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamId").value(1));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamKey").value("abc123"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamKey").value("cfy_aDktqoqESx6g1DGBEw=="));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.profileImageUrl")

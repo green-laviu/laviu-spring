@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.chatmessages.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesRequest;
@@ -39,7 +40,7 @@ public class ChatMessagesService {
         chatMessagesRepository.save(chatMessages);
     }
 
-    public List<ChatMessagesResponse.wsBroadcastDTO> getChatList(String streamKey) {
+    public List<ChatMessagesResponse.wsBroadcastDTO> getChatListWithStreamKey(String streamKey) {
         // 1. 채팅 목록 조회 (최신 30개)
         List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamKeyJoinFetchUserAndStream(streamKey);
 
@@ -59,6 +60,26 @@ public class ChatMessagesService {
                             .timestamp(chatMessage.getCreatedAt())
                             .build();
                 })
+                .toList();
+    }
+
+    public List<ChatMessagesResponse.wsBroadcastDTO> getChatListWithStreamId(Integer streamId) {
+
+        List<ChatMessages> chatMessageList = chatMessagesRepository.findLatest30ByStreamIdJoinFetchUserAndStream(streamId);
+
+        // 다시 역순으로
+        Collections.reverse(chatMessageList);
+
+        return chatMessageList.stream()
+                .map(chatMessages -> ChatMessagesResponse.wsBroadcastDTO
+                        .builder()
+                        .authorId(chatMessages.getUser().getId())
+                        .authorNickname(chatMessages.getUser().getNickname())
+                        .emailId(CommonUtils.localPart(chatMessages.getUser().getEmail()))
+                        .timestamp(chatMessages.getCreatedAt())
+                        .isStreamer(chatMessages.getStream().getStreamer().getId().equals(chatMessages.getUser().getId()))
+                        .content(chatMessages.getContent())
+                        .build())
                 .toList();
     }
 }

@@ -97,7 +97,7 @@ public class NotificationsControllerTest extends MyRestDoc {
         ResultActions actions = mvc.perform(
                 MockMvcRequestBuilders
                         .put("/s/api/v1/notifications/{notificationId}", notificationId)
-                        .header("Authorization", "Bearer " + accessToken)
+                        .header("Authorization", accessToken)
         );
 
         //eye
@@ -120,6 +120,7 @@ public class NotificationsControllerTest extends MyRestDoc {
 
     }
 
+    // TODO 단위테스트는 따로 패키지 만들어서 넣어야함
     @Test
     public void save_test() throws Exception {
 
