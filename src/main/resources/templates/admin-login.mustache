@@ -79,7 +79,7 @@
 <body>
 <div class="login-container">
     <h2>관리자 로그인</h2>
-    <form id="loginForm">
+    <form id="loginForm" action="/v1/auth/admin/login" method="post">
         <label for="email">이메일</label>
         <input type="email" id="email" name="email" required>
 
@@ -90,44 +90,6 @@
     </form>
 </div>
 
-<script>
-    document.getElementById('loginForm').addEventListener('submit', async function (event) {
-        event.preventDefault(); // 기본 폼 제출 동작을 막습니다.
-
-        // 입력된 이메일과 비밀번호를 가져옵니다.
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        // JSON 형식의 데이터를 만듭니다.
-        const loginData = {
-            email: email,
-            password: password
-        };
-
-        try {
-            // fetch API를 사용해 POST 요청을 보냅니다.
-            const response = await fetch('/v1/auth/admin/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(loginData)
-            });
-
-            // 리다이렉션을 처리합니다.
-            if (response.redirected) {
-                window.location.href = response.url;
-            } else {
-                // 로그인 실패 시 JSON 응답을 처리합니다.
-                const result = await response.json();
-                alert('로그인 실패: ' + result.msg);
-            }
-        } catch (error) {
-            console.error('로그인 중 오류 발생:', error);
-            alert('로그인 처리 중 오류가 발생했습니다.');
-        }
-    });
-</script>
 
 </body>
 </html>

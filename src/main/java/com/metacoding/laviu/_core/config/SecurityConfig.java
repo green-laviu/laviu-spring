@@ -57,7 +57,9 @@ public class SecurityConfig {
                         .loginProcessingUrl("/v1/auth/admin/login")     // 로그인 처리 URL
                         .defaultSuccessUrl("/s/v1/admin/streams")  // 로그인 성공 후 이동할 페이지
                         .failureUrl("/v1/admin/login-form")  // 로그인 실패 시 이동할 페이지
+                        .usernameParameter("email")
                         .permitAll()
+
                 )
 
                 // 로그아웃 설정

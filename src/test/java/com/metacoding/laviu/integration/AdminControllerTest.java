@@ -19,11 +19,12 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.hamcrest.Matchers.notNullValue;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -35,6 +36,11 @@ public class AdminControllerTest extends MyRestDoc {
 
     private MockHttpSession session;
 
+
+    /**
+     * 로그인 후 페이지 확인을 위한 인증 유저  = admin
+     * 로그인 로직이 되는지 확인하는 유저 = testAdminLogin
+     */
     @BeforeEach
     public void setup() {
 
@@ -51,23 +57,25 @@ public class AdminControllerTest extends MyRestDoc {
         session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
     }
 
+
     @Test
     void login_success_test() throws Exception {
         // given
-        AdminRequest.LoginDTO reqDTO = new AdminRequest.LoginDTO();
-        reqDTO.setEmail("admin@nate.com");
-        reqDTO.setPassword("1234");
-        String requestBody = om.writeValueAsString(reqDTO);
+        //testAdminLogin  = 로그인이 되는지 확인을 하는 유저
 
         // when
         ResultActions actions = mvc.perform(
                 post("/v1/auth/admin/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("email", "testAdminLogin@nate.com")
+                        .param("password", "1234")
         );
 
-        // then - Security filter가 가로채서 실패 처리 → 403
-        actions.andExpect(status().isFound())
+        // then
+        actions.andExpect(status().isFound()) // 302 리다이렉트 상태 확인
+                .andExpect(redirectedUrl("/s/v1/admin/streams")) // 성공 시 이동 경로 확인
+                .andExpect(request().sessionAttribute("SPRING_SECURITY_CONTEXT", notNullValue())) // 시큐리티 세션 저장 확인
+                .andExpect(authenticated().withUsername("testAdminLogin@nate.com")) // 로그인 된 사용자 검증
                 .andDo(print())
                 .andDo(document);
     }
@@ -75,19 +83,19 @@ public class AdminControllerTest extends MyRestDoc {
     @Test
     void login_fail_test() throws Exception {
         // given
-        AdminRequest.LoginDTO reqDTO = new AdminRequest.LoginDTO();
-        reqDTO.setEmail("wrong_admin@nate.com");
-        reqDTO.setPassword("wrong_password");
-        String requestBody = om.writeValueAsString(reqDTO);
 
         // when
         ResultActions actions = mvc.perform(
                 post("/v1/auth/admin/login")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("email", "wrongAdmin@nate.com")
+                        .param("password", "12345")
         );
 
-        actions.andExpect(status().isFound())
+        // then
+        actions.andExpect(status().isFound()) // 302 Redirect
+                .andExpect(redirectedUrl("/v1/admin/login-form")) // 실패시 리다이렉트 URL
+                .andExpect(request().sessionAttribute("SPRING_SECURITY_LAST_EXCEPTION", notNullValue())) // 실패 예외 세션에 저장됨
                 .andDo(print())
                 .andDo(document);
     }
@@ -100,8 +108,9 @@ public class AdminControllerTest extends MyRestDoc {
         );
 
         // then
-        actions.andExpect(status().isFound())
-                .andExpect(header().string("Location", "/v1/admin/login-form"))
+        actions.andExpect(status().isFound()) // 302 Redirect 확인
+                .andExpect(redirectedUrl("/v1/admin/login-form")) // 로그아웃 후 리다이렉트 경로 확인
+                .andExpect(cookie().maxAge("JSESSIONID", 0)) // 세션 쿠키 삭제 확인
                 .andDo(print())
                 .andDo(document);
     }

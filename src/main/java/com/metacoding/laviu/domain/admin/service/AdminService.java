@@ -32,19 +32,6 @@ public class AdminService implements UserDetailsService {
     private final StreamsRepository streamsRepository;
     private final AbuseReportsRepository abusereportsRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // ⭐ 핵심: UsersRepository를 사용해서 DB에서 Users 정보를 조회합니다! ⭐
-        // email은 곧 user.getEmail()이 되겠죠!
-        Users userPS = usersRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("해당 이메일의 사용자를 찾을 수 없습니다: " + email));
-
-        // ⭐ userPS(찾은 사용자)는 Users 엔티티인데, 이 Users 엔티티가 UserDetails 인터페이스를
-        // 구현하고 있기 때문에 바로 UserDetails 타입으로 반환할 수 있습니다!
-        // 이 때 Users 엔티티에 UserDetails의 필수 메소드들이 제대로 구현되어 있는지 확인해야 합니다.
-        // (getAuthorities(), getPassword(), getUsername(), isAccountNonExpired(), 등)
-        return userPS;
-    }
 
     /**
      * 관리자 로그인 기능을 처리하는 메서드.

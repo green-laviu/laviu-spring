@@ -76,6 +76,4 @@ public class UsersRepository {
         return user;
     }
 
-    public findByEmail(String email) {
-    }
 }
