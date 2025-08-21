@@ -1,5 +1,3 @@
-// src/test/java/com/metacoding/laviu/integration/AuthControllerTest.java
-
 package com.metacoding.laviu.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
