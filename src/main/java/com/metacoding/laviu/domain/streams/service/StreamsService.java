@@ -201,16 +201,27 @@ public class StreamsService {
 
         List<StreamsResponse.StreamDTO> recommendedList = new ArrayList<>();
         if (twinMinSize != liveStreamsListSize) {
-            List<Streams> recommendedStreamsList = liveStreamsList.subList(carouselMaxSize, liveStreamsListSize);
-
+            List<Streams> tempList = streamsRepository.findByStatusOrderByStartAt(StreamsStatus.LIVE);
+            carouselList = new ArrayList<>();
+            for (Streams stream : tempList) {
+                carouselList.add(new StreamsResponse.StreamDTO(stream));
+                for (Streams streams : liveStreamsList) {
+                    if (streams.getId().equals(stream.getId())) {
+                        liveStreamsList.remove(streams);
+                        break;
+                    }
+                }
+            }
+            List<Streams> recommendedStreamsList = liveStreamsList;
             for (Streams stream : recommendedStreamsList) {
                 recommendedList.add(new StreamsResponse.StreamDTO(stream));
             }
         } else {
             recommendedList = carouselList;
         }
-
-        return new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+        StreamsResponse.StreamListDTO result = new StreamsResponse.StreamListDTO(carouselList, recommendedList);
+        System.out.println("result: " + result.toString());
+        return result;
     }
 
     @Transactional
