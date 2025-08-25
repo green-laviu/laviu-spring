@@ -183,14 +183,14 @@ public class AdminService implements UserDetailsService {
      * @param streamId 종료할 방송의 ID
      */
     @Transactional
-    public void adminStreamEnd(Integer streamId) {
+    public void adminStreamEnd(String streamKey) {
         log.debug("AdminService - 방송 종료 시작");
 
         // 1. StreamsService를 통해 방송 상태를 '종료'로 변경하고, streamKey 반환
-        String streamKey = streamsService.adminEndStream(streamId);
+        Streams streamsPS = streamsService.adminEndStream(streamKey);
 
         // 2. ChatMessagesService를 통해 웹소켓 메시지 전송
-        chatMessagesService.sendStreamEndMessage(streamKey);
+        chatMessagesService.sendStreamForcedEndMessage(streamKey);
 
         log.debug("AdminService - 방송 종료 완료");
     }

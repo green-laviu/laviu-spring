@@ -28,7 +28,7 @@
                     <td>{{endTime}}</td>
                     <td>{{streamKey}}</td>
                     <td>
-                        <button class="end-btn">종료</button>
+                        <button class="end-btn" onclick="forcedEndedStream('{{streamKey}}')">종료</button>
                     </td>
                 </tr>
             {{/model.streams}}
@@ -39,5 +39,14 @@
             {{/model.streams}}
             </tbody>
         </table>
+        <script>
+            async function forcedEndedStream(streamKey) {
+                const isOk = confirm("해당 방송을 종료 하시겠습니까?");
+                if (!isOk) return;
+                // console.log('forcedEndedStream: ' + streamKey);
+                await fetch('/s/v1/admin/streams/' + streamKey + '/end', {method: 'PUT'});
+                location.reload();
+            }
+        </script>
     {{/body}}
 {{/layout}}
