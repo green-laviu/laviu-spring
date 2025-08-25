@@ -94,6 +94,11 @@ public enum ErrorEnum {
     ACCESS_IS_DENIED(403, "접근 권한이 없습니다."),
 
     /**
+     * 403 Forbidden - 접근 권한이 없습니다.
+     */
+    IS_ON_SANCTIONS(403, "초의 제재 시간이 남아있습니다."),
+
+    /**
      * 403 Forbidden - 스트리머 권한이 필요합니다.
      */
     STREAMER_PRIVILEGE_REQUIRED(403, "스트리머 권한이 필요합니다."),

@@ -2,6 +2,7 @@ package com.metacoding.laviu.domain.chatmessages.service;
 
 import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
+import com.metacoding.laviu._core.error.ex.StompException403;
 import com.metacoding.laviu._core.utils.CommonUtils;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
@@ -10,11 +11,15 @@ import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesResponse;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctions;
+import com.metacoding.laviu.domain.viewers.domain.ViewerSanctionsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -24,6 +29,7 @@ public class ChatMessagesService {
     private final ChatMessagesRepository chatMessagesRepository;
     private final StreamsRepository streamsRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final ViewerSanctionsRepository viewerSanctionsRepository;
 
     @Transactional
     public void save(String streamKey, Users user, ChatMessagesRequest.wsSaveDTO reqDTO) {
@@ -96,5 +102,29 @@ public class ChatMessagesService {
 
         // 해당 주소를 구독 중인 모든 클라이언트에게 메시지 전송
         messagingTemplate.convertAndSend(destination, "방송이 종료되었습니다.");
+    }
+
+    // 제재 여부 확이 로직
+    public void checkSanctions(String streamKey, Users users) {
+        ViewerSanctions sanctionsPs =
+                viewerSanctionsRepository.findByStreamKeyAndUserId(streamKey, users.getId())
+                        .orElse(null);
+        if (sanctionsPs != null) {
+            checkSanctionsTime(sanctionsPs);
+        }
+
+    }
+
+    private void checkSanctionsTime(ViewerSanctions sanctionsPs) {
+        int count = sanctionsPs.getOffenseCount();
+        if (count <= 0) return;
+        LocalDateTime createdAt = sanctionsPs.getCreatedAt();
+        if (createdAt == null) return;
+        LocalDateTime target = createdAt.plusSeconds(30L * count);
+        Duration diff = Duration.between(LocalDateTime.now(), target);
+        // 예: 초 단위 차이
+        if (diff.isPositive()) {
+            throw new StompException403(String.valueOf(diff.getSeconds()), ErrorEnum.IS_ON_SANCTIONS);
+        }
     }
 }
