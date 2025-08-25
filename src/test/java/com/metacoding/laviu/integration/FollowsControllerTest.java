@@ -213,7 +213,7 @@ public class FollowsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].viewerCount").value(100));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].thumbnailUrl").value("https://cdn.inflearn.com/wp-content/uploads/javavavava.png"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].status").value("LIVE"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagName").value("게임"));
