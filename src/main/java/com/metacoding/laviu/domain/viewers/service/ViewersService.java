@@ -46,6 +46,8 @@ public class ViewersService {
                 .build();
 
         // 4. 시청자수 올리기
+        if (streamPS.getStreamer().getId().equals(user.getId())) return viewersRepository.save(viewer);
+
         streamPS.upViewerCount();
 
         //save
