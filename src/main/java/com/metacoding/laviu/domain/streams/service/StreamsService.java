@@ -285,15 +285,15 @@ public class StreamsService {
      * @return 종료된 방송의 streamKey
      */
     @Transactional
-    public String adminEndStream(Integer streamId) {
+    public Streams adminEndStream(String streamKey) {
         // 1. streamId로 방송 엔티티를 찾음
-        Streams streams = streamsRepository.findById(streamId)
+        Streams streamsPS = streamsRepository.findByStreamKey(streamKey)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
 
         // 2. 방송 상태를 종료(ENDED)로 변경
-        streams.off();
+        streamsPS.off();
 
         // 3. 메시지 전송에 필요한 streamKey 반환
-        return streams.getStreamKey();
+        return streamsPS;
     }
 }
