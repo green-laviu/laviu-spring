@@ -203,21 +203,21 @@ public class StreamsControllerTest extends MyRestDoc {
 
 // 캐러셀 배열 (Carousel Array) 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel").isArray());
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamId").value(2));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.userId").value(2));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.nickname").value("cos"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.userId").value(1));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.profileImageUrl")
-                .value("https://nate.com/profile2.jpg"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.email").value("cos@nate.com"));
+                .value("https://nate.com/profile1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.email").value("ssar@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].streamer.bio").value("안녕하세요"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].title").value("C언어 기초 강의"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].viewerCount").value(200));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].thumbnailUrl").value("https://example.com/thumb2.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].title").value("자바 기초 강의"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].viewerCount").value(100));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].status").value("LIVE"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList[0].hashtagName").value("게임"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList", hasSize(1)));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.carousel[0].hashtagList", hasSize(2)));
 
 // 추천 배열 (Recommended Array) 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.recommended").isArray());

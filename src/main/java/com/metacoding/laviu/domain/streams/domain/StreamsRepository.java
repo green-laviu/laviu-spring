@@ -68,6 +68,13 @@ public class StreamsRepository {
         return query.getResultList();
     }
 
+    public List<Streams> findByStatusOrderByStartAt(StreamsStatus status) {
+        Query query = em.createQuery("select s from Streams s left join fetch s.streamer left join fetch s.streamHashtagList sh left join fetch sh.hashtag where s.status = :status order by s.startedAt desc", Streams.class);
+        query.setParameter("status", status);
+        query.setMaxResults(3);
+        return query.getResultList();
+    }
+
     public Optional<Streams> findById(Integer streamId) {
         return Optional.ofNullable(em.find(Streams.class, streamId));
     }
