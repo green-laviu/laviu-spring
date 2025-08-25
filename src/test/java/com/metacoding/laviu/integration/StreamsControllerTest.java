@@ -196,43 +196,45 @@ public class StreamsControllerTest extends MyRestDoc {
         String responseBody = actions.andReturn().getResponse().getContentAsString();
         System.out.println("✅응답바디 : " + responseBody);
 
-        //then
         // HTTP 상태 및 기본 응답 검증
         actions.andExpect(status().isOk());
         actions.andExpect(jsonPath("$.status").value(200));
         actions.andExpect(jsonPath("$.msg").value("성공"));
 
-        // 캐러셀 배열 (Carousel Array) 검증
+// 캐러셀 배열 (Carousel Array) 검증
         actions.andExpect(jsonPath("$.data.carousel").isArray());
-        actions.andExpect(jsonPath("$.data.carousel[0].streamId").value(6));
+        actions.andExpect(jsonPath("$.data.carousel[0].streamId").value(11));
         actions.andExpect(jsonPath("$.data.carousel[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.userId").value(11));
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.nickname").value("gameStreamer")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.profileImageUrl").value("https://www.thiswaifudoesnotexist.net/example-14999.jpg")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.email").value("gameStreamer@nate.com"));
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.bio").value("게임 방송합니다!"));
-        actions.andExpect(jsonPath("$.data.carousel[0].title").value("[LIVE] 롤 랭크 게임 - 다이아 승급전!")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.carousel[0].viewerCount").value(1250)); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.carousel[0].thumbnailUrl").value("https://i.ytimg.com/vi/qXezAZT93So/maxresdefault.jpg")); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.userId").value(16));
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.nickname").value("techTalk"));
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.profileImageUrl")
+                .value("https://www.thiswaifudoesnotexist.net/example-38360.jpg"));
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.email").value("techTalk@nate.com"));
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.bio").value("최신 기술 트렌드 이야기"));
+        actions.andExpect(jsonPath("$.data.carousel[0].title").value("🔥 2025 개발 트렌드 토크쇼"));
+        actions.andExpect(jsonPath("$.data.carousel[0].viewerCount").value(720));
+        actions.andExpect(jsonPath("$.data.carousel[0].thumbnailUrl").value("https://mblogthumb-phinf.pstatic.net/MjAyNTAxMTBfMTE5/MDAxNzM2NDcyMDcxODQ1.f6JH64de6ECfRUvzeTnDmegBuUl_LTevm2tVf4I1HVIg.NaSLSEQL3BYndVpzH30vxOb44WdN9PYYzqMtxeMskDog.JPEG/%EB%B8%94%EB%A1%9C%EA%B7%B8%EC%8D%B8%EB%84%A4%EC%9D%BC.jpg?type=w800"));
         actions.andExpect(jsonPath("$.data.carousel[0].status").value("LIVE"));
-        actions.andExpect(jsonPath("$.data.carousel[0].hashtagList").isEmpty()); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.carousel[0].hashtagList").isEmpty()); // hashtag 없음
 
-        // 추천 배열 (Recommended Array) 검증
+// 추천 배열 (Recommended Array) 검증
         actions.andExpect(jsonPath("$.data.recommended").isArray());
-        actions.andExpect(jsonPath("$.data.recommended[0].streamId").value(9)); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.recommended[0].streamId").value(6));
         actions.andExpect(jsonPath("$.data.recommended[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.userId").value(14)); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.nickname").value("fitnessCoach")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.profileImageUrl").value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.email").value("fitnessCoach@nate.com")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.bio").value("건강한 운동 라이프")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].title").value("💪 아침 홈트레이닝 따라하기")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].viewerCount").value(560)); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].thumbnailUrl").value("https://mblogthumb-phinf.pstatic.net/MjAxOTA3MTdfMjEg/MDAxNTYzMzM5NDAwMDE4.-EVRvfe331FwbM0B5LIPnFH0wwOBueF7Q_wqiKhNpFUg.IxXI5-0XIe8QR0ID9LZ4dxz0FIvQg_VvDEWHTKRXfgAg.JPEG.knoc3/%EC%8D%B8%EB%84%A4%EC%9D%BC.jpg?type=w800")); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.userId").value(11));
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.nickname").value("gameStreamer"));
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.profileImageUrl")
+                .value("https://www.thiswaifudoesnotexist.net/example-14999.jpg"));
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.email").value("gameStreamer@nate.com"));
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.bio").value("게임 방송합니다!"));
+        actions.andExpect(jsonPath("$.data.recommended[0].title").value("[LIVE] 롤 랭크 게임 - 다이아 승급전!"));
+        actions.andExpect(jsonPath("$.data.recommended[0].viewerCount").value(1250));
+        actions.andExpect(jsonPath("$.data.recommended[0].thumbnailUrl").value("https://i.ytimg.com/vi/qXezAZT93So/maxresdefault.jpg"));
         actions.andExpect(jsonPath("$.data.recommended[0].status").value("LIVE"));
-        actions.andExpect(jsonPath("$.data.recommended[0].hashtagList").isEmpty()); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.recommended[0].hashtagList").isEmpty());
 
-        // API 문서 생성 (andDo는 andExpect와 체이닝되지 않음)
+
+// API 문서 생성
         actions.andDo(MockMvcResultHandlers.print());
         actions.andDo(document);
     }

@@ -51,7 +51,7 @@ public class StreamsController {
     public ResponseEntity<?> getStreamsList() {
         log.debug("방송-목록 요청");
         StreamsResponse.StreamListDTO respDTO = streamsService.findAll();
-        log.debug("방송-목록 결과 : {}", respDTO.toString());
+//        log.debug("방송-목록 결과 : {}", respDTO.toString());
         return Resp.ok(respDTO);
     }
 
