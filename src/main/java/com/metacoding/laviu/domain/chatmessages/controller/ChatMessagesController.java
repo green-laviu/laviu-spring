@@ -58,7 +58,7 @@ public class ChatMessagesController {
         Users user = (Users) auth.getPrincipal();
 
         log.debug("{}이 채팅을 보냈습니다", user.getNickname());
-
+        chatMessagesService.checkSanctions(streamKey, user);
         chatMessagesService.save(streamKey, user, reqDTO);
         List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamKey(streamKey);
 

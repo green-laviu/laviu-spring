@@ -37,6 +37,7 @@ public class StompExceptionHandler {
         sendErrorMessage(accessor, e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
+    // 터트릴것
     @MessageExceptionHandler(StompException403.class)
     public void onForbiddenException(StompException403 e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 403 Forbidden 예외 발생: {}", e.getMessage());

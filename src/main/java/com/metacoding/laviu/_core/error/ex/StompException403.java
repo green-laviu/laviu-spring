@@ -10,4 +10,8 @@ public class StompException403 extends RuntimeException {
     public StompException403(ErrorEnum errorEnum) {
         super(errorEnum.getMessage());
     }
+
+    public StompException403(String time, ErrorEnum errorEnum) {
+        super(time + errorEnum.getMessage());
+    }
 }

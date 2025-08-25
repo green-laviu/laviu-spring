@@ -19,7 +19,7 @@ public class ViewerSanctionsRepository {
                 join fetch v.sanctionedUser s
                 where v.sanctionedUser.id = :sanctionedUserId
                 and v.stream.id = :streamsId
-                order by v.createAt desc
+                order by v.createdAt desc
                 """, ViewerSanctions.class);
 
         query.setParameter("streamsId", streamsId);
@@ -58,6 +58,24 @@ public class ViewerSanctionsRepository {
         try {
             ViewerSanctions result = (ViewerSanctions) query.getSingleResult();
             return Optional.of(result);
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<ViewerSanctions> findByStreamKeyAndUserId(String streamKey, Integer id) {
+        Query query = em.createQuery("""
+                    select v
+                    from ViewerSanctions v
+                    where v.stream.streamKey = :streamKey
+                    and v.sanctionedUser.id = :id
+                    order by v.createdAt desc
+                """, ViewerSanctions.class);
+        query.setParameter("streamKey", streamKey);
+        query.setParameter("id", id);
+        query.setMaxResults(1);
+        try {
+            return Optional.ofNullable((ViewerSanctions) query.getSingleResult());
         } catch (Exception e) {
             return Optional.empty();
         }
