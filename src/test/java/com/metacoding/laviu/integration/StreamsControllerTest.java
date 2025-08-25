@@ -156,7 +156,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.data.live.channel.streamer.userId").value(1));
         actions.andExpect(jsonPath("$.data.live.channel.streamer.nickname").value("ssar"));
         actions.andExpect(jsonPath("$.data.live.channel.streamer.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
+                .value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(jsonPath("$.data.live.channel.streamer.email").value("ssar@nate.com"));
         actions.andExpect(jsonPath("$.data.live.channel.streamer.bio").value("안녕하세요"));
         actions.andExpect(jsonPath("$.data.live.channel.followerCount").value(2));
@@ -208,7 +208,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.data.carousel[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(jsonPath("$.data.carousel[0].streamer.userId").value(11));
         actions.andExpect(jsonPath("$.data.carousel[0].streamer.nickname").value("gameStreamer")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.carousel[0].streamer.profileImageUrl").value("https://nate.com/profile11.jpg")); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.carousel[0].streamer.profileImageUrl").value("https://www.thiswaifudoesnotexist.net/example-14999.jpg")); // JSON 데이터에 맞게 수정
         actions.andExpect(jsonPath("$.data.carousel[0].streamer.email").value("gameStreamer@nate.com"));
         actions.andExpect(jsonPath("$.data.carousel[0].streamer.bio").value("게임 방송합니다!"));
         actions.andExpect(jsonPath("$.data.carousel[0].title").value("[LIVE] 롤 랭크 게임 - 다이아 승급전!")); // JSON 데이터에 맞게 수정
@@ -223,7 +223,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.data.recommended[0].streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(jsonPath("$.data.recommended[0].streamer.userId").value(14)); // JSON 데이터에 맞게 수정
         actions.andExpect(jsonPath("$.data.recommended[0].streamer.nickname").value("fitnessCoach")); // JSON 데이터에 맞게 수정
-        actions.andExpect(jsonPath("$.data.recommended[0].streamer.profileImageUrl").value("https://nate.com/profile14.jpg")); // JSON 데이터에 맞게 수정
+        actions.andExpect(jsonPath("$.data.recommended[0].streamer.profileImageUrl").value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D")); // JSON 데이터에 맞게 수정
         actions.andExpect(jsonPath("$.data.recommended[0].streamer.email").value("fitnessCoach@nate.com")); // JSON 데이터에 맞게 수정
         actions.andExpect(jsonPath("$.data.recommended[0].streamer.bio").value("건강한 운동 라이프")); // JSON 데이터에 맞게 수정
         actions.andExpect(jsonPath("$.data.recommended[0].title").value("💪 아침 홈트레이닝 따라하기")); // JSON 데이터에 맞게 수정
