@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.admin.controller;
 
+import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.admin.dto.AdminRequest;
 import com.metacoding.laviu.domain.admin.dto.AdminResponse;
 import com.metacoding.laviu.domain.admin.service.AdminService;
@@ -7,20 +8,20 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class AdminController {
 
     private final AdminService adminService;
 
     // 로그인 페이지
-    @GetMapping("/admin/login")
+    @GetMapping("/v1/admin/login-form")
     public String adminLoginForm() {
         return "admin-login";
     }
@@ -31,13 +32,6 @@ public class AdminController {
         AdminResponse.LoginDTO admin = adminService.login(reqDTO);
         session.setAttribute("ADMIN", admin);
         return "redirect:/v1/admin/streams";
-    }
-
-    // 관리자 로그아웃
-    @PostMapping("/s/v1/auth/admin/logout")
-    public String logout(HttpSession session) {
-        if (session != null) session.invalidate();
-        return "redirect:/admin/login";
     }
 
     // 실시간 방송 관리
@@ -69,5 +63,15 @@ public class AdminController {
     public String processAbuseReport(@PathVariable("id") Integer id, @Valid @RequestBody AdminRequest.ProcessReportDTO reqDTO, Error error) {
         adminService.processAbuseReport(id, reqDTO.getStatus());
         return "redirect:/s/api/v1/admin/abusereports";
+    }
+
+
+    // 관리자 권한으로 방송을 강제 종료
+    @PutMapping("/s/v1/admin/streams/{id}/end")
+    public ResponseEntity<?> adminStreamEnd(@PathVariable("id") Integer id) {
+        log.debug("관리자 방송 종료 요청: streamId={}", id);
+        adminService.adminStreamEnd(id);
+        log.debug("관리자 방송 종료 성공: streamId={}", id);
+        return Resp.ok(null);
     }
 }

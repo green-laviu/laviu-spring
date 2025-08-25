@@ -1,9 +1,11 @@
 package com.metacoding.laviu._core.error;
 
 import com.metacoding.laviu._core.error.ex.*;
+import com.metacoding.laviu._core.utils.WsResp;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -26,38 +28,38 @@ public class StompExceptionHandler {
     @MessageExceptionHandler(StompException400.class)
     public void onBadRequestException(StompException400 e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 400 Bad Request 예외 발생: {}", e.getMessage());
-        sendErrorMessage(accessor, e.getMessage());
+        sendErrorMessage(accessor, e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @MessageExceptionHandler(StompException401.class)
     public void onUnauthorizedException(StompException401 e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 401 Unauthorized 예외 발생: {}", e.getMessage());
-        sendErrorMessage(accessor, e.getMessage());
+        sendErrorMessage(accessor, e.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
     @MessageExceptionHandler(StompException403.class)
     public void onForbiddenException(StompException403 e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 403 Forbidden 예외 발생: {}", e.getMessage());
-        sendErrorMessage(accessor, e.getMessage());
+        sendErrorMessage(accessor, e.getMessage(), HttpStatus.FORBIDDEN);
     }
 
     @MessageExceptionHandler(StompException404.class)
     public void onNotFoundException(StompException404 e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 404 Not Found 예외 발생: {}", e.getMessage());
-        sendErrorMessage(accessor, e.getMessage());
+        sendErrorMessage(accessor, e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @MessageExceptionHandler(StompException500.class)
     public void onInternalServerError(StompException500 e, SimpMessageHeaderAccessor accessor) {
         log.error("STOMP 500 Internal Server Error 예외 발생: {}", e.getMessage());
-        sendErrorMessage(accessor, e.getMessage());
+        sendErrorMessage(accessor, e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @MessageExceptionHandler(ConstraintViolationException.class)
     public void handleConstraintViolationException(ConstraintViolationException e, SimpMessageHeaderAccessor accessor) {
         log.warn("STOMP 유효성 검사 예외 발생");
         String errorMessage = e.getConstraintViolations().iterator().next().getMessage();
-        sendErrorMessage(accessor, errorMessage);
+        sendErrorMessage(accessor, errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @MessageExceptionHandler(Exception.class)
@@ -65,7 +67,7 @@ public class StompExceptionHandler {
         log.error("스택 트레이스 시작");
         log.error("STOMP 알 수 없는 오류 발생", e);
         log.error("스택 트레이스 끝");
-        sendErrorMessage(accessor, "알 수 없는 서버 오류가 발생했습니다.");
+        sendErrorMessage(accessor, "알 수 없는 서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     /**
@@ -74,23 +76,24 @@ public class StompExceptionHandler {
      * @param accessor     STOMP 메시지 헤더 접근자
      * @param errorMessage 클라이언트에게 보낼 에러 메시지
      */
-    private void sendErrorMessage(SimpMessageHeaderAccessor accessor, String errorMessage) {
+    private void sendErrorMessage(SimpMessageHeaderAccessor accessor, String errorMessage, HttpStatus errorCode) {
         String sessionId = accessor.getSessionId();
         Principal principal = accessor.getUser();
+        WsResp<?> wsResp = WsResp.fail(errorCode, errorMessage);
 
         if (principal != null) {
             // 사용자 인증 정보가 있는 경우
             messagingTemplate.convertAndSendToUser(
                     principal.getName(),
                     "/queue/errors",
-                    errorMessage
+                    wsResp
             );
         } else if (sessionId != null) {
             // 사용자 인증 정보가 없는 경우 (익명 사용자)
             messagingTemplate.convertAndSendToUser(
                     sessionId,
                     "/queue/errors",
-                    errorMessage
+                    wsResp
             );
         } else {
             // 어떤 식별자도 없는 경우, 로그만 남김
