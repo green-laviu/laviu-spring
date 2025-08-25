@@ -277,4 +277,23 @@ public class StreamsService {
     public Boolean isStreamOwner(String streamKey, Integer userId) {
         return streamsRepository.existsByStreamKeyAndUserId(streamKey, userId);
     }
+
+    /**
+     * 관리자 권한으로 방송을 종료하는 메서드
+     *
+     * @param streamId 종료할 방송의 ID
+     * @return 종료된 방송의 streamKey
+     */
+    @Transactional
+    public String adminEndStream(Integer streamId) {
+        // 1. streamId로 방송 엔티티를 찾음
+        Streams streams = streamsRepository.findById(streamId)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.STREAM_NOT_FOUND));
+
+        // 2. 방송 상태를 종료(ENDED)로 변경
+        streams.off();
+
+        // 3. 메시지 전송에 필요한 streamKey 반환
+        return streams.getStreamKey();
+    }
 }

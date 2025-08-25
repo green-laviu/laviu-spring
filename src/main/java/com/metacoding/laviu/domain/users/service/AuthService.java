@@ -60,6 +60,9 @@ public class AuthService {
             // JWT 토큰 발급
             String myAccessToken = JwtUtil.create(userPS);
 
+            // 로그인 날짜 등록
+            userPS.updateLastLoginAt();
+
             // false는 기존 유저를 의미
             return new UsersResponse.LoginDTO(userPS, myAccessToken, false);
         }
@@ -87,6 +90,9 @@ public class AuthService {
 
         // JWT 토큰 발급
         String myAccessToken = JwtUtil.create(newUser);
+
+        // 로그인 날짜 등록
+        newUser.updateLastLoginAt();
 
         // true는 신규 유저를 의미
         return new UsersResponse.LoginDTO(newUser, myAccessToken, true);

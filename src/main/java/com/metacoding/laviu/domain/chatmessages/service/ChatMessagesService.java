@@ -11,6 +11,7 @@ import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
 import com.metacoding.laviu.domain.users.domain.Users;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.List;
 public class ChatMessagesService {
     private final ChatMessagesRepository chatMessagesRepository;
     private final StreamsRepository streamsRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Transactional
     public void save(String streamKey, Users user, ChatMessagesRequest.wsSaveDTO reqDTO) {
@@ -81,5 +83,18 @@ public class ChatMessagesService {
                         .content(chatMessages.getContent())
                         .build())
                 .toList();
+    }
+
+    /**
+     * 방송 종료 메시지를 클라이언트에게 전송
+     *
+     * @param streamKey 메시지를 보낼 방송의 고유 키
+     */
+    public void sendStreamEndMessage(String streamKey) {
+        // 메시지 전송 대상 웹소켓 주소
+        String destination = "/sub/streams/" + streamKey + "/chats";
+
+        // 해당 주소를 구독 중인 모든 클라이언트에게 메시지 전송
+        messagingTemplate.convertAndSend(destination, "방송이 종료되었습니다.");
     }
 }
