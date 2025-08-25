@@ -165,7 +165,7 @@ public class StreamsControllerTest extends MyRestDoc {
         actions.andExpect(jsonPath("$.data.live.hlsUrl",
                 matchesPattern("^/hls/[0-9a-zA-Z\\-_=]+\\.m3u8$"))); // Base64URL 패턴에 맞게 수정
 
-        actions.andExpect(jsonPath("$.data.live.viewerCount").value(99));
+        actions.andExpect(jsonPath("$.data.live.viewerCount").value(100));
 
         actions.andExpect(jsonPath("$.data.live.hashtagList[0].hashtagId").value(1));
         actions.andExpect(jsonPath("$.data.live.hashtagList[0].hashtagName").value("게임"));
