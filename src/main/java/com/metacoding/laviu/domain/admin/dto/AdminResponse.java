@@ -136,4 +136,15 @@ public class AdminResponse {
             }
         }
     }
+
+    @Data
+    public static class ChatNotifyOff {
+        String type;
+        String data;
+
+        public ChatNotifyOff(String type, String data) {
+            this.type = type;
+            this.data = data;
+        }
+    }
 }

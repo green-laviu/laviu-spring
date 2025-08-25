@@ -4,6 +4,7 @@ import com.metacoding.laviu._core.error.ErrorEnum;
 import com.metacoding.laviu._core.error.ex.ExceptionApi404;
 import com.metacoding.laviu._core.error.ex.StompException403;
 import com.metacoding.laviu._core.utils.CommonUtils;
+import com.metacoding.laviu.domain.admin.dto.AdminResponse;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessages;
 import com.metacoding.laviu.domain.chatmessages.domain.ChatMessagesRepository;
 import com.metacoding.laviu.domain.chatmessages.dto.ChatMessagesRequest;
@@ -96,12 +97,38 @@ public class ChatMessagesService {
      *
      * @param streamKey 메시지를 보낼 방송의 고유 키
      */
-    public void sendStreamEndMessage(String streamKey) {
+    public void sendStreamForcedEndMessage(String streamKey) {
         // 메시지 전송 대상 웹소켓 주소
-        String destination = "/sub/streams/" + streamKey + "/chats";
+        String destination = "/sub/streams/" + streamKey + "/notifications";
 
         // 해당 주소를 구독 중인 모든 클라이언트에게 메시지 전송
-        messagingTemplate.convertAndSend(destination, "방송이 종료되었습니다.");
+        messagingTemplate.convertAndSend(destination,
+                new AdminResponse.ChatNotifyOff("STREAM_TERMINATE", "관리자에 의해 방송이 종료 되었습니다.")
+        );
+    }
+
+    // 제재 여부 확이 로직
+    public void checkSanctions(String streamKey, Users users) {
+        ViewerSanctions sanctionsPs =
+                viewerSanctionsRepository.findByStreamKeyAndUserId(streamKey, users.getId())
+                        .orElse(null);
+        if (sanctionsPs != null) {
+            checkSanctionsTime(sanctionsPs);
+        }
+
+    }
+
+    private void checkSanctionsTime(ViewerSanctions sanctionsPs) {
+        int count = sanctionsPs.getOffenseCount();
+        if (count <= 0) return;
+        LocalDateTime createdAt = sanctionsPs.getCreatedAt();
+        if (createdAt == null) return;
+        LocalDateTime target = createdAt.plusSeconds(30L * count);
+        Duration diff = Duration.between(LocalDateTime.now(), target);
+        // 예: 초 단위 차이
+        if (diff.isPositive()) {
+            throw new StompException403(String.valueOf(diff.getSeconds()), ErrorEnum.IS_ON_SANCTIONS);
+        }
     }
 
     // 제재 여부 확이 로직
