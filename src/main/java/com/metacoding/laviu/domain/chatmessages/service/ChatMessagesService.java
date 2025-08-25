@@ -107,17 +107,6 @@ public class ChatMessagesService {
         );
     }
 
-    // 제재 여부 확이 로직
-    public void checkSanctions(String streamKey, Users users) {
-        ViewerSanctions sanctionsPs =
-                viewerSanctionsRepository.findByStreamKeyAndUserId(streamKey, users.getId())
-                        .orElse(null);
-        if (sanctionsPs != null) {
-            checkSanctionsTime(sanctionsPs);
-        }
-
-    }
-
     private void checkSanctionsTime(ViewerSanctions sanctionsPs) {
         int count = sanctionsPs.getOffenseCount();
         if (count <= 0) return;
@@ -140,18 +129,5 @@ public class ChatMessagesService {
             checkSanctionsTime(sanctionsPs);
         }
 
-    }
-
-    private void checkSanctionsTime(ViewerSanctions sanctionsPs) {
-        int count = sanctionsPs.getOffenseCount();
-        if (count <= 0) return;
-        LocalDateTime createdAt = sanctionsPs.getCreatedAt();
-        if (createdAt == null) return;
-        LocalDateTime target = createdAt.plusSeconds(30L * count);
-        Duration diff = Duration.between(LocalDateTime.now(), target);
-        // 예: 초 단위 차이
-        if (diff.isPositive()) {
-            throw new StompException403(String.valueOf(diff.getSeconds()), ErrorEnum.IS_ON_SANCTIONS);
-        }
     }
 }

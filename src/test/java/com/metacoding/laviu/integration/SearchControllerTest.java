@@ -61,7 +61,7 @@ public class SearchControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
+                .value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].followerCount").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].followStatus.followId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].followStatus.isFollowing").value(true));
@@ -91,7 +91,7 @@ public class SearchControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
+                .value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.email").value("ssar@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title").value("자바 기초 강의"));

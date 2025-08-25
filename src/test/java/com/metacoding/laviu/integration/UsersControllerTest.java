@@ -71,7 +71,7 @@ public class UsersControllerTest extends MyRestDoc {
 // Streamer 객체 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.userId").value(3));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.nickname").value("love"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile3.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.profileImageUrl").value("https://www.thiswaifudoesnotexist.net/example-73125.jpg"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.followerCount").value(0));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.streamer.isFollowing").value(true));
@@ -120,7 +120,7 @@ public class UsersControllerTest extends MyRestDoc {
 // me 객체 검증
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.nickname").value("ssar"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.profileImageUrl").value("https://nate.com/profile1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.profileImageUrl").value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.followerCount").value(2));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.isLive").value(true));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.me.bio").value("안녕하세요"));
