@@ -70,7 +70,7 @@ public class RtmpControllerTest extends MyRestDoc {
 
         actions.andExpect(jsonPath("$.data.streamer.userId").value(1));
         actions.andExpect(jsonPath("$.data.streamer.nickname").value("ssar"));
-        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile1.jpg"));
+        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(jsonPath("$.data.streamer.email").value("ssar@nate.com"));
         actions.andExpect(jsonPath("$.data.streamer.bio").value("안녕하세요"));
 
@@ -126,7 +126,7 @@ public class RtmpControllerTest extends MyRestDoc {
 
         actions.andExpect(jsonPath("$.data.streamer.userId").value(1));
         actions.andExpect(jsonPath("$.data.streamer.nickname").value("ssar"));
-        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile1.jpg"));
+        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(jsonPath("$.data.streamer.email").value("ssar@nate.com"));
         actions.andExpect(jsonPath("$.data.streamer.bio").value("안녕하세요"));
 

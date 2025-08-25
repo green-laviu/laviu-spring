@@ -67,11 +67,11 @@ public class AdminController {
 
 
     // 관리자 권한으로 방송을 강제 종료
-    @PutMapping("/s/v1/admin/streams/{id}/end")
-    public ResponseEntity<?> adminStreamEnd(@PathVariable("id") Integer id) {
-        log.debug("관리자 방송 종료 요청: streamId={}", id);
-        adminService.adminStreamEnd(id);
-        log.debug("관리자 방송 종료 성공: streamId={}", id);
+    @PutMapping("/s/v1/admin/streams/{streamKey}/end")
+    public ResponseEntity<?> adminStreamEnd(@PathVariable(name = "streamKey") String streamKey) {
+        log.debug("관리자 방송 종료 요청: streamId={}", streamKey);
+        adminService.adminStreamEnd(streamKey);
+        log.debug("관리자 방송 종료 성공: streamId={}", streamKey);
         return Resp.ok(null);
     }
 }
