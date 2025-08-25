@@ -46,6 +46,9 @@ public class ChatMessagesController {
 
         // 3. 스트리머에게만 최신 참가자 목록 전송
         updateAndSendParticipantList(streamKey);
+
+        // 4. 방에 참가한 모든 유저에게 참가 알림
+
         log.debug("{}이 방송 채널에 참가 완료되었습니다", user.getNickname());
 
     }

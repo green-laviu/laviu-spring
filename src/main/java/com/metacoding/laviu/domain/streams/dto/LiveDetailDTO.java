@@ -25,7 +25,7 @@ public class LiveDetailDTO {
         this.title = stream.getTitle();
         this.channel = channel;
         this.hlsUrl = hlsUrl;
-        this.viewerCount = stream.getViewerCount() - 1;
+        this.viewerCount = stream.getViewerCount();
         this.hashtagList = stream.getStreamHashtagList().stream()
                 .map(sh -> new HashtagsResponse.DTO(sh.getHashtag()))
                 .toList();
