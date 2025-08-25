@@ -84,7 +84,7 @@ public class UsersControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.title").value("파이썬 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.viewerCount").value(50));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.thumbnailUrl").value("https://example.com/thumb3.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.thumbnailUrl").value("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScw1gz5eoUI-kUkvQo4qU8TXT90r49eNLX3w&s"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.liveStream.status").value("LIVE"));
 
 // hashtagList의 0번째 요소만 검증
@@ -130,7 +130,7 @@ public class UsersControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.viewerCount").value(100));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.thumbnailUrl").value("https://cdn.inflearn.com/wp-content/uploads/javavavava.png"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data.live.status").value("LIVE"));
 
 // hashtagList의 0번째 요소만 검증
