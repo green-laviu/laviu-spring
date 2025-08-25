@@ -174,7 +174,7 @@ public class FollowsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
+                .value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.email").value("ssar@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].user.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].isFollowing").value(true));
@@ -208,12 +208,12 @@ public class FollowsControllerTest extends MyRestDoc {
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.userId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.nickname").value("ssar"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.profileImageUrl")
-                .value("https://nate.com/profile1.jpg"));
+                .value("https://plus.unsplash.com/premium_photo-1682095606317-50dec75d283c?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8a29yZWF8ZW58MHx8MHx8fDA%3D"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.email").value("ssar@nate.com"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].streamer.bio").value("안녕하세요"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].title").value("자바 기초 강의"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].viewerCount").value(100));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].thumbnailUrl").value("https://example.com/thumb1.jpg"));
+        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].thumbnailUrl").value("https://cdn.inflearn.com/wp-content/uploads/javavavava.png"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].status").value("LIVE"));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagId").value(1));
         actions.andExpect(MockMvcResultMatchers.jsonPath("$.data[0].hashtagList[0].hashtagName").value("게임"));
