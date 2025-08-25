@@ -88,6 +88,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.10.1'
     // fcm 라이브러리
     implementation 'com.google.firebase:firebase-admin:9.5.0'
+    // Spring Security와 OAuth 2.0 클라이언트 기능을 사용하기 위한 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 }
 
 // plain.jar 생성 금지

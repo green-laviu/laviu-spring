@@ -11,8 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @Transactional
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK) // MOCK -> 가짜 환경을 만들어 필요한 의존관계를 다 메모리에 올려서 테스트
@@ -50,11 +52,36 @@ public class RtmpControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
-        actions.andExpect(MockMvcResultMatchers.status().isOk());
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
-        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        actions.andExpect(jsonPath("$.status").value(200));
+        actions.andExpect(jsonPath("$.msg").value("성공"));
+
+        actions.andExpect(jsonPath("$.data").exists());
+        actions.andExpect(jsonPath("$.data.id").value(1));
+        actions.andExpect(jsonPath("$.data.title").value("자바 기초 강의"));
+        actions.andExpect(jsonPath("$.data.viewerCount").value(100));
+        actions.andExpect(jsonPath("$.data.status").value("LIVE"));
+        actions.andExpect(jsonPath("$.data.endedAt").isEmpty());
+
+        actions.andExpect(jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
+        actions.andExpect(jsonPath("$.data.thumbnailUrl", matchesPattern("^https://.*$")));
+        actions.andExpect(jsonPath("$.data.startedAt", matchesPattern("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$")));
+        actions.andExpect(jsonPath("$.data.updatedAt").isEmpty());
+
+
+        actions.andExpect(jsonPath("$.data.streamer.userId").value(1));
+        actions.andExpect(jsonPath("$.data.streamer.nickname").value("ssar"));
+        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile1.jpg"));
+        actions.andExpect(jsonPath("$.data.streamer.email").value("ssar@nate.com"));
+        actions.andExpect(jsonPath("$.data.streamer.bio").value("안녕하세요"));
+
+        actions.andExpect(jsonPath("$.data.streamHashtagList").isArray());
+        actions.andExpect(jsonPath("$.data.streamHashtagList[0].hashtagId").value(1));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[0].hashtagName").value("게임"));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[1].hashtagId").value(2));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[1].hashtagName").value("방송"));
+
+        actions.andDo(MockMvcResultHandlers.print())
+                .andDo(document);
 
     }
 
@@ -82,10 +109,34 @@ public class RtmpControllerTest extends MyRestDoc {
         System.out.println("✅응답바디 : " + responseBody);
 
         //then
-        actions.andExpect(MockMvcResultMatchers.status().isOk());
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.status").value(200));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("성공"));
-        actions.andExpect(MockMvcResultMatchers.jsonPath("$.data").isEmpty());
-        actions.andDo(MockMvcResultHandlers.print()).andDo(document);
+        actions.andExpect(jsonPath("$.status").value(200));
+        actions.andExpect(jsonPath("$.msg").value("성공"));
+
+        actions.andExpect(jsonPath("$.data").exists());
+        actions.andExpect(jsonPath("$.data.id").value(1));
+        actions.andExpect(jsonPath("$.data.title").value("자바 기초 강의"));
+        actions.andExpect(jsonPath("$.data.viewerCount").value(100));
+        actions.andExpect(jsonPath("$.data.status").value("LIVE"));
+        actions.andExpect(jsonPath("$.data.endedAt").isEmpty());
+
+        actions.andExpect(jsonPath("$.data.streamKey", matchesPattern("^[0-9a-zA-Z\\-_=]+$")));
+        actions.andExpect(jsonPath("$.data.thumbnailUrl", matchesPattern("^testUrl\\?date=\\d+$")));
+        actions.andExpect(jsonPath("$.data.startedAt", matchesPattern("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$")));
+        actions.andExpect(jsonPath("$.data.updatedAt", matchesPattern("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$")));
+
+        actions.andExpect(jsonPath("$.data.streamer.userId").value(1));
+        actions.andExpect(jsonPath("$.data.streamer.nickname").value("ssar"));
+        actions.andExpect(jsonPath("$.data.streamer.profileImageUrl").value("https://nate.com/profile1.jpg"));
+        actions.andExpect(jsonPath("$.data.streamer.email").value("ssar@nate.com"));
+        actions.andExpect(jsonPath("$.data.streamer.bio").value("안녕하세요"));
+
+        actions.andExpect(jsonPath("$.data.streamHashtagList").isArray());
+        actions.andExpect(jsonPath("$.data.streamHashtagList[0].hashtagId").value(1));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[0].hashtagName").value("게임"));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[1].hashtagId").value(2));
+        actions.andExpect(jsonPath("$.data.streamHashtagList[1].hashtagName").value("방송"));
+
+        actions.andDo(MockMvcResultHandlers.print())
+                .andDo(document);
     }
 }

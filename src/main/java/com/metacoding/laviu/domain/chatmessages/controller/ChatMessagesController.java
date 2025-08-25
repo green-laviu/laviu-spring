@@ -1,5 +1,6 @@
 package com.metacoding.laviu.domain.chatmessages.controller;
 
+import com.metacoding.laviu._core.utils.Resp;
 import com.metacoding.laviu.domain.chatmessages.dto.*;
 import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.users.domain.Users;
@@ -7,6 +8,7 @@ import com.metacoding.laviu.domain.viewers.service.ViewerSanctionsService;
 import com.metacoding.laviu.domain.viewers.service.ViewersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -35,21 +37,16 @@ public class ChatMessagesController {
         Authentication auth = (Authentication) headerAccessor.getUser();
         Users user = (Users) auth.getPrincipal();
 
-        try {
-            log.debug("{}이 방송 채널에 참가 신청하였습니다", user.getNickname());
-            // 1. 참가자 목록에 추가 (비즈니스 로직)
-            viewersService.save(streamKey, user);
+        log.debug("{}이 방송 채널에 참가 신청하였습니다", user.getNickname());
+        // 1. 참가자 목록에 추가 (비즈니스 로직)
+        viewersService.save(streamKey, user);
 
-            // 2. 세션에 "어떤 방에 참여했는지" 정보 저장 (퇴장 시 사용)
-            headerAccessor.getSessionAttributes().put("streamKey", streamKey);
+        // 2. 세션에 "어떤 방에 참여했는지" 정보 저장 (퇴장 시 사용)
+        headerAccessor.getSessionAttributes().put("streamKey", streamKey);
 
-            // 3. 스트리머에게만 최신 참가자 목록 전송
-            updateAndSendParticipantList(streamKey);
-            log.debug("{}이 방송 채널에 참가 완료되었습니다", user.getNickname());
-        } catch (Exception e) {
-            // 나중에 추가해야함 TODO
-            log.debug("채팅 참가 에러 ➡️ {}", e.getMessage());
-        }
+        // 3. 스트리머에게만 최신 참가자 목록 전송
+        updateAndSendParticipantList(streamKey);
+        log.debug("{}이 방송 채널에 참가 완료되었습니다", user.getNickname());
 
     }
 
@@ -62,14 +59,10 @@ public class ChatMessagesController {
 
         log.debug("{}이 채팅을 보냈습니다", user.getNickname());
 
-        try {
-            chatMessagesService.save(streamKey, user, reqDTO);
-            List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamKey(streamKey);
+        chatMessagesService.save(streamKey, user, reqDTO);
+        List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamKey(streamKey);
 
-            messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
-        } catch (Exception e) {
-            log.debug("채팅 메시지 보내기 에러 ➡️ {}", e.getMessage());
-        }
+        messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/chats", respDTO);
     }
 
     // 제재 메시지 처리
@@ -81,17 +74,13 @@ public class ChatMessagesController {
 
         log.debug("{}이 유저 id{}에게 {} 제재를 요청했습니다", user.getNickname(), reqDTO.getSanctionedUserId(), reqDTO.getSanctionType());
 
-        try {
-            SanctionResponseDTO sanctionResponseDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
-            WsNotificationResponseDTO respDTO = new WsNotificationResponseDTO("SANCTIONS", sanctionResponseDTO);
+        SanctionResponseDTO sanctionResponseDTO = viewerSanctionsService.save(streamKey, user, reqDTO);
+        WsNotificationResponseDTO respDTO = new WsNotificationResponseDTO("SANCTIONS", sanctionResponseDTO);
 
-            // 제재 대상에게
-            messagingTemplate.convertAndSendToUser(respDTO.getData().getSanctionedUserEmail(), "/queue/notifications", respDTO);
-            // 스트리머에게
-            messagingTemplate.convertAndSendToUser(user.getEmail(), "/queue/notifications", respDTO);
-        } catch (Exception e) {
-            log.debug("제재 요청 에러 ➡️ {}", e.getMessage());
-        }
+        // 제재 대상에게
+        messagingTemplate.convertAndSendToUser(respDTO.getData().getSanctionedUserEmail(), "/queue/notifications", respDTO);
+        // 스트리머에게
+        messagingTemplate.convertAndSendToUser(user.getEmail(), "/queue/notifications", respDTO);
 
     }
 
@@ -102,8 +91,11 @@ public class ChatMessagesController {
         messagingTemplate.convertAndSend("/sub/streams/" + streamKey + "/participants", participantList);
     }
 
-    @GetMapping("/streams/{streamId}/chats")
-    public void getChatList(@PathVariable Integer streamId) {
-//        chatMessagesService.getChatListWithStreamId(streamId);
+    @GetMapping("/s/api/v1/streams/{streamId}/chats")
+    public ResponseEntity<?> getChatList(@PathVariable Integer streamId) {
+        log.debug("채팅목록 요청");
+        List<ChatMessagesResponse.wsBroadcastDTO> respDTO = chatMessagesService.getChatListWithStreamId(streamId);
+        log.debug("채팅목록 응답");
+        return Resp.ok(respDTO);
     }
 }

@@ -44,12 +44,12 @@ public class ChatMessagesResponse {
         private Integer authorId;
         private String authorNickname;
         private String emailId; // 또는 username
-        private boolean isStreamer;
+        private Boolean isStreamer;
         private String content;
         private LocalDateTime timestamp;
 
         @Builder
-        public wsBroadcastDTO(Integer authorId, String authorNickname, String emailId, boolean isStreamer, String content, LocalDateTime timestamp) {
+        public wsBroadcastDTO(Integer authorId, String authorNickname, String emailId, Boolean isStreamer, String content, LocalDateTime timestamp) {
             this.authorId = authorId;
             this.authorNickname = authorNickname;
             this.emailId = emailId;

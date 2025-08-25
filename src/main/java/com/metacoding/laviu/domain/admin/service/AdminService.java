@@ -8,13 +8,20 @@ import com.metacoding.laviu.domain.abusereports.domain.AbuseReportsRepository;
 import com.metacoding.laviu.domain.abusereports.domain.AbuseReportsStatus;
 import com.metacoding.laviu.domain.admin.dto.AdminRequest;
 import com.metacoding.laviu.domain.admin.dto.AdminResponse;
+import com.metacoding.laviu.domain.chatmessages.service.ChatMessagesService;
 import com.metacoding.laviu.domain.streams.domain.Streams;
 import com.metacoding.laviu.domain.streams.domain.StreamsRepository;
+import com.metacoding.laviu.domain.streams.service.StreamsService;
 import com.metacoding.laviu.domain.users.domain.Users;
 import com.metacoding.laviu.domain.users.domain.UsersRepository;
 import com.metacoding.laviu.domain.users.domain.UsersType;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,11 +29,15 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminService {
+@Slf4j
+public class AdminService implements UserDetailsService {
 
     private final UsersRepository usersRepository;
     private final StreamsRepository streamsRepository;
     private final AbuseReportsRepository abusereportsRepository;
+    private final StreamsService streamsService;
+    private final ChatMessagesService chatMessagesService;
+
 
     /**
      * 관리자 로그인 기능을 처리하는 메서드.
@@ -42,8 +53,10 @@ public class AdminService {
         Users user = usersRepository.getByEmailAndType(reqDTO.getEmail(), UsersType.ADMIN)
                 .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
 
+        boolean isSame = BCrypt.checkpw(reqDTO.getPassword(), user.getPassword());
+
         // 2. 요청 비밀번호와 DB에 저장된 비밀번호를 비교
-        if (!user.getPassword().equals(reqDTO.getPassword())) {
+        if (!isSame) {
             throw new ExceptionApi404(ErrorEnum.USER_NOT_FOUND);
         }
 
@@ -156,5 +169,29 @@ public class AdminService {
 
         // 3. 엔티티의 상태를 변경하는 메서드 호출
         abuseReports.updateStatus(updateStatus);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return usersRepository.getByEmail(username)
+                .orElseThrow(() -> new ExceptionApi404(ErrorEnum.USER_NOT_FOUND));
+    }
+
+    /**
+     * 관리자 권한으로 방송을 종료하고, 클라이언트에게 메시지를 전송합니다.
+     *
+     * @param streamId 종료할 방송의 ID
+     */
+    @Transactional
+    public void adminStreamEnd(Integer streamId) {
+        log.debug("AdminService - 방송 종료 시작");
+
+        // 1. StreamsService를 통해 방송 상태를 '종료'로 변경하고, streamKey 반환
+        String streamKey = streamsService.adminEndStream(streamId);
+
+        // 2. ChatMessagesService를 통해 웹소켓 메시지 전송
+        chatMessagesService.sendStreamEndMessage(streamKey);
+
+        log.debug("AdminService - 방송 종료 완료");
     }
 }

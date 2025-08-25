@@ -58,7 +58,7 @@ public class Users implements UserDetails {
     }
 
     @Builder
-    public Users(Integer id, String nickname, String email, String password, String profileImageUrl, String bio, String fcmToken, String roles, UsersProvider provider, LocalDateTime lastLoginAt) {
+    public Users(Integer id, String nickname, String email, String password, String profileImageUrl, String bio, String fcmToken, String roles, UsersProvider provider) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
@@ -68,7 +68,6 @@ public class Users implements UserDetails {
         this.fcmToken = fcmToken;
         this.roles = roles;
         this.provider = provider;
-        this.lastLoginAt = lastLoginAt;
     }
 
     @Override
@@ -85,6 +84,14 @@ public class Users implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public void updateFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    public void updateLastLoginAt() {
+        this.lastLoginAt = LocalDateTime.now();
     }
 
     public void updateProfile(String username, String channelDescription, String profileImageUrl) {

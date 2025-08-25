@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.metacoding.laviu.domain.users.domain.Users;
 import org.junit.jupiter.api.Test;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.Date;
 
@@ -57,5 +58,13 @@ public class TokenTest {
 
         System.out.println(id);
         System.out.println(username);
+    }
+
+    @Test
+    public void encode_test() {
+        String password = "1234";
+
+        String encPassword = BCrypt.hashpw(password, BCrypt.gensalt());
+        System.out.println(encPassword);
     }
 }
