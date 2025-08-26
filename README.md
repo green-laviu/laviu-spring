@@ -105,52 +105,74 @@
     </thead>
     <tbody>
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">문정준</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">최재원</td>
             <td style="padding: 10px; border: 1px solid #ddd;">
                 <ul>
                     <li>프로젝트 계획 및 관리</li>
                     <li>팀 리딩 및 커뮤니케이션</li>
+                    <li>웹소켓 채팅</li>
+                    <li>웹소켓 예외처리</li>
+                    <li>방송 정보 수정</li>
+                    <li>팔로우 알림 설정</li>
+                    <li>스프링 시큐리티 설정</li>
+                    <li>Rest Doc 문서 작성</li>
                 </ul>
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">최재원</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">백하림</td>
             <td style="padding: 10px; border: 1px solid #ddd;">
                 <ul>
-                    <li>러닝 CRUD 기능 개발</li>
-                    <li>러닝 레벨 기능 개발</li>
-                    <li>러닝 챌린지 기능 개발</li>
-                    <li>러닝 뱃지 기능 개발</li>
-                    <li>kakao OIDC 구현</li>
-                    <li>파이어베이스 FCM 구현</li>
-                    <li>RestDoc 문서 작성</li>
-                    <li>AWS CICD</li>
+                    <li>방송 해시태그 등록</li>
+                    <li>네이버 Oauth 2.0 로그인</li>
+                    <li>관리자 로그인</li>
+                    <li>관리자 유저목록 페이지</li>
+                    <li>관리자 방송목록 페이지</li>
+                    <li>관리자 신고목록 페이지 및 신고 처리</li>
+                    <li>스프링 시큐리티 설정</li>
+                    <li>Rest Doc 문서 작성</li>
                 </ul>
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">편준민</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">이창호</td>
             <td style="padding: 10px; border: 1px solid #ddd;">
                 <ul>
-                    <li>러닝 통계 기능 개발</li>
-                    <li>러닝 리더보드 기능 개발</li>
-                    <li>친구 추가 및 검색 기능 개발</li>
-                    <li>챌린지 초대 및 수락 기능 개발</li>
-                    <li>알림 목록 기능 개발</li>
+                    <li>방송 허가 처리</li>
+                    <li>스트리머 방송 종료</li>
+                    <li>방송 썸네일 변경</li>
+                    <li>방송 목록</li>
+                    <li>유저 상세 페이지</li>
+                    <li>유저 정보 수정</li>
+                    <li>팔로우 목록</li>
+                    <li>팔로우 라이브 목록</li>
+                    <li>시청자 제재 등록</li>
+                    <li>시청자 제재 등록</li>
+                    <li>관리자 방송 강제 종료</li>
+                    <li>요청 DTO 데이터 검증</li>
+                    <li>스트리머 제재 적용</li>
+                    <li>Rest Doc 문서 작성</li>
                 </ul>
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd;">김세리</td>
+            <td style="padding: 10px; border: 1px solid #ddd;">김나희</td>
             <td style="padding: 10px; border: 1px solid #ddd;">
                 <ul>
-                    <li>게시글 기능 개발</li>
-                    <li>댓글 기능 개발</li>
-                    <li>좋아요 기능 개발</li>
+                    <li>방송 등록</li>
+                    <li>방송 상세 페이지</li>
+                    <li>팔로잉 등록 및 삭제</li>
+                    <li>유저 검색</li>
+                    <li>라이브 방송 검색</li>
+                    <li>방송 신고 등록</li>
+                    <li>알림 등록</li>
+                    <li>알림 목록 보기</li>
+                    <li>Rest Doc 문서 작성</li>
                 </ul>
             </td>
         </tr>
     </tbody>
+
 </table>
 
 # 주요 기능
@@ -160,29 +182,48 @@
 - 로그인, 회원가입
 - 유효성 검사
 - 인증 체크
+- Rest Doc 문서
 
-### 러닝
+### 방송
 
-- 러닝 기록 - 등록, 수정, 삭제
-- 러닝 기록 - 통계 : 주간, 월간, 년간, 전체
-- 러닝 기록 - 러닝레벨
-- 러닝 기록 - 획득 뱃지 : 최고기록, 월간기록
-- 러닝 기록 - 리더보드 : 친구들과의 누적거리 비교
+- 방송 목록, 등록, 수정
+- 방송 해시태그 등록, 수정
+- 방송 신고
+    - 특정 사유로 방송을 신고함
 
-### 챌린지
+### 채팅
 
-- 챌린지 - 등록, 수정, 삭제
-- 챌린지 - 스케줄러 : 공개챌린지 생성 및 사설챌린지 보상
-- 챌린지 - 보상목록
-- 챌린지 - 리더보드 : 챌린지 참가자들의 누적거리 비교
-- 챌린지 - 초대 : 사설챌린지에 친구를 초대할 수 있음
+- 웹소켓을 사용한 실시간 채팅
+- 채팅 목록, 등록
+- 채팅 참가자 목록
+- 채팅 제재
+    - 채팅금지
+    - 강제퇴장
 
-### 게시글
+### 팔로잉
 
-- 게시글 - 등록, 수정, 삭제
-    - 게시글에 러닝 기록을 등록할 수 있음
-- 댓글 - 등록, 수정, 삭제
-- 좋아요 - 등록, 삭제
+- 팔로잉 목록, 등록, 삭제
+- 팔로잉 유저 목록
+- 팔로잉 유저의 방송 목록
+
+### 검색
+
+- 유저 검색
+- 방송 검색
+    - 해시태그를 기준으로 검색
+
+### 유저 페이지
+
+- 유저의 상세 정보 확인
+- 유저의 닉네임, 자기소개 변경 가능
+
+### 관리자 페이지
+
+- 신고 목록
+    - 신고 수락 및 거절
+- 유저 목록
+- 방송 목록
+    - 방송 강제 종료
 
 # ERD
 
