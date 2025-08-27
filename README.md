@@ -70,6 +70,14 @@
       <img src="https://cdn.simpleicons.org/springsecurity/6DB33F" width="50"/><br/>
       Spring Security
     </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nginx/nginx-original.svg" width="50"/><br/>
+      Nginx-RTMP
+    </td>
+    <td align="center">
+      <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" width="50"/><br/>
+      Docker
+    </td>
   </tr>
 </table>
 
@@ -110,6 +118,7 @@
                 <ul>
                     <li>프로젝트 계획 및 관리</li>
                     <li>팀 리딩 및 커뮤니케이션</li>
+                    <li>nginx-rtmp 서버 설정</li>
                     <li>웹소켓 채팅</li>
                     <li>웹소켓 예외처리</li>
                     <li>방송 정보 수정</li>
@@ -190,6 +199,9 @@
 - 방송 해시태그 등록, 수정
 - 방송 신고
     - 특정 사유로 방송을 신고함
+- 방송 송출, 수신
+    - nginx-rtmp 서버로 구현
+    - docker 사용함
 
 ### 채팅
 
