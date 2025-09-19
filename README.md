@@ -1,13 +1,12 @@
-<div>
-<img src="./docs/러닝시연영상.gif" alt="러닝시연" height="500"/>
-<img src="./docs/러닝앱시연영상.gif" alt="러닝시연" height="500"/>
-</div>
-
 # 실무양성심화과정 - 중개플랫폼 웹/앱 : Laviu
 
 - 자바와 스프링부트를 활용하여 Rest API 서버를 제작하였습니다.
 - 전체 개발 기간 : 2025.08.04 ~ 2025.08.26
   <br />
+
+## 🎥 시연영상
+
+<video src="https://github.com/user-attachments/assets/85624f3e-158d-416d-8de5-b6aa3ae13e82" controls width="600"></video>
 
 ## 앱 레퍼런싱
 
@@ -33,6 +32,8 @@
 
 <table>
   <tr>
+    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/bootstrap/bootstrap-original.svg" width="50"/><br/>Bootstrap</td>
+    <td align="center"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/handlebars/handlebars-original.svg" width="50"/><br/>Mustache</td>
     <td align="center">
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg" width="50"/><br/>
       Java
@@ -240,5 +241,3 @@
 # ERD
 
 ![erd](docs/images/erd.png)
-
-```
