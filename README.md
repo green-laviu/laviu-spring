@@ -4,6 +4,12 @@
 - 전체 개발 기간 : 2025.08.04 ~ 2025.08.26
   <br />
 
+<div>
+<img src="./docs/images/home.png" alt="홈" height="500"/>
+<img src="./docs/images/viewer.png" alt="시청자" height="500"/>
+<img src="./docs/images/streamer.jpeg" alt="스트리머" height="500"/>
+</div>
+
 ## 🎥 시연영상
 
 <video src="https://github.com/user-attachments/assets/85624f3e-158d-416d-8de5-b6aa3ae13e82" controls width="600"></video>
@@ -12,8 +18,10 @@
 
 - 치지직, 숲 앱을 리퍼런싱 하여 제작하였습니다.
 
+<div>
 <img src="https://nimage.g-enews.com/phpwas/restmb_allidxmake.php?idx=5&simg=2023121004092903370c5fa75ef8612254575.jpg" width="150">
 <img src="https://play-lh.googleusercontent.com/p9zXgkP4pkCDVR-dQ2HfcHyD5vg9MTjDLFVpckObdHI9dGiiMO9TldFJ7kc5bgEGwYjo" width="150">
+</div>
 
 # 👥 팀 멤버
 
