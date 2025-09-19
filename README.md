@@ -54,7 +54,6 @@
       <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/sqlite/sqlite-original.svg" width="50"/><br/>
       H2
     </td>
-
   </tr>
 </table>
 
