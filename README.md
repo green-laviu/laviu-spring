@@ -23,7 +23,7 @@
 <img src="https://play-lh.googleusercontent.com/p9zXgkP4pkCDVR-dQ2HfcHyD5vg9MTjDLFVpckObdHI9dGiiMO9TldFJ7kc5bgEGwYjo" width="150">
 </div>
 
-# 👥 팀 멤버
+# 👥 백엔드팀 멤버
 
 | 이름  | 역할 | GitHub                                     |
 |-----|----|--------------------------------------------|
